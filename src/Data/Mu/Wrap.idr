@@ -1,4 +1,4 @@
-module Data.Mult.Wrap
+module Data.Mu.Wrap
 
 import Prelude.Interfaces
 import Data.Linear.Notation

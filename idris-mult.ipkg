@@ -16,7 +16,7 @@ authors = "Asher Frost"
 depends = linear
 
 -- modules to install
-modules = Data.Mult, Data.Mult.Common, Data.Mult.Types, Data.Mult.Interface, Data.Mult.Wrap, Data.Mult.Classes
+modules = Data.Mu, Data.Mu.Common, Data.Mu.Types, Data.Mu.Interface, Data.Mu.Wrap, Data.Mu.Classes
 
 -- main file (i.e. file to load at REPL)
 -- main =

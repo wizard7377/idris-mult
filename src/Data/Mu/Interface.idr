@@ -1,6 +1,6 @@
-module Data.Mult.Interface 
+module Data.Mu.Interface 
 
-import Data.Mult.Types
+import Data.Mu.Types
 import Data.Linear.LVect
 import Data.Linear.Notation
 import Prelude.Ops

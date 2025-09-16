@@ -1,4 +1,4 @@
-module Data.Mult.Classes 
+module Data.Mu.Classes 
 
 import Data.Linear.Notation
 import public Data.Linear.Interface 

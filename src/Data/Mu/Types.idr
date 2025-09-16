@@ -1,4 +1,4 @@
-module Data.Mult.Types
+module Data.Mu.Types
 
 import public Prelude.Types
 import Prelude.Ops
@@ -6,7 +6,7 @@ import Prelude.Num
 import Prelude.Basics
 import Data.Linear.LVect
 import Data.Linear.LList
-import Data.Mult.Classes
+import Data.Mu.Classes
 import Data.Linear.Notation
 import Data.Nat as Data.Nat
 import Data.Linear.LNat
@@ -14,7 +14,7 @@ import Control.Function
 import Prelude.Cast
 import Builtin
 import PrimIO 
-
+import Data.Mu.Util.Set
 %auto_lazy off
 %default total
 public export
@@ -43,14 +43,19 @@ combine : {t : Type} -> {0 a, b : Nat} -> M a t -@ M b t -@ M (a + b) t
 combine MZ y = y
 combine (MS x xs) y = MS x (combine xs y)
 public export 
+Psi : (t : Type) -> {s : Set Nat} -> Type
+Psi t = ({1 n : Nat} -> Element s n => M n t)
+public export  
 W : (t : Type) -> Type
-W t = ({1 n : Nat} -> M n t)
+W t = Psi t {s = All}
 public export
 ω : (t : Type) -> Type
-ω = W
+ω t = Psi t {s = All}
+%name Psi ψ
 %name W ω
+
 export 
-{n : Nat} -> LCast (W t) (M n t) where
+{s : Set Nat} -> {n : Nat} -> Element s n => LCast (Psi {s=s} t) (M n t) where
   lcast f = f {n = n}
 export 
 minusEq : {a : Nat} -> (a === (minus a 0))
@@ -66,7 +71,7 @@ split {p=LTESucc p'} (MS x xs) = let (ys # zs) = split {p=p'} xs in (MS x ys # z
 
 
 public export
-gen : a -> W a
+gen : a -> Psi {s=All} a
 gen x {n} = case n of
   Z => MZ
   (S k) => MS x (Delay (gen x {n = k}))
@@ -94,11 +99,8 @@ export
 LCast (M (S Z) a) a where
   lcast (MS x MZ) = x
 export 
-Cast a (W a) where
+Cast a (Psi {s=All} a) where
   cast = gen
-export 
-{n : Nat} -> LCast (W a) (M n a) where
-  lcast f = f {n = n}
 export
 lowerM' : Consumable t => M (S n) t -@ M n t
 lowerM' (MS x xs) = let r = seq x xs in r
@@ -164,7 +166,7 @@ lNat Z = Zero
 lNat (S k) = Succ (lNat k)
 
 export 
-omega : {1 n : Nat} -> (M n a -@ b) -@ W a -@ b
+omega : {1 n : Nat} -> (1 f : (M n a -@ b)) -> Element s n => Psi {s=s} a -@ b
 omega f g = f (g {n = n})
 export 
 mapTest : {0 n : Nat} -> M n (a -@ b) -@ LVect n a -@ LVect n b
