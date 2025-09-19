@@ -3,6 +3,8 @@ module Data.Mu.Interface
 import Data.Mu.Types
 import Data.Linear.LVect
 import Data.Linear.Notation
+import Data.Linear.LMaybe
+import Data.Linear.Interface
 import Prelude.Ops
 import Data.Nat 
 import Prelude.Num
@@ -11,8 +13,8 @@ import Builtin
 
 %hide Data.Linear.LVect.(<$>)
 public export 
-reqType : (f : Type -> Type) -> Type
-reqType f = {0 a : Type} -> (0 _ : f a) -> Nat
+0 reqType : (f : Type -> Type) -> Type
+reqType f = {a : Type} -> (x : f a) -> Nat
 
 public export
 reqType2 : (f : Type -> Type) -> Type
@@ -20,60 +22,32 @@ reqType2 f = {0 a, b : Type} -> (0 _ : f a) -> (0 _ : f b) -> Nat
 public export
 interface NFunctor (0 f : Type -> Type) where
   constructor MkNFunctor
-  0 reqF : reqType f
-  nmap : 
+  0 req : reqType f
+  mapN : 
     {0 a, b : Type} ->
     {0 m : Nat} ->
     (1 _ : M m (a -@ b)) ->
     (1 x : f a) -> 
-    {auto 0 prf : (m === reqF x)} ->
+    {auto 0 prf : (m === req x)} ->
     (f b)
-  nmap' : 
+  mapN' : 
     {0 a, b : Type} ->
     (1 x : f a) -> 
-    (1 _ : M (reqF x) (a -@ b)) ->
+    (1 _ : M (req x) (a -@ b)) ->
     (f b)
-  nmap {a, b} x {prf} f = nmap' f $ castEq x
-  nmap' {a, b} f x = nmap x f
-    
+  mapN {a, b} x {prf} f = mapN' f $ castEq x
+   
 public export 
-interface NApplicative (0 f : Type -> Type) where 
-    constructor MkNApplicative
-  reqA : Nat
-  pureN : M reqA a -@ f a
-  apN : f (a -@ b) -@ f a -@ f b
-
+interface NApplicative (0 f : Type -> Type) where
+  constructor MkNApplicative
+  pureN : {0 a : Type} -> a -@ f a
+  appN : (f (a -@ b)) -@ f a -@ f b
+ 
 public export
 interface NMonad (0 f : Type -> Type) where
-  constructor MkNMonad
-  reqN : reqType f
-  joinN : (1 x : f (f a)) -> M (reqN x) (f a)
-  
-0 reqM : {0 n : Nat} -> reqType (M n )
-reqM {n} _ = n
-export 
-implementation {0 n : Nat} -> NFunctor (M n) where
-  reqF = reqM
-  nmap {prf} p x = castEq $ apM p $ castEq @{prf'} x
-    where 
-        prf' = sym prf
- 
-export 
-implementation {n : Nat} -> NApplicative (M n) where
-  reqA = n
-  pureN = id
-  apN f x = apM f x
-export
-implementation {n : Nat} -> NMonad (M n) where
-    reqN {} _ = n
-    joinN = id
-  
-0 reqLVect : {0 n : Nat} -> reqType (LVect n)
-reqLVect {n} _ = n
-export 
-implementation {n : Nat} -> NFunctor (LVect n) where
-  reqF = reqLVect
-  nmap p x = ?h7
+    constructor MkNMonad
+    0 flat : {0 a : Type} -> f (f a) -@ Nat
+    joinN : {0 a : Type} -> (1 x : f (f a)) -> (M (flat x) (f a))
 (<$>) : 
         {f : Type -> Type} ->
         NFunctor f =>
@@ -81,12 +55,37 @@ implementation {n : Nat} -> NFunctor (LVect n) where
         {0 m : Nat} ->
         (1 _ : M m (a -@ b)) ->
         (1 x : f a) -> 
-        {auto 0 prf : (m === reqF x)} ->
+        {auto 0 prf : (m === req x)} ->
         (f b)
-f <$> x = nmap f x
+f <$> x = mapN f x
+export
+pure : {f : Type -> Type} -> NApplicative f => {0 a : Type} -> a -@ f a
+pure = pureN 
+export
+(<*>) : {f : Type -> Type} -> {0 a, b : Type} -> NApplicative f => f (a -@ b) -@ f a -@ f b
+(<*>) = appN
+export 
+(>>=) : {m : Type -> Type} -> {0 a, b : Type} -> NFunctor m => NMonad m => (1 x : m a) -> (1 f : M (req x) (a -@ m b)) -> M ? (m b)
+(>>=) x f = joinN (mapN f x)
 
---pure : NApplicative f => M reqA a -@ f a
---pure = ?h5
-(<*>) : NApplicative f => f (a -@ b) -@ f a -@ f b
-(<*>) = apN
+
+Duplet : Type -> Type 
+Duplet x = LPair x x
+reqPair : reqType Duplet
+reqPair x = 2
+
+NFunctor Duplet where
+  req = reqPair
+  mapN' {a, b} (x # y) f = let 
+                                (r1 # f1) = use f x
+                                (r2 # f2) = use f1 y
+                            in seq f2 (r1 # r2)
+
   
+reqMaybe : reqType LMaybe
+reqMaybe Nothing = 0 
+reqMaybe (Just _) = 1
+NFunctor LMaybe where
+  req x = reqMaybe x
+  mapN' {a, b} Nothing f = seq f Nothing
+  mapN' {a, b} (Just x) f = let (r # f') = use f x in seq f' $ Just r

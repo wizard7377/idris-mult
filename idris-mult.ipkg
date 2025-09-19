@@ -1,4 +1,4 @@
-package idrisMult
+package idris-mult
 version = 0.1.0
 authors = "Asher Frost"
 -- maintainers =
@@ -16,7 +16,7 @@ authors = "Asher Frost"
 depends = linear
 
 -- modules to install
-modules = Data.Mu, Data.Mu.Common, Data.Mu.Types, Data.Mu.Interface, Data.Mu.Wrap, Data.Mu.Classes
+modules = Data.Mu, Data.Mu.Common, Data.Mu.Types, Data.Mu.Interface, Data.Mu.Wrap, Data.Mu.Classes, Data.Mu.Notation, Data.Mu.Util.Part, Data.Mu.Proofs, Data.Mu.Util.Iso
 
 -- main file (i.e. file to load at REPL)
 -- main =
@@ -24,7 +24,7 @@ modules = Data.Mu, Data.Mu.Common, Data.Mu.Types, Data.Mu.Interface, Data.Mu.Wra
 -- name of executable
 -- executable =
 opts = "--no-prelude" 
---opts = "--no-prelude --show-implicits"
+-- opts = "--no-prelude --show-implicits"
 sourcedir = "src"
 -- builddir =
 -- outputdir =
