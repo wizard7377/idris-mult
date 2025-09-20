@@ -1,4 +1,4 @@
-module Data.Mu.Wrap
+module Data.Mu.Simple.Wrap
 
 import Prelude.Interfaces
 import Data.Linear.Notation
@@ -50,9 +50,9 @@ joinL : {a : Type} -> L (L a) -@ L a
 joinL (MkL (MkL x)) = MkL x
 
 export 
-combine : W a -@ W a -@ W a
-combine (MkW x xs) y = MkW x (Delay (combine (Force xs) y))
+combine' : W a -@ W a -@ W a
+combine' (MkW x xs) y = MkW x (Delay (combine' (Force xs) y))
 export
 joinW : {a : Type} -> W (W a) -@ W a
-joinW (MkW x xs) = combine x (joinW (Force xs))
+joinW (MkW x xs) = combine' x (joinW (Force xs))
 
