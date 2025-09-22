@@ -16,9 +16,11 @@ authors = "Asher Frost"
 depends = linear
 
 -- modules to install
-modules = Data.Mu,
-    Data.Mu,
-    Data.Mu.Types
+modules =
+	Data.Mu.Util.Relude,
+	Data.Mu,
+	Data.Mu,
+	Data.Mu.Types
 
 
 
