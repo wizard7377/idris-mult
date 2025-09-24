@@ -30,8 +30,25 @@ multSuccAddLemma1 {a=a} {b=Z} = rewrite multZeroRightZero a in multSuccAddLemma2
 multSuccAddLemma1 {a=(S a')} {b=(S b')} = rewrite multSuccAddLemma1 {a=a'} {b=(S b')} in %search
 
 %hint 
+private 
+0 plusSwap2 : {a, b, c : Nat} -> (a + (b + c)) === (b + (a + c))
+plusSwap2 = ?hplusSwap2
+%hint 
 export 
 0 multSuccAdd : {a, b : Nat} -> (a * (S b)) === (a + (a * b))
 multSuccAdd {a=Z} {b=b} = %search
 multSuccAdd {a=a} {b=Z} = multSuccAddLemma1 {a=a} {b=Z}
-multSuccAdd {a=(S a')} {b=(S b')} = ?h0
+multSuccAdd {a=(S a')} {b=b} = let 
+  goal1 : (b + (a' * (S b))) === (b + (a' + (a' * b)))
+  goal0 : (b + (a' * (S b))) === (a' + (b + (a' * b)))
+  goal0 = ?h0
+  goal : S (b + (a' * (S b))) === S (a' + (b + (a' * b)))
+  goal = cong S goal0
+  in goal
+
+%hint 
+export 
+0 plusZeroBoth : {a, b : Nat} -> {auto 0 prf : (a + b) === Z} -> (a === Z, b === Z)
+plusZeroBoth {a=Z} {b=Z} @{prf} = (Refl, Refl)
+plusZeroBoth {a=Z} {b=(S b')} @{prf} = absurd $ sym prf
+plusZeroBoth {a=(S a')} {b=b} @{prf} = absurd $ sym prf
