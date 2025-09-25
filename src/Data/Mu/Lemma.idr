@@ -5,32 +5,16 @@ import Data.Mu.Core
 import Data.Mu.Util.Relude
 import Data.Mu.Util.Nat
 import Data.Mu.Util.LIso
-export
-zeroPower : {auto 0 x : t} -> LIso' (t ^ 0) ()
-zeroPower {x=x} = MkLIso' to from
-  where
-    to : (t ^ 0) -@ ()
-    to (Supply _ Exhaust) = ()
-    
-    from : () -@ (t ^ 0)
-    from () = Supply x Exhaust
 
-export
-unitPower : LIso' (t ^ 1) t
-unitPower = MkLIso' to from
-  where
-    to : (t ^ 1) -@ t
-    to (Supply x (Provide x Exhaust)) = x
-    
-    from : t -@ (t ^ 1)
-    from x = Supply x (Provide x Exhaust)
-    
-export
-pushPull : LIso' (LPair (a ^ n) (b ^ n)) ((LPair a b) ^ n)
-pushPull = MkLIso' to from
-  where
-    to : LPair (a ^ n) (b ^ n) -@ (LPair a b) ^ n
-    to (as # bs) = ?h0
-    
-    from : (LPair a b) ^ n -@ LPair (a ^ n) (b ^ n)
-    from xs = ?h1 
+private 
+0 givenBoth : {0 x, y : t} -> {0 xs : M n t x} -> {0 ys : M n t y} -> (x === y) -> (xs ~=~ ys) -> (MS x xs ~=~ MS y ys)
+givenBoth prf1 prf2 = let 
+  prf3 : (MS x xs) === (MS x xs) = Refl
+  in ?h0
+export 
+0 uniqueM : forall t, n, w. (a : M n t w) -> (b : M n t w) -> a === b
+uniqueM MZ MZ = Refl
+uniqueM (MS x xs) (MS _ ys) = let 
+    prf1 : (x === x) = Refl
+    prf2 : (xs === ys) = uniqueM xs ys
+  in givenBoth prf1 prf2
