@@ -26,6 +26,6 @@ interface NApplicative (0 f : Type -> Type) where
     apN' : {0 a, b : Type} -> (1 x : f a) -> (1 y : f b) -> f (LPair a b)
 
 export 
-{0 n : Nat} -> NFunctor (M n) where
+{0 n : Nat} -> NFunctor (Mu n) where
     reqF _ = n
     mapN' (Supply w s) g = ?h0

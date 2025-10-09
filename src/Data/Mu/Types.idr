@@ -1,10 +1,10 @@
 module Data.Mu.Types 
 import Data.Mu.Util.Relude
-import public Data.DPair
+import public Data.Mu.Util.LPair
   
 %prefix_record_projections off
 public export 
-data M : (n : Nat) -> (t : Type) -> (w : t) -> Type where
+data Mu : (n : Nat) -> (t : Type) -> (w : t) -> Type where
     ||| Give one more copy
     ||| @ n Number of copies given (result - 1)
     ||| @ w The value being copied
@@ -12,15 +12,30 @@ data M : (n : Nat) -> (t : Type) -> (w : t) -> Type where
     MZ : 
         {0 t : Type} ->
         {0 w : t} ->
-        M Z t w
+        Mu Z t w
     ||| No more copies available
     MS : 
         {0 t : Type} -> 
         {0 n : Nat} -> 
         {0 w : t} ->
         (1 w : t) -> 
-        (1 xs : (M n t w)) -> 
-        M (S n) t w
+        (1 xs : (Mu n t w)) -> 
+        Mu (S n) t w
+
+%inline %tcinline
+public export
+0 A : {ty : Type} -> (p : ty -> Type) -> Type
+A {ty} p = LExists {ty=ty} p
+public export
+0 AM : (n : Nat) -> (t : Type) -> Type
+AM n t = A (Mu n t)
+export 
+infixl 1 ^
+public export
+0 (^) : (t : Type) -> (n : Nat) -> Type
+(^) t n = AM n t
+
+
 %inline %tcinline
 public export
 Proj : Type 
@@ -30,60 +45,24 @@ public export
 IdProj : Proj
 IdProj n = n
   
-%prefix_record_projections off
-public export
-record LExists (f : ty -> Type) where
-    constructor LEvidence
-    0 fst' : ty 
-    1 snd' : f fst'
-
-public export
 %inline %tcinline
-0 (.fst) : {0 ty : Type} -> {0 f : ty -> Type} -> LExists f -> ty
-(.fst) (LEvidence x y) = x
 public export
-%inline %tcinline
-(.snd) : {0 ty : Type} -> {0 f : ty -> Type} -> (1 e : LExists f) -> f (e .fst)
-(.snd) (LEvidence x y) = y
-
-public export
-%inline %tcinline
-0 fst : {0 ty : Type} -> {0 f : ty -> Type} -> LExists f -> ty
-fst (LEvidence x y) = x
-public export
-%inline %tcinline
-snd : {0 ty : Type} -> {0 f : ty -> Type} -> (1 e : LExists f) -> f (e .fst)
-snd (LEvidence x y) = y
-
-public export
-%inline %tcinline
-0 fstL : {0 ty : Type} -> {0 f : ty -> Type} -> LExists f -> ty
-fstL (LEvidence x y) = x
-public export
-%inline %tcinline
-sndL : {0 ty : Type} -> {0 f : ty -> Type} -> (1 e : LExists f) -> f (e .fst)
-sndL (LEvidence x y) = y
-
-
-export 
-infixl 1 ^
-public export
-0 (^) : (t : Type) -> (n : Nat) -> Type
-(^) t n = LExists (M n t)
-
+0 omega : (t : Type) -> (w : t) -> Type
+omega t w = (n : Nat) -> (Mu n t w)
 ||| The Ω type, which can produce any number of `t` that are projected to by `p`
-||| Useful, as this allows there to be functor from the type of ℒ of `M` to ℒ of `Ω`
+||| Useful, as this allows there to be functor from the type of ℒ of `Mu` to ℒ of `Ω`
 public export 
-0 W : (p : Proj) -> (t : Type) -> (w : t) -> Type
-W p t w = (n : Nat) -> (M (p n) t w)
-export 
+0 Omega : (p : (Nat -@ Nat)) -> (t : Type) -> (w : t) -> Type
+Omega p t w = (n : Nat) -> (Mu (p n) t w) 
+public export
+0 AW : (p : (Nat -@ Nat)) -> (t : Type) -> Type
+AW p t = A (Omega p t)
+public export
 infixl 1 ^^
 public export
-0 (^^) : (t : Type) -> (p : Proj) -> Type
-(^^) t p = LExists (W p t)
+0 (^^) :  (t : Type) -> (p : (Nat -@ Nat))-> Type
+(^^) t p = AW p t
 
-
-  
 
 
 %inline %tcinline

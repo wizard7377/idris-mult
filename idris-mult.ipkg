@@ -17,10 +17,19 @@ depends = linear
 
 -- modules to install
 modules =
+	Data.Mu.Util.Nth,
+	Data.Mu.Util.LPair,
+	Data.Mu.Util.Types,
+	Data.Mu,
+	Data.Mu.Core,
+	Data.Mu.Proof,
+	Data.Mu.Lemma,
+	Data.Mu.Interface,
+	Data.Mu.Types,
+	Data.Mu.Util.Nat,
+	Data.Mu.Util.LIso,
 	Data.Mu.Util.Relude,
-	Data.Mu,
-	Data.Mu,
-	Data.Mu.Types
+	Data.Mu.Util.Nth.NPair
 
 
 
