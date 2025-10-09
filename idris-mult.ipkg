@@ -16,37 +16,20 @@ authors = "Asher Frost"
 depends = linear
 
 -- modules to install
-modules = Data.Mu,
-    Data.Mu,
-    Data.Mu.Common,
-    Data.Mu.Util,
-    Data.Mu.Lawful,
-    Data.Mu.Simple,
-    Data.Mu.Simple.Classes,
-    Data.Mu.Simple.Interface,
-    Data.Mu.Simple.Wrap,
-    Data.Mu.Simple.Proofs,
-    Data.Mu.Simple.Notation,
-    Data.Mu.Simple.Types,
-    Data.Mu.Simple.Internal.Prop,
-    Data.Mu.Simple.Internal.Core,
-    Data.Mu.Simple.Internal.Lemma,
-    Data.Mu.Simple.Internal.Mu,
-    Data.Mu.Lawful.Classes,
-    Data.Mu.Lawful.Interface,
-    Data.Mu.Lawful.Wrap,
-    Data.Mu.Lawful.Proofs,
-    Data.Mu.Lawful.Notation,
-    Data.Mu.Lawful.Types,
-    Data.Mu.Lawful.Internal.Prop,
-    Data.Mu.Lawful.Internal.Core,
-    Data.Mu.Lawful.Internal.Lemma,
-    Data.Mu.Lawful.Internal.Mu,
-    Data.Mu.Util.Iso,
-    Data.Mu.Util.Nat,
-    Data.Mu.Util.Image,
-    Data.Mu.Util.Part,
-    Data.Mu.Util.Relude
+modules =
+	Data.Mu.Util.Nth,
+	Data.Mu.Util.LPair,
+	Data.Mu.Util.Types,
+	Data.Mu,
+	Data.Mu.Core,
+	Data.Mu.Proof,
+	Data.Mu.Lemma,
+	Data.Mu.Interface,
+	Data.Mu.Types,
+	Data.Mu.Util.Nat,
+	Data.Mu.Util.LIso,
+	Data.Mu.Util.Relude,
+	Data.Mu.Util.Nth.NPair
 
 
 
