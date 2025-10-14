@@ -1,7 +1,21 @@
 module Data.Mu.Util.Nat  
 import Data.Mu.Util.Relude
+import Data.Linear.LNat
 import Prelude.Uninhabited
- 
+
+public export
+data Qty : Type where 
+    Z : Qty
+    S : (1 k : Qty) -> Qty
+
+public export
+toQty : LNat -@ Qty
+toQty Zero = Z
+toQty (Succ k) = S (toQty k)
+public export
+fromQty : Qty -@ LNat
+fromQty Z = Zero
+fromQty (S k) = Succ (fromQty k)
 %inline %tcinline 
 public export
 safeMinus : (a : Nat) -> (b : Nat) -> {auto 0 prf : (LTE b a)} -> Nat
@@ -43,8 +57,7 @@ multSuccAdd {a=(S a')} {b=b} = let
   goal0 : (b + (a' * (S b))) === (a' + (b + (a' * b)))
   goal0 = ?h0
   goal : S (b + (a' * (S b))) === S (a' + (b + (a' * b)))
-  goal = cong S goal0
-  in goal
+  goal = cong S goal0 in goal
 
 %hint 
 export 

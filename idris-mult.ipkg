@@ -17,20 +17,22 @@ depends = linear
 
 -- modules to install
 modules =
-	Data.Mu.Util.Nth,
-	Data.Mu.Util.LPair,
-	Data.Mu.Util.Types,
-	Data.Mu,
-	Data.Mu.Core,
-	Data.Mu.Proof,
-	Data.Mu.Lemma,
-	Data.Mu.Interface,
-	Data.Mu.Types,
-	Data.Mu.Util.Nat,
-	Data.Mu.Util.LIso,
-	Data.Mu.Util.Relude,
-	Data.Mu.Util.Nth.NPair
-
+    Data.Mu,
+    Data.Mu.Core,
+    Data.Mu.Proof,
+    Data.Mu.Lemma,
+    Data.Mu.Interface,
+    Data.Mu.Omega,
+    Data.Mu.Types,
+    Data.Mu.Util.Countable,
+    Data.Mu.Util.Nat,
+    Data.Mu.Util.Nth,
+    Data.Mu.Util.LIso,
+    Data.Mu.Util.LPair,
+    Data.Mu.Util.Relude,
+    Data.Mu.Util.Types,
+    Data.Mu.Util.Equal,
+    Data.Mu.Util.Nth.NPair
 
 
 -- main file (i.e. file to load at REPL)
@@ -38,6 +40,7 @@ modules =
 
 -- name of executable
 -- executable =
+-- opts = "--no-prelude"
 opts = "--no-prelude --show-machine-names" 
 -- opts = "--no-prelude --show-implicits --show-machine-names"
 sourcedir = "src"
