@@ -1,5 +1,7 @@
 module Data.Mu.Util.Types
 import Builtin
+import Prelude
+ 
 %inline %tcinline
 public export
 LConst : (1 _ : b) -> ((_  : a) -> b)

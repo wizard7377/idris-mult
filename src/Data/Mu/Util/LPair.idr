@@ -4,7 +4,6 @@ import Prelude.Basics
 import Data.Linear.Notation
 import Data.Mu.Util.Types
 import Prelude.Types
-import Prelude.Logic
 %hide Basics.(.)
 
 ||| A linear existential type $∃ (x : ty). f x$

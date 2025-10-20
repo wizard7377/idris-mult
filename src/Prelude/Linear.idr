@@ -16,7 +16,7 @@ interface Drop (0 t : Type) where
 public export
 Duplicable a => Clone a where
     clone x = let 
-        (y0 # y1) = splitAt (S Z) $ duplicate x
+        (y0 # y1) = splitAt (Succ Zero) $ duplicate x
         in (extract y0 # extract y1)
 public export
 Consumable a => Drop a where

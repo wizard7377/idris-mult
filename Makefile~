@@ -1,0 +1,16 @@
+IDRIS ?= idris2 
+PACK ?= pack 
+SRC_FILES := $(wildcard *.idr)
+LIB_PKG := idris-mult.ipkg 
+TEST_PKG := test/test.ipkg
+
+setup: 
+	$(IDRIS) --install $(LIB_PKG)
+build: $(srcFiles) $(LIB_PKG)
+	$(IDRIS) --build $(LIB_PKG)
+
+install: build 
+	$(IDRIS) --install $(LIB_PKG)
+test: install $(TEST_PKG)
+	$(IDRIS) --build $(TEST_PKG)
+	

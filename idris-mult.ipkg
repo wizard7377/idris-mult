@@ -17,22 +17,30 @@ depends = linear
 
 -- modules to install
 modules =
-    Data.Mu,
-    Data.Mu.Core,
-    Data.Mu.Proof,
-    Data.Mu.Lemma,
-    Data.Mu.Interface,
-    Data.Mu.Omega,
-    Data.Mu.Types,
-    Data.Mu.Util.Countable,
-    Data.Mu.Util.Nat,
-    Data.Mu.Util.Nth,
-    Data.Mu.Util.LIso,
-    Data.Mu.Util.LPair,
-    Data.Mu.Util.Relude,
-    Data.Mu.Util.Types,
-    Data.Mu.Util.Equal,
-    Data.Mu.Util.Nth.NPair
+	Data.Mu,
+	Data.Mu.Core,
+	Data.Mu.Proof,
+	Data.Mu.Lemma,
+	Data.Mu.Interface,
+	Data.Mu.Set,
+	Data.Mu.Omega,
+	Data.Mu.String,
+	Data.Mu.LNat,
+	Data.Mu.Types,
+	Data.Mu.LNat.Lemma,
+	Data.Mu.LNat.Ops,
+	Data.Mu.LNat.Types,
+	Data.Mu.Util.Countable,
+	Data.Mu.Util.Unique,
+	Data.Mu.Util.Nth,
+	Data.Mu.Util.LIso,
+	Data.Mu.Util.LPair,
+	Data.Mu.Util.Relude,
+	Data.Mu.Util.Types,
+	Data.Mu.Util.Equal,
+	Data.Mu.Util.Nth.NPair
+
+
 
 
 -- main file (i.e. file to load at REPL)
