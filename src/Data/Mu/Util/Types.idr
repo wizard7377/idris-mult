@@ -39,3 +39,5 @@ public export
 interface Clone t => LawfulClone (0 t : Type) where 
     prfCloneL : {0 x : t} -> (lfst (clone x)) === x
     prfCloneR : {0 x : t} -> (lsnd (clone x)) === x
+
+

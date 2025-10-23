@@ -4,6 +4,7 @@ import Prelude
 import Data.Linear.Notation
 import Data.Linear.Interface
 import public Data.Linear.LNat
+import public Data.Mu.Util.Linear
 %default total
 public export
 data LLTE : LNat -> LNat -> Type where
@@ -29,18 +30,3 @@ mkLN : Nat -@ LNat
 mkLN Z = LN0
 mkLN (S k) = Succ (mkLN k)
 
-
-%unsafe
-%hint public export
-0 seqEq : forall a, b. {x : a} -> {y : b} -> Consumable a => (seq x y) === y
-seqEq = believe_me ()
-
-%unsafe
-%hint public export
-0 extractEq : extract [x] === x
-extractEq = believe_me ()
-
-%unsafe
-%hint public export
-0 dupEq : Duplicable a => {x : a} -> {f : a -@ a -@ b} -> ((let (x1 :: xs) = duplicate x in f x1 (extract xs)) === (f x x))
-dupEq = believe_me ()

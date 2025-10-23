@@ -36,66 +36,33 @@ app (MS f fs) (MS x xs) = MS (f x) (app fs xs)
 ----------------------------------------------------------------
 -- Operations on Mu
 ----------------------------------------------------------------
+public export
+once : Mu 1 t w -@ t
+once (MS x MZ) = x
 
-namespace Mu
-    public export
-    combine : forall t, n, m. {0 w : t} -> Mu n t w -@ Mu m t w -@ Mu (ladd n m) t w
-    combine {w} MZ ys = ys
-    combine {w=x} (MS x xs) ys = MS x  (combine xs ys)
+public export
+0 witness : Mu n t w -> t
+witness _ = w
 
-    
-    public export
-    split : forall t, w, n. {1 m : LNat} -> Mu (ladd m n) t w -@ LPair (Mu m t w) (Mu n t w)
-    split {m=Zero} xs = MZ # xs
-    split {m=Succ m} (MS x xs) = let (ys # zs) = split {m=m} ( xs) in (MS x ys # zs)
-    public export 
-    split' : forall t, w. {1 m : LNat} -> {0 n : LNat} -> {0 c : LNat} -> (0 prf : c === ladd m n) -> Mu c t w -@ LPair (Mu m t w) (Mu n t w)
-    split' {m=m} {c=c} {n=n} prf xs = split {m=m} {n=n} (rewrite sym prf in xs)
-    ||| Context multiplication
-    public export 
-    squash : forall t, n, m. {0 w : t} -> {0 w' : ?} -> Mu n (Mu m t w) w' -@ Mu (lmul n m) t w
-    squash MZ = ?smu
-    squash (MS x xs) = ?smu2
-    ||| Context deriliction
-    public export
-    expand : {1 n : LNat} -> {0 w : t} -> Mu (lmul n m) t w -@ Mu n (Mu m t w) (Example m w)
-    -- expand {n=Zero} MZ = ?em2
-    -- expand {n=Succ n} x = ?em
-    
-    public export 
-    0 witness : Mu n t w -> t
-    witness {w=w} _ = w
-    public export 
-    once : Mu (Succ Zero) t w -@ t
-    once (MS x MZ) = x
-    public export
-    reactM : forall t, u, n1. 
-        {0 w : t} -> {0 w' : u} -> 
-        {1 m : LNat} -> 
-        {1 n0 : LNat} ->
-        {0 fw : ?} -> 
-        (Mu m ((Mu n0 t w) -@ (Mu n1 u w')) fw) -@ 
-        (Mu (lmul m n0) t w) -@ 
-        (Mu (lmul m n1) u w')
-    reactM {m=Zero} {n0=n0} MZ x = let 
-            0 prf0 : (lmul Zero n0) === Zero
-            prf0 = lmul_zero_left
-            0 prf1 : (lmul Zero n1) === Zero
-            prf1 = lmul_zero_left
-            res : Mu (lmul Zero n1) u w'
-            res = rewrite prf1 in MZ
-        in seq n0 (seq (consumeZero prf0 x) res)
-    reactM {m=Succ m} {n0=n0} (MS f fs) x = let 
-            (x' # xs) = split' {m=n0} lmul_succ_left x
-        in ?r0
-        
-    public export
-    log : {0 a : Type} -> (1 ex : (a ^^ n)) -> Mu n a (LExists.fst ex)
-    log {a=a} ex = LExists.snd ex
-    public export 
-    exp : {0 a : Type} -> {0 w : a} -> Mu n a w -@ (a ^^ n)
-    exp {a} {w} x = LEvidence w x
-
-   
-namespace Exp
+public export 
+dropMu : (0 prf : n === 0) => Mu n t w -@ ()
+dropMu MZ = ()
+public export
+seqMu : (0 prf : n === 0) => Mu n t w -@ a -@ a
+seqMu MZ x = x
+public export
+combine : Mu m t w -@ Mu n t w -@ Mu (m + n) t w 
+combine MZ ys = ys
+combine (MS x xs) ys = MS x (combine xs ys)
+public export
+split : {1 m : LNat} -> Mu (m + n) t w -@ LPair (Mu m t w) (Mu n t w)
+split {m=Zero} xs = MZ # xs
+split {m=Succ m'} (MS x xs) = let (ys # zs) = split {m=m'} xs in (MS x ys # zs)
+public export
+join : Mu m (Mu n t w) v -@ Mu (m * n) t w
+join MZ = rewrite lmul_zero_left {k=n} in MZ
+join {m=Succ m'} {n=n} (MS x xs) = rewrite prf0 in combine x (the (Mu (m' * n) t w) (join xs))
+  where 
+    0 prf0 : (lmul (Succ m') n = n + lmul m' n)
+    prf0 = rewrite mulRep in Refl
 

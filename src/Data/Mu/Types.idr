@@ -3,7 +3,7 @@ import Data.Mu.Util.Relude
 import public Data.Mu.Util.LPair
 import Prelude.Types
 import public Data.Mu.Maps
-
+import public Data.Mu.Set
  
 %prefix_record_projections off
 public export 
@@ -66,7 +66,7 @@ fromCPS : omegaCps t w -@ omega t w
 fromCPS f {n} = f n (\x => x)
 
 public export 
-0 Omega : (p : Pred LNat) -> (t : Type) -> (w : t) -> Type
+0 Omega : (p : Set LNat) -> (t : Type) -> (w : t) -> Type
 Omega p t w = (1 n : LNat) -> (0 prf : p n) => (Mu n t w)
 {-
 public export
@@ -86,7 +86,11 @@ public export
 Example Zero w = MZ
 Example (Succ n) w = MS w (Example n w)
 public export
-gen : forall t. (1 src : (!* t)) -> (Omega PTrue t {w=unrestricted src})
+0 Repeat : {n : LNat} -> (x : t) -> Mu n t x
+Repeat {n=Zero} x = MZ
+Repeat {n=Succ n} x = MS x (Repeat {n=n} x)
+public export
+gen : forall t. (1 src : (!* t)) -> (Omega UniversalSet t {w=unrestricted src})
 gen {t=t} src {n=Zero} = seq src MZ
 gen {t=t} (MkBang src) {n=(Succ n)} = MS src (gen {t=t} (MkBang src) {n=n})
 public export 

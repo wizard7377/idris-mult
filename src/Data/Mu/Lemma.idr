@@ -52,3 +52,16 @@ public export
 0 uniqueMu : Unique (Mu n t w)
 uniqueMu = unique @{Example n w} @{uniqueEq}
 
+public export
+expand : {1 m, n : LNat} -> Mu (m * n) t w -@ Mu m (Mu n t w) (Example n w)
+expand {m=Zero} {n=n} xs = seq n (seqMu @{lmul_zero_left} xs MZ)
+
+expand {m=Succ m'} {n=n} xs = ?h0
+{-expand {m=Succ m'} {n=n} xs = let 
+    (n' :: ns) = duplicate n
+  in let 
+    0 prf0 : n' === (extract ns) 
+  in let 
+    (y # ys) = split {m=n'} (?prf0 xs)
+  in ?h0
+-}
