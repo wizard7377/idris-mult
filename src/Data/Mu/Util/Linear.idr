@@ -25,8 +25,8 @@ public export
 (.prf) (Cloned y prf) = prf
 
 public export 
-clone : forall t. Duplicable t => {n : Nat} -> (1 x : t) -> LVect n (Clone {t} x)
-clone {t} {n=Z} x = assert_linear (const []) x
+clone : forall t. Consumable t => Duplicable t => {n : Nat} -> (1 x : t) -> LVect n (Clone {t} x)
+clone {t} {n=Z} x = seq x []
 clone {t} {n=(S n')} x = let 
   (x' :: xs) = duplicate x 
   0 prfX : (x === x') = Refl
@@ -35,13 +35,13 @@ clone {t} {n=(S n')} x = let
   in (Cloned x' prfX) :: (rewrite prfXs in xs')
 
 public export
-(.clone) : forall t. Duplicable t => (1 x : t) -> (n : Nat) -> LVect n (Clone {t} x)
+(.clone) : forall t. Consumable t => Duplicable t => (1 x : t) -> (n : Nat) -> LVect n (Clone {t} x)
 (.clone) x {n} = clone {n} x
 
 %defaulthint
 public export
 0 cloneEq : {a : Clone {t} x} -> {b : Clone {t} x} -> a.val === b.val
-cloneEq {a} {b} = believe_me ()
+cloneEq {a} {b} = trans (sym (a.prf)) b.prf
 
 %inline %tcinline
 public export

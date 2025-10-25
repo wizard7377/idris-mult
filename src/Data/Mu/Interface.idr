@@ -5,4 +5,3 @@ import Data.Mu.Core
 import Data.Mu.Lemma
   
 import Data.Mu.Util.Relude
-import Data.Mu.Util.Nat

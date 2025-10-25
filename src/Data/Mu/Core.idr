@@ -2,7 +2,6 @@ module Data.Mu.Core
 import Data.Mu.Types
 
 import Data.Mu.Util.Relude
-import Data.Mu.Util.Nat
 import Data.Mu.Util.Types
 import Data.Nat
 --import Data.Qty
@@ -33,6 +32,7 @@ app : Mu n (t -@ u) wf -@ Mu n t wx -@ Mu n u (wf wx)
 app MZ MZ = MZ 
 app (MS f fs) (MS x xs) = MS (f x) (app fs xs)
   
+
 ----------------------------------------------------------------
 -- Operations on Mu
 ----------------------------------------------------------------

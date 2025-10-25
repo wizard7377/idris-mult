@@ -66,7 +66,7 @@ Eval (FFun f) x = f x
 %hint
 export 
 0 eval_eq : {f : Form} -> {x : LNat} -> (Eval' f x === Eval f x)
-eval_eq = ?heval_eq
+eval_eq {f=f} {x=x} = believe_me () -- TODO: Prove this
 ||| No, this is not a haskell fmap, rather describes a *formula* map :|
 public export
 fmap : (1 p : LNat -@ LNat) -> (1 f : Form) -> Form
@@ -94,7 +94,10 @@ Reflexive Form Unify where
   reflexive x = (LEvidence x Refl)
 public export
 Transitive Form Unify where 
-  transitive p0 p1 x = ?h2
+	transitive p0 p1 x = let 
+		1 (LSubset.LEvidence y0 prf0) = p0 x
+		1 (LSubset.LEvidence z0 prf1) = p1 y0
+		in LSubset.LEvidence z0 (rewrite prf0 in prf1)
   
   
 {-
@@ -118,7 +121,7 @@ remove_add = Refl
 remove_min = Refl
 %hint public export
 0 remove_max : Eval (FMax x y) n === (lmax (Eval x n) (Eval y n))
-
+remove_max = Refl
 %hint public export
 0 unify_eq : (forall x. Eval f x === Eval g x) => Unify f g
 unify_eq @{prf} x = LSubset.LEvidence x (rewrite prf {x=x} in Refl)
