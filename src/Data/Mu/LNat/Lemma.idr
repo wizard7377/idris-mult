@@ -10,6 +10,11 @@ import public Data.Mu.LNat.Ops
 public export
 0 lmul_zero_left' : forall k. (lmul' Zero k = Zero)
 lmul_zero_left' {k} = Refl
+public export
+0 lmul_zero_right' : forall k. (lmul' k Zero = Zero)
+lmul_zero_right' {k=Zero} = Refl
+lmul_zero_right' {k=Succ k'} = rewrite lmul_zero_right' {k=k'} in Refl
+
 
 %defaulthint
 public export
@@ -26,6 +31,8 @@ lmul_succ_left {m} {n} = rewrite mulRep in lmul_succ_left' {m} {n}
 
 public export
 0 lmul_comm' : forall m, n. (lmul' m n = lmul' n m)
+lmul_comm' {m = Zero} {n} = rewrite lmul_zero_right' {k=n} in Refl
 
 public export
 0 lmul_comm : forall m, n. (lmul m n = lmul n m)
+lmul_comm {m} {n} = rewrite mulRep in lmul_comm' {m} {n}

@@ -8,6 +8,7 @@ import Data.Mu.Util.LIso
 import Data.Mu.Util.Equal
 import Data.Mu.Util.Unique
 import Data.Mu.Util.Types
+import Data.Linear.LVect
 %default total
 ||| We can, in general, lift functions on `Mu` to functions on any `Mu` 
 export 
@@ -53,10 +54,15 @@ public export
 uniqueMu = unique @{Example n w} @{uniqueEq}
 
 public export
-expand : {1 m, n : LNat} -> Mu (m * n) t w -@ Mu m (Mu n t w) (Example n w)
+expand : {1 m : LNat} -> {1 n : LNat} -> Mu (m * n) t w -@ Mu m (Mu n t w) (Example n w)
 expand {m=Zero} {n=n} xs = seq n (seqMu @{lmul_zero_left} xs MZ)
-
-expand {m=Succ m'} {n=n} xs = ?h0
+expand {m=Succ m'} {n=n} xs = let 
+    1 [n0, n1] = n.clone 2
+    1 [m0, m1] = m'.clone 2
+    0 prf0 : ((Succ m') * n === n + (m' * n)) = lmul_succ_left
+    1 xs1 : Mu (n + (m' * n)) t w = rewrite sym prf0 in xs
+    1 xs1' : Mu (n + (m0.val * n) ) t w = rewrite sym m0.prf in xs1
+  in ?h1
 {-expand {m=Succ m'} {n=n} xs = let 
     (n' :: ns) = duplicate n
   in let 

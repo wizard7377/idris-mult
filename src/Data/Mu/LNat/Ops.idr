@@ -34,3 +34,20 @@ Num LNat where
     fromInteger n = mkLN (fromInteger n)
     a + b = ladd a b
     a * b = lmul a b
+
+public export
+lmin : LNat -@ LNat -@ LNat
+lmin m n = go 0 m n 
+  where 
+    go : LNat -@ LNat -@ LNat -@ LNat
+    go acc Zero n = seq n acc
+    go acc m Zero = seq m acc
+    go acc (Succ m) (Succ n) = go (Succ acc) m n
+public export
+lmax : LNat -@ LNat -@ LNat
+lmax m n = go 0 m n 
+  where 
+    go : LNat -@ LNat -@ LNat -@ LNat
+    go acc Zero n = ladd acc n
+    go acc m Zero = ladd acc m
+    go acc (Succ m) (Succ n) = go (Succ acc) m n

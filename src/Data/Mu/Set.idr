@@ -42,6 +42,10 @@ public export
 0 (->?) : Set a -> Set a -> Type
 p ->? q = q <: (Power p)
 
+||| Intuitively, the set of all things that "were" a given value before some function was applied
+public export
+0 WasSet : (a -> a) -> Set a -> Set a
+WasSet f p = \x => (y : a ** (x = f y , y <: p))
 public export
 0 ExSet : (p : a -> Set b) -> Set b
 ExSet p = \x => (y : a ** (x <: p y))

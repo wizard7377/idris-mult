@@ -1,8 +1,11 @@
 module Data.Mu.Util.Unique 
 import Data.Mu.Util.Relude
+||| There is at most one `t`
 public export
 0 Unique' : Type -> Type  
 Unique' t = {x, y : t} -> x === y
+
+||| There is exactly one `t`, `∃! t`
 public export
 record Unique (t : Type) where 
   constructor MkUnique 
@@ -37,10 +40,9 @@ uniqueUnit = MkUnique () uniqueUnit'
 private
 uniquePair' : Unique' a -> Unique' b -> Unique' (a, b)
 uniquePair' ua ub {x=(x1, y1)} {y=(x2, y2)} = 
-  let prfX : x1 === x2
-
-      prfY : y1 === y2
-  in rewrite prfX in rewrite prfY in Refl
+    let prfX : x1 === x2 = ua {x=x1, y=x2}
+        prfY : y1 === y2 = ub {x=y1, y=y2}
+    in rewrite prfX in rewrite prfY in Refl
 -- %defaulthint
 public export
 uniquePair : Unique a -> Unique b -> Unique (a, b)

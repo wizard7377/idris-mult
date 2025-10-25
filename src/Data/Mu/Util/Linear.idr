@@ -1,50 +1,62 @@
 module Data.Mu.Util.Linear 
 
-import Builtin
-import Data.Linear.Notation
-import Data.Linear.Interface
+import public Builtin
+import public Data.Linear.Notation
+import public Data.Linear.Interface
 import Data.Linear.Copies
+import public Data.Linear.LVect
 import Prelude
 
+export
+data Clone : {t : Type} -> (x : t) -> Type where 
+  Cloned : (1 y : t) -> (0 prf : x === y) -> Clone x
+
+public export 
+transClone : (y === x) => Clone x -> Clone y
+transClone @{prf} (Cloned x p) = Cloned x (rewrite prf in p)
+
 public export
-record Eq3 (a : t) (b : t) (c : t) where
-    constructor MkEq3
-    eqAB : a === b
-    eqAC : a === c
-    eqBC : b === c
+(.val) : forall t. {0 x : t} -> (1 c : Clone {t} x) -> t
+(.val) (Cloned y prf) = y
 
-%hint public export
-eqAB' : Eq3 a b c => a === b
-eqAB' @{x} = let MkEq3 ab _ _ = x in ab
-%hint public export
-eqAC' : Eq3 a b c => a === c
-eqAC' @{x} = let MkEq3 _ ac _ = x in ac
-%hint public export
-eqBC' : Eq3 a b c => b === c
-eqBC' @{x} = let MkEq3 _ _ bc = x in bc
-%hint public export
-EqTree : Eq3 a b c => Eq3 c d e => Eq3 a d e
-EqTree @{(MkEq3 ab ac bc)} @{(MkEq3 cd ce de)} = MkEq3 (trans ac cd) (trans ac ce) %search
-public export  
-data CloneOf : {a : Type} -> (x : a) -> Type where
-  Cloned : (1 y : a) -> (1 z : a) -> Eq3 x y z -> CloneOf {a=a} x
-%unsafe
-%hint public export
-0 seqEq : forall a, b. {x : a} -> {y : b} -> Consumable a => (seq x y) === y
-seqEq = believe_me ()
-
-%unsafe
-%hint public export
-0 extractEq : extract [x] === x
-extractEq = believe_me ()
-
-%unsafe
-%hint public export
-0 dupEq : Duplicable a => {x : a} -> {f : a -@ a -@ b} -> ((let (x1 :: xs) = duplicate x in f x1 (extract xs)) === (f x x))
-dupEq = believe_me ()
-             
+%hint
 public export
-cloneWith : Duplicable a => (1 x : a) -> CloneOf x
-cloneWith x = let 
-    1 (y :: z) = duplicate x
-  in Cloned y (extract z) (believe_me ())
+0 (.prf) : forall t. {0 x : t} -> (c : Clone {t} x) -> (x === c.val)
+(.prf) (Cloned y prf) = prf
+
+public export 
+clone : forall t. Duplicable t => {n : Nat} -> (1 x : t) -> LVect n (Clone {t} x)
+clone {t} {n=Z} x = assert_linear (const []) x
+clone {t} {n=(S n')} x = let 
+  (x' :: xs) = duplicate x 
+  0 prfX : (x === x') = Refl
+  0 prfXs : (x === (extract xs)) = believe_me () 
+  1 xs' : (LVect n' (Clone {t} ?)) = clone {t} {n=n'} (extract xs)
+  in (Cloned x' prfX) :: (rewrite prfXs in xs')
+
+public export
+(.clone) : forall t. Duplicable t => (1 x : t) -> (n : Nat) -> LVect n (Clone {t} x)
+(.clone) x {n} = clone {n} x
+
+%defaulthint
+public export
+0 cloneEq : {a : Clone {t} x} -> {b : Clone {t} x} -> a.val === b.val
+cloneEq {a} {b} = believe_me ()
+
+%inline %tcinline
+public export
+map_clone : forall p. ((1 y : t) -> p y) -@ Clone {t} x -@ p x
+map_clone f (Cloned y prf) = rewrite prf in f y
+
+export 
+infixl 9 &$
+public export
+(&$) : forall p. ((1 y : t) -> p y) -@ Clone {t} x -@ p x
+(&$) = map_clone
+export 
+infixl 9 $$
+
+%inline %tcinline
+public export
+($$) : forall p. ((1 y : t) -> p y) -@ Clone {t} x -@ p x
+($$) = map_clone

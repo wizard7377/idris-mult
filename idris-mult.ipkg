@@ -17,9 +17,12 @@ depends = linear
 
 -- modules to install
 modules =
+	Prelude.Linear,
+	Prelude.Logic,
 	Data.Mu,
 	Data.Mu.Core,
 	Data.Mu.Proof,
+	Data.Mu.Form,
 	Data.Mu.Lemma,
 	Data.Mu.Interface,
 	Data.Mu.Set,
@@ -31,6 +34,7 @@ modules =
 	Data.Mu.LNat.Ops,
 	Data.Mu.LNat.Types,
 	Data.Mu.Util.Countable,
+	Data.Mu.Util.Linear,
 	Data.Mu.Util.Unique,
 	Data.Mu.Util.Nth,
 	Data.Mu.Util.LIso,
@@ -43,14 +47,15 @@ modules =
 
 
 
+
 -- main file (i.e. file to load at REPL)
 -- main =
 
 -- name of executable
 -- executable =
--- opts = "--no-prelude"
-opts = "--no-prelude --show-machine-names" 
--- opts = "--no-prelude --show-implicits --show-machine-names"
+-- opts = "--no-prelude --total"
+opts = "--no-prelude --show-machine-names --total" 
+-- opts = "--no-prelude --show-implicits --show-machine-names --total"
 sourcedir = "src"
 -- builddir =
 -- outputdir =
