@@ -25,7 +25,7 @@ pull : (LPair (Mu n t w0) (Mu n u w1)) -@ Mu n (LPair t u) (w0 # w1)
 pull (MZ # MZ) = MZ
 pull (MS x xs # MS y ys) = MS (x # y)  (pull (xs # ys))
 public export 
-map : (f : t -@ u) -> Mu n t w -@ Mu n u (f w)
+map : (f : t -@ u) -> (1 x : Mu n t w) -> Mu n u (f w)
 map f MZ = MZ
 map f (MS x xs) = MS (f x) (map {w=x} f xs)
 
@@ -33,7 +33,7 @@ private
 applyPair : (LPair (t -@ u) (t)) -@ (u)
 applyPair (f # x) = f x
 public export 
-app : Mu n (t -@ u) wf -@ Mu n t wx -@ Mu n u (wf wx)
+app : (1 f : Mu n (t -@ u) wf) -> (1 x : Mu n t wx) -> Mu n u (wf wx)
 app MZ MZ = MZ 
 app (MS f fs) (MS x xs) = MS (f x) (app fs xs)
   

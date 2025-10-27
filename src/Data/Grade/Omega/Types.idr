@@ -30,6 +30,11 @@ public export
 fromCPS : omegaCps t w -@ omega t w
 fromCPS f {n} = f n (\x => x)
 
+||| The Ω type 
+||| 
+||| @ p The formula of the modality 
+||| @ t The underlying type
+||| @ w The witness for the type
 public export 
 0 Omega : (p : Form) -> (t : Type) -> (w : t) -> Type
 Omega p t w = (1 n : QNat) -> (Mu (Eval p n) t w)

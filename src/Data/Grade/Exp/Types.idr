@@ -46,3 +46,9 @@ infixl 1 ^
 public export
 0 (^) :  (t : Type) -> (p : Form) -> Type
 (^) t p = LExists (Omega p t)
+
+export 
+infix 9 ~?
+public export
+0 (~?) : LExists {ty} p -> LExists {ty} q -> Type
+(LExists.LEvidence n x) ~? (LExists.LEvidence m y) = (n === m)

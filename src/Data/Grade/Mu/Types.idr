@@ -11,18 +11,26 @@ import Control.Function.FunExt
 import Data.Grade.Util.Unique
 
 %default total
-
+||| The Core Mu type, the core construction of this system 
+||| Intuitively, `Mu n t w` represents `n` copies of the value `w` of type `t`
+||| Ie, it is the equivalent of the *judgement* `x : w [n]` as an Idris type
+||| 
+||| This is very much like the `Copies` datatype, per as a matter of fact if `t` were implicit (and we used `Nat` instead of `QNat`) they would be the same type
+||| The choice for both of these had to do with their intended use 
+|||
+||| @ n The number of copies available
+||| @ t The underlying type
+||| @ w The witness for the type
 public export 
-data Mu : (n : QNat) -> (t : Type) -> (w : t) -> Type where
-    ||| Give one more copy
-    ||| @ n Number of copies given (result - 1)
-    ||| @ w The value being copied
-    ||| @ xs The remaining copies
+data Mu : (n : QNat) -> (t : Type) -> (w : t) -> Type where 
+    ||| No more copies available
     MZ : 
         {0 t : Type} ->
         {0 w : t} ->
         Mu Zero t w
-    ||| No more copies available
+    ||| Give one more copy
+    ||| @ w The value being copied
+    ||| @ xs The remaining copies
     MS : 
         {0 t : Type} -> 
         {0 n : QNat} -> 
