@@ -2,6 +2,7 @@ module Main
 import Tests.Mu
 import Tests.Exp
 import Tests.Omega
+import Tests.Eval
 main : IO ()
 main = do 
     putStrLn "Starting tests..."
@@ -11,5 +12,7 @@ main = do
     expTest
     putStrLn "Running Omega tests..."
     omegaTest
+    putStrLn "Eval tests..."
+    evalTest
     putStrLn "All tests completed."
     pure ()
