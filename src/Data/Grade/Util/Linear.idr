@@ -7,6 +7,10 @@ import Data.Linear.Copies
 import public Data.Linear.LVect
 import Prelude
 %default total
+  
+||| A "clone" type that allows duplicating values linearly.
+||| A Clone x contains a value y along with a proof that y is equal to x.
+||| This is better than just storing x directly, because it allows us to pattern match out of these (where we would otherwise get a non-linear use of x or unification of pattern variables)
 export
 data Clone : {t : Type} -> (x : t) -> Type where 
   Cloned : (1 y : t) -> (0 prf : x === y) -> Clone x
@@ -43,6 +47,7 @@ public export
 0 cloneEq : {a : Clone {t} x} -> {b : Clone {t} x} -> a.val === b.val
 cloneEq {a} {b} = trans (sym (a.prf)) b.prf
 
+||| Map a function over a Clone
 %inline %tcinline
 public export
 map_clone : forall p. ((1 y : t) -> p y) -@ Clone {t} x -@ p x
@@ -64,3 +69,9 @@ public export
 public export
 Consumable t => Consumable (Clone {t} x) where
   consume (Cloned y prf) = consume y
+
+export 
+infixr 0 =@ 
+public export
+(=@) : Type -> Type -> Type
+c =@ t = {auto 1 prf : c} -> t 

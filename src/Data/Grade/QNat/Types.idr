@@ -7,9 +7,12 @@ import Data.Linear.Interface
 import public Data.Grade.Util.Linear
 import Decidable.Equality
   
+||| The linear natural numbers
 public export
 data QNat : Type where
+  ||| The zero natural number
   Zero : QNat
+  ||| The successor of a natural number
   Succ : (1 k : QNat) -> QNat
 public export
 Consumable QNat where

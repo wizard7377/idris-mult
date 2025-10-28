@@ -1,4 +1,4 @@
-||| Ω is so special it gets its own file ;)
+||| This module defines Omega, and related operations and lemmas
 module Data.Grade.Omega
 
 import public Data.Grade.Omega.Types

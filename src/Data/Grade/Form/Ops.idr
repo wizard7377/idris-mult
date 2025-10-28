@@ -61,6 +61,7 @@ public export
 fmap : (1 p : QNat -@ QNat) -> (1 f : Form) -> Form
 fmap p f = FApp (FFun p) f
 
+||| Solve the formula `f` for the value `n`, ∈
 public export
 0 Solve : (1 f : Form) -> (1 n : QNat) -> Type
 Solve f n = (LSubset (\x => (Eval f x === n)))
@@ -70,3 +71,6 @@ public export
 0 Unify : Rel Form
 Unify f g = (1 x : QNat) -> (LSubset (\y => (Eval f x === Eval g y)))
 
+public export
+FSplit : (Form -@ Form -@ Form) -@ Form -@ Form -@ Form
+FSplit c f g = c (f <.> FLeft) (g <.> FRight)

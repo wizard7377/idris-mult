@@ -72,3 +72,9 @@ public export
 0 unify_app : Unify (f <+> g) f
 unify_app x = (LSubset.LEvidence (Eval g x) Refl)
  
+%hint 
+public export
+0 solve_both_add : Solve p a =@ Solve q b =@ Solve (FSplit FAdd p q) (a + b)
+solve_both_add @{prf1} @{prf2} = let 
+  1 v : QNat = (lpower 2 prf1.fst) * (lpower 3 prf2.fst)
+  in ?h0

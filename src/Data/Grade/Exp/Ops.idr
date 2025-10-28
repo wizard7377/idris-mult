@@ -19,6 +19,7 @@ import Data.Grade.Util.Unique
 %default total
 
 namespace Exp 
+    ||| Map a linear function over an Exp
     public export
     map : {0 r : t -@ u} -> (forall w. Omega p t w -@ Omega q u (r w)) -@ (t ^ p) -@ (u ^ q)
     map f (LExists.LEvidence n x) = (LExists.LEvidence (r n) (f x))

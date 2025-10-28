@@ -41,14 +41,21 @@ public export
 0 (^) :  (t : Type) -> (p : (Qty -@ QNat))-> Type
 (^) t p = AW p t
 -}
+
+
 export 
 infixl 1 ^
+||| The exponential type
+||| This abstract over both the specific formula and the underlying witness, allowing for us to work with more "intuitive" values 
+||| Because `Form` is a `Num`, type signatures like `String ^ 3` are perfectly valid 
 public export
 0 (^) :  (t : Type) -> (p : Form) -> Type
 (^) t p = LExists (Omega p t)
 
+
 export 
 infix 9 ~?
+||| The equality relation for existentials
 public export
 0 (~?) : LExists {ty} p -> LExists {ty} q -> Type
 (LExists.LEvidence n x) ~? (LExists.LEvidence m y) = (n === m)

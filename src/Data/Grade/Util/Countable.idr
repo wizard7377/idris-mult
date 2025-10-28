@@ -1,6 +1,6 @@
 module Data.Grade.Util.Countable
 import Prelude.Types
-import Data.Linear.QNat
+import Data.Grade.QNat
 public export
 interface Countable (ty : Type) where
     0 count : ty -> QNat

@@ -5,6 +5,7 @@ import Data.Grade.Omega.Ops
 import Data.Grade.Util.Unique
 import Data.Grade.Util.LIso
 import Data.Grade.Util.Relude 
+{-
 public export
 uniqueOmega : Unique (Omega p t w)
 
@@ -21,3 +22,4 @@ public export
 isoOmegaMu : {0 k : QNat} -> LIso (Omega (### k) t w) (Mu k t w)
 isoOmegaMu = MkLIso isoOmegaMu' ?h0 ?h1
 
+-}

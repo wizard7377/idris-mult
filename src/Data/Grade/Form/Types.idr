@@ -70,48 +70,12 @@ public export
 Monoid Form where 
     neutral = FVar
 public export
-minus : (1 k0 : QNat) -> (1 k1 : QNat) -> LMaybe QNat
-minus k0 Zero = Just k0
-minus (Succ k0) (Succ k1) = minus k0 k1
-minus Zero (Succ k1) = seq k1 Nothing
-private 
-gte : (1 x : QNat) -> (1 y : QNat) -> Bool
-gte Zero y = seq y False
-gte (Succ x) Zero = seq x True
-gte (Succ x) (Succ y) = gte x y
-
-private 
-ldiv' : (1 x : QNat) -> (1 y : QNat) -> LMaybe QNat
-ldiv' x Zero = seq x $ Just Zero
-ldiv' Zero y = seq y $ Just Zero
-ldiv' x y = assert_total $ let 
-  1 [x0] = x.clone 1
-  1 [y0, y1] = y.clone 2
-  in case Form.Types.minus &$ x0 &$ y0 of 
-    Nothing => seq y1 $ Nothing 
-    Just r => case ldiv' r &$ y1 of 
-      Nothing => Nothing
-      Just q => Just (Succ q)
-private
-diag : (1 x : QNat) -> LPair QNat QNat 
-diag Zero = seq Zero $ (Zero # Zero)
-diag n = assert_total $ let 
-  1 [n0, n1] = n.clone 2
-  in case (ldiv' n0.val) 2 of 
-    Nothing => case (ldiv' n1.val) 3 of 
-      Nothing => (Zero # Zero)
-      Just q => let 
-        (x' # y') = diag q
-        in (x' # Succ y')
-    Just q => seq n1 $ let 
-      (x' # y') = diag q
-      in (Succ x' # y')
-
- 
-public export 
-pairing : QNat -@ (LPair QNat QNat)
-pairing = diag
-
-public export
 FRange : (1 lo : QNat) -> (1 hi : QNat) -> Form
 FRange lo hi = FMax (FMin (FVar) (FVal hi)) (FVal lo)
+
+  
+export 
+infixl 0 <.>
+public export
+(<.>) : (1 f : Form) -> (1 g : Form -@ Form) -> Form
+f <.> g = FApp f (g FVar)
