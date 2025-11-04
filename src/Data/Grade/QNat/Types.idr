@@ -22,6 +22,13 @@ public export
 Duplicable QNat where
   duplicate Zero = [Zero, Zero]
   duplicate (Succ k) = Succ <$> duplicate k
+
+public export
+Copy QNat where
+    copy f Zero = f Zero Zero 
+    copy f (Succ k) = copy (\x, y => f (Succ x) (Succ y)) k
+    copy_eq {x=Zero} = Refl
+    copy_eq {x=(Succ k)} = ?ce
 %default total
 public export
 data LLTE : QNat -> QNat -> Type where
@@ -46,17 +53,18 @@ LN3 = Succ LN2
 mkLN : Nat -@ QNat
 mkLN Z = LN0
 mkLN (S k) = Succ (mkLN k)
-private
+export
 succEq : forall m, n. (m === n) -> (Succ m === Succ n)
 succEq Refl = Refl
-private 
+export
 succ_inj : forall m, n. (Succ m === Succ n) -> (m === n)
 succ_inj Refl = Refl
 %unsafe
-private 
+export
 neq_succ : Not (Succ m === Zero)
 neq_succ prf = believe_me ()
 %unsafe 
+export
 neq_succ' : Not (Zero === Succ n)
 neq_succ' prf = believe_me ()
 public export

@@ -20,7 +20,7 @@ import Data.Grade.Util.Unique
 %inline %tcinline
 public export
 0 A : {ty : Type} -> (p : ty -> Type) -> Type
-A {ty} p = LExists {ty=ty} p
+A {ty} p = Exists ty p
 public export
 0 AM : (n : QNat) -> (t : Type) -> Type
 AM n t = A (Mu n t)
@@ -28,7 +28,7 @@ export
 infixl 1 ^^
 public export
 0 (^^) : (t : Type) -> (n : QNat) -> Type
-(^^) t n = AM n t
+(^^) t n = (w : t) #? (Mu n t w)
 
 
 {-
@@ -50,12 +50,12 @@ infixl 1 ^
 ||| Because `Form` is a `Num`, type signatures like `String ^ 3` are perfectly valid 
 public export
 0 (^) :  (t : Type) -> (p : Form) -> Type
-(^) t p = LExists (Omega p t)
+(^) t p = (w : t) #? (Omega p t w)
 
 
 export 
 infix 9 ~?
 ||| The equality relation for existentials
 public export
-0 (~?) : LExists {ty} p -> LExists {ty} q -> Type
-(LExists.LEvidence n x) ~? (LExists.LEvidence m y) = (n === m)
+0 (~?) : Exists ty p -> Exists ty q -> Type
+(Evidence n x) ~? (Evidence m y) = (n === m)

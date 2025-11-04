@@ -7,5 +7,5 @@ import Data.Nat
 --import Data.Qty
 import Prelude.Types
 import Data.Grade.Util.LPair
-import Data.Grade.Util.LPair as LExists
+import Data.Grade.Util.LPair as Exists
 

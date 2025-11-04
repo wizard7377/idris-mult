@@ -24,7 +24,7 @@ namespace Omega
     public export
     weaken : (1 x : Omega p t w) -> (1 prf : Unify q p) => Omega q t w
     weaken x @{prf} {t} n = let 
-        1 (LSubset.LEvidence ex prf') = prf n
+        1 (Element ex prf') = prf n
         1 x' : Mu (Eval p ex) t w = x ex
         in rewrite prf' in x'
     ||| Convert an Omega p t w to Mu n t w, given a proof that p is solvable at n
@@ -35,7 +35,7 @@ namespace Omega
         (1 x : Omega p t w) -> 
         (1 prf : Solve p n) => 
         Mu n t w
-    reify x @{(LSubset.LEvidence n' prf)} {t} = rewrite sym prf in x n'
+    reify x @{(Element n' prf)} {t} = rewrite sym prf in x n'
     ||| Omega is unique up to equality 
     public export
     uniqueOmega : forall p, t, w. Unique (Omega p t w)

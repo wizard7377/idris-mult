@@ -70,7 +70,20 @@ public export
 Consumable t => Consumable (Clone {t} x) where
   consume (Cloned y prf) = consume y
 
-export 
+public export
+interface Copy a where
+  1 copy : {0 b : a -> a -> Type} -> (1 f : (1 x0 : a) -> (1 x1 : a) -> b x0 x1) -> (1 x : a) -> b x x
+  0 copy_eq : 
+    {b : a -> a -> Type} -> 
+    {f : (1 x0 : a) -> (1 x1 : a) -> b x0 x1} -> 
+    {x : a} -> 
+    (copy f x === f x x)
+
+public export
+Copy () where 
+    copy f () = f () ()
+    copy_eq {b} {f} {x=()} = Refl
+export
 infixr 0 =@ 
 public export
 (=@) : Type -> Type -> Type

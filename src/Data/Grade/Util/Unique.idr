@@ -1,5 +1,7 @@
 module Data.Grade.Util.Unique 
-import Data.Grade.Util.Relude
+import Builtin
+import Data.Linear.Notation
+import Data.Grade.Util.LIso
 ||| There is at most one `t`
 public export
 0 Unique' : Type -> Type  
@@ -8,9 +10,10 @@ Unique' t = {x, y : t} -> x === y
 ||| There is exactly one `t`, `∃! t`
 public export
 record Unique (t : Type) where 
+  [search t]
   constructor MkUnique 
   0 witness : t
-  0 uniq : Unique' t
+  1 uniq : Unique' t
 
 
 -- %defaulthint
@@ -72,10 +75,14 @@ use_unique @{MkUnique w u} = u
 -- %defaulthint
  
 public export
-unique : (0 _ : a) => (0 _ : Unique' a) => Unique a
+unique : (0 _ : a) => (1 _ : Unique' a) => Unique a
 unique @{w} @{u} = MkUnique w u
 -- %defaulthint
  
 public export
 0 uniqueFunUniqueResult : Unique (a -@ b) => {0 f, g : a -@ b} -> f x === g x
 uniqueFunUniqueResult @{MkUnique w u} {f} {g} = rewrite (u {x=f,y=g}) in Refl
+
+public export
+0 uniqueLIso : Unique t => Unique u => LIso t u
+uniqueLIso @{MkUnique wt ut} @{MkUnique wu uu} = ?h0

@@ -29,8 +29,6 @@ data Form : Type where
     FMin : (1 x : Form) -> (1 y : Form) -> Form
     ||| Take the maximum between the result of f and g
     FMax : (1 x : Form) -> (1 y : Form) -> Form
-    ||| A custom function from QNat to QNat
-    FFun : (1 f : ((1 x : QNat) -> QNat)) -> Form
     ||| Left projection of a pair
     FLeft : (1 f : Form) -> Form
     ||| Right projection of a pair

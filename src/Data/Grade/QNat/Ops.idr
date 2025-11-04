@@ -5,6 +5,7 @@ import Data.Linear.Notation
 import Data.Linear.LMaybe
 import Data.Linear.Interface
 import Data.Grade.QNat.Types
+import Data.Grade.Util.Unique
 %default total
 
 ||| Add two linear natural numbers 
@@ -110,13 +111,12 @@ public export
 0 lmul' : QNat -@ QNat -@ QNat
 lmul' Zero n = Zero
 lmul' (Succ m) n = ladd n (lmul' m n)
-
 ||| The proof that runtime and ghost multiplication are equivalent
 %unsafe
 %hint
 public export
 0 mulRep : Ops.lmul === Ops.lmul' 
-mulRep = believe_me ()
+mulRep = assert_total (believe_me ())
 
 
 ||| The ghost implementation of exponentiation for linear natural numbers

@@ -22,15 +22,13 @@ namespace Exp
     ||| Map a linear function over an Exp
     public export
     map : {0 r : t -@ u} -> (forall w. Omega p t w -@ Omega q u (r w)) -@ (t ^ p) -@ (u ^ q)
-    map f (LExists.LEvidence n x) = (LExists.LEvidence (r n) (f x))
+    map f (Evidence n x) = (Evidence (r n) (f x))
     public export
     box : Omega p t w -@ (t ^ p)
-    box {w} x = LExists.LEvidence w x
+    box {w} x = Evidence w x
     public export
     unbox : (1 x : t ^ p) -> Omega p t x.fst
-    unbox (LExists.LEvidence n x) = x
+    unbox (Evidence n x) = x
     public export
     gen : (!* t) -@ (t ^ p) 
-    public export
-    once : t -@ (t ^ 1)
 namespace Exp' 

@@ -18,8 +18,8 @@ export
 liftExistsFst :
   forall p, q.
   (f : forall a. p a -@ q a) ->
-  (1 x : LExists p) -> 
-  LExists q 
+  (1 x : Exists a p) -> 
+  Exists a q 
 liftExistsFst f e = map f e
 private 
 trans_hetro : forall a, b, c. (a ~=~ b) -> (b ~=~ c) -> (a ~=~ c)

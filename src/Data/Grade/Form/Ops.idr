@@ -12,6 +12,7 @@ import Data.Linear.LMaybe
 import Data.Grade.Util.LPair
 import Prelude
 import Control.Relation
+
 public export
 Eval' : (1 f : Form) -> (1 x : QNat) -> QNat
 Eval' FVar x = x
@@ -29,7 +30,6 @@ Eval' (FMin f g) x = let
 Eval' (FMax f g) x = let
     1 [x1, x2] = x.clone 2
   in lmax (Eval' f $ x1.val) (Eval' g $ x2.val)
-Eval' (FFun f) x = f x
 Eval' (FLeft f) x = let 
   (y # z) = pairing x 
   in seq z (Eval' f y)
@@ -37,7 +37,7 @@ Eval' (FRight f) x = let
   (y # z) = pairing x 
   in seq y (Eval' f z)
 public export
-0 Eval : (1 f : Form) -> QNat -@ QNat
+0 Eval : (1 f : Form) -> (1 x : QNat) -> QNat
 Eval FVar x = x
 Eval (FVal n) x = n
 Eval (FApp g f) x = Eval g (Eval f x)
@@ -45,7 +45,6 @@ Eval (FAdd f g) x = ladd (Eval f x) (Eval g x)
 Eval (FMul f g) x = lmul (Eval f x) (Eval g x)
 Eval (FMin f g) x = lmin (Eval f x) (Eval g x)
 Eval (FMax f g) x = lmax (Eval f x) (Eval g x)
-Eval (FFun f) x = f x
 Eval (FLeft f) x = let 
   (y # z) = pairing x 
   in Eval f y
@@ -56,20 +55,26 @@ Eval (FRight f) x = let
 export 
 0 eval_eq : {f : Form} -> {x : QNat} -> (Eval' f x === Eval f x)
 eval_eq {f=f} {x=x} = believe_me () -- TODO: Prove this
-||| No, this is not a haskell fmap, rather describes a *formula* map :|
-public export
-fmap : (1 p : QNat -@ QNat) -> (1 f : Form) -> Form
-fmap p f = FApp (FFun p) f
 
 ||| Solve the formula `f` for the value `n`, ∈
 public export
 0 Solve : (1 f : Form) -> (1 n : QNat) -> Type
-Solve f n = (LSubset (\x => (Eval f x === n)))
+Solve f n = (Subset QNat (\x => (Eval f x === n)))
 
 ||| That `f` is a less general form that `g`, that is, `g` maps to everything that `f` maps to
 public export
 0 Unify : Rel Form
-Unify f g = (1 x : QNat) -> (LSubset (\y => (Eval f x === Eval g y)))
+Unify f g = (1 x : QNat) -> (Subset QNat (\y => (Eval f x === Eval g y)))
+
+public export
+0 Equiv : Rel Form
+Equiv f g = (Unify f g, Unify g f)
+  
+%hint  
+public export
+equiv : Unify f g => Unify g f => Equiv f g
+equiv @{uf} @{ug} = (uf, ug)
+
 
 public export
 FSplit : (Form -@ Form -@ Form) -@ Form -@ Form -@ Form

@@ -24,3 +24,21 @@ lIso' f g = MkLIso' f g
 public export
 Reflexive Type LIso where
   reflexive = lIso (\x => x) (\y => y)  
+
+public export 
+interface Isomorphic a b where
+    constructor MkIsomorphic
+    1 foward : (1 x : a) -> b
+    1 backward : (1 y : b) -> a
+
+public export
+Reflexive Type Isomorphic where
+  reflexive = MkIsomorphic (\x => x) (\y => y) 
+
+public export
+Transitive Type Isomorphic where 
+    transitive p0 p1 = let 
+        foward' = \1 x => foward (foward @{p0} x)
+        backward' = \1 y => backward (backward @{p1} y)
+        in MkIsomorphic foward' backward' 
+
