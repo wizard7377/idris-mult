@@ -2,6 +2,8 @@ module Data.Grade.QNat.Ops
 import Builtin
 import Prelude
 import Data.Linear.Notation
+import Decidable.Equality
+import Data.Grade.Alg
 import Data.Linear.LMaybe
 import Data.Linear.Interface
 import Data.Grade.QNat.Types
@@ -180,3 +182,19 @@ pairing' n = assert_total $ case ldiv' n 2 of
 public export
 0 pairingRep : Ops.pairing === Ops.pairing'
 pairingRep = assert_total (believe_me ())
+public export
+Alg QNat where
+    toAlg n = mkLN (fromInteger n)
+    ALTE m n = LLTE m n
+    aeq m n = decEq m n
+    aadd = ladd
+    amul = lmul
+    amin = lmin
+    amax = lmax
+public export
+Pred QNat where 
+    NonZero n = Not (n = Zero)
+    nonZero Zero = No (\pf => pf Refl) 
+    nonZero (Succ k) = Yes neq_succ
+    pred (Succ k) = k
+    pred Zero @{prf} = absurd (prf Refl)

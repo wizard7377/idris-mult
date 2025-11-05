@@ -1,6 +1,7 @@
 module Data.Grade.QNat.Types 
 import Builtin
 import Prelude
+import Data.Grade.Alg
 import Data.Linear.Notation
 import Data.Linear.Interface
 
@@ -92,3 +93,4 @@ Eq QNat where
     Zero == Zero = True
     (Succ m) == (Succ n) = m == n
     _ == _ = False
+
