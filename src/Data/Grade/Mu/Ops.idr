@@ -12,84 +12,82 @@ import Control.Function.FunExt
 import Data.Grade.Util.Unique
 import Data.Grade.CNat
 %default total
-%auto_lazy off
+
 ----------------------------------------------------------------
 -- Basic
 ----------------------------------------------------------------
-
 public export 
-push : {0 n : CNat} -> Mu n (LPair t u) (w0 # w1) -@ (LPair (Mu n t w0) (Mu n u w1))
+push : Mu n (LPair t u) (w0 # w1) -@ (LPair (Mu n t w0) (Mu n u w1))
 push MZ = MZ # MZ
-push (MS (x # y) z) = assert_total $ let (xs # ys) = push z in (MS x xs # MS y ys)
+push (MS (x # y) z) = let (xs # ys) = push z in (MS x  xs # MS y  ys)
 public export 
-pull : {0 n : CNat} -> (LPair (Mu n t w0) (Mu n u w1)) -@ Mu n (LPair t u) (w0 # w1)
-pull {n=0} (x # MZ) = seq x MZ
-pull {n=0} (MZ # y) = seq y MZ
-pull {n=QSucc n} (MS {n=n} x xs # MS y ys) = MS (x # y) (pull (xs # ys))
+pull : (LPair (Mu n t w0) (Mu n u w1)) -@ Mu n (LPair t u) (w0 # w1)
+pull (MZ # MZ) = MZ
+pull (MS x xs # MS y ys) = MS (x # y)  (pull (xs # ys))
 public export 
 map : (f : t -@ u) -> (1 x : Mu n t w) -> Mu n u (f w)
 map f MZ = MZ
 map f (MS x xs) = MS (f x) (map {w=x} f xs)
 
+covering public export
+cpush : CMu n (LPair t u) (w0 # w1) -@ (LPair ((CMu n t w0)) ((CMu n u w1)))
+cpush CMZ = CMZ # CMZ
+cpush (CMS (x # y) z) = let (xs # ys) = cpush z in (CMS x xs # CMS y ys)
+covering public export
+cpull : {1 n : CNat} -> (LPair (CMu n t w0) (CMu n u w1)) -@ CMu n (LPair t u) (w0 # w1)
+cpull (CMZ # CMZ) = CMZ
+cpull {n=n} z = ?cpull_rhs
+public export 
+cmap : (f : t -@ u) -> (1 x : CMu n t w) -> CMu n u (f w)
+cmap f CMZ = CMZ
+cmap f (CMS x xs) = CMS (f x) (cmap f xs)
+
+
 private 
 applyPair : (LPair (t -@ u) (t)) -@ (u)
 applyPair (f # x) = f x
 public export 
-app : {0 n : CNat} -> (1 f : Mu n (t -@ u) wf) -> (1 x : Mu n t wx) -> Mu n u (wf wx)
-app f x = let 1 fx = pull (f # x) in map applyPair fx 
+app : (1 f : Mu n (t -@ u) wf) -> (1 x : Mu n t wx) -> Mu n u (wf wx)
+app MZ MZ = MZ 
+app (MS f fs) (MS x xs) = MS (f x) (app fs xs)
+
+public export
+capp : {0 n : CNat} -> (1 f : CMu n (t -@ u) wf) -> (1 x : CMu n t wx) -> CMu n u (wf wx) 
+capp CMZ CMZ = CMZ
+capp f x = ?capp_rhs
 
 ----------------------------------------------------------------
 -- Operations on Mu
 ----------------------------------------------------------------
-
-||| TODO: Make this actually work
 public export
-once : Mu (Fin 1) t w -@ t
-once x = assert_total $ case x of 
-    MS y MZ => y
+once : Mu 1 t w -@ t
+once (MS x MZ) = x
+
+public export
+conce : CMu 1 t w -@ t
+conce (CMS x CMZ) = x
+conce z = ?conce_rhs
 public export
 0 witness : Mu n t w -> t
 witness _ = w
-
 public export 
-dropMu : {0 n : CNat} -> (0 prf : n === 0) => Mu n t w -@ ()
-dropMu {n=0} MZ = ()
-dropMu {n=QSucc n'} (MS {n=n'} x xs) = ?hdm
+dropMu : (0 prf : n === 0) => Mu n t w -@ ()
+dropMu MZ = ()
 public export
 seqMu : (0 prf : n === 0) => Mu n t w -@ a -@ a
-seqMu m x = let () = dropMu @{prf} m in x
+seqMu MZ x = x
 public export
-combine : Mu m t w -@ Mu n t w -@ Mu (cadd m n) t w 
+combine : Mu m t w -@ Mu n t w -@ Mu (m + n) t w 
+combine MZ ys = ys
+combine (MS x xs) ys = MS x (combine xs ys)
 public export
-split : Finite m => Mu (cadd (m) n) t w -@ LPair (Mu (m) t w) (Mu n t w)
-
--- split {m=0, n=n} xs = MZ # ?h0
-{-
-split {m=Succ m'} x = let 
-  1 x' : (Mu (QSucc (cadd (Fin m') n)) t w) = (rewrite sym prf0 in x) -- let (ys # zs) = split {m=m'} xs in (MS x ys # zs)
-  1 (MS {n = ?h5} y ys) = x'
-  1 (z0 # z1) : LPair (Mu (Fin m') t w) (Mu n t w) = ?h2 -- split {m=m', n=n} ys
-  in ?h3
-  where 
-    0 prf0 : (cadd (QSucc (Fin m')) n === QSucc (cadd (Fin m') n)) 
-    prf0 = caddOutLeft
--}
+split : {1 m : QNat} -> Mu (m + n) t w -@ LPair (Mu m t w) (Mu n t w)
+split {m=Zero} xs = MZ # xs
+split {m=Succ m'} (MS x xs) = let (ys # zs) = split {m=m'} xs in (MS x ys # zs)
 public export
-join : {1 m : CNat} -> (0 prf : Finite m) => Mu m (Mu n t w) x -@ Mu (m * n) t w
-joinFin : {1 m : QNat} -> Mu (Fin m) (Mu n t w) w' -@ Mu ((Fin m) * n) t w
-joinFin {m=Zero} x = let 
-  r : Mu (Fin 0) t w = MZ
-  0 prf0 : ((seq n (Fin 0)) = (Fin 0)) = seqEq
-  r' : Mu (seq n (Fin 0)) t w = rewrite prf0 in r
-  in seq x r'
-joinFin {m=Succ m'} x = let 
-  x' : Mu (QSucc (Fin m')) (Mu n t w) ? = x
-  (MS y ys) = x'
-  in ?jf
-{-
-join MZ = rewrite cmulZeroLeft {y=n} in MZ
-join {m'} {n=n} (MS x xs) = rewrite prf0 in combine x (the (Mu (m' * n) t w) (join xs))
+join : Mu m (Mu n t w) v -@ Mu (m * n) t w
+join MZ = rewrite lmul_zero_left {k=n} in MZ
+join {m=Succ m'} {n=n} (MS x xs) = rewrite prf0 in combine x (the (Mu (m' * n) t w) (join xs))
   where 
     0 prf0 : (lmul (Succ m') n = n + lmul m' n)
     prf0 = rewrite mulRep in Refl
--}

@@ -14,24 +14,25 @@ import Control.Relation
 ||| A formula for an linear natural number, with exactly one variable
 ||| Can easily be evaluated with 'feval'
 public export
-data Form : (n : QNat) -> Type where 
+data Form : Type where 
     ||| The argument variable
-    FVar : (1 n : QNat) -> Form (Succ n)
-    ||| Value obtained by splitting the argument at n
-    FSplit : Form a -@ Form b -@ Form (a + b)
+    FVar : Form 
     ||| A constant value
-    FVal : (1 n : QNat) -> Form 0
+    FVal : (1 n : QNat) -> Form 
     ||| Map one formula through another one, ie, g(f(x))
-    FApp : (1 g : Form a) -> (1 f : Form b) -> Form (lmax a b)
+    FApp : (1 g : Form) -> (1 f : Form) -> Form
     ||| Add the result of f with the result of g
-    FAdd : (1 x : Form a) -> (1 y : Form b) -> Form (lmax a b)
+    FAdd : (1 x : Form) -> (1 y : Form) -> Form
     ||| Multiply the result of f with the result of g
-    FMul : (1 x : Form a) -> (1 y : Form b) -> Form (lmax a b)
+    FMul : (1 x : Form) -> (1 y : Form) -> Form
     ||| Take the minimum between the result of f and g
-    FMin : (1 x : Form a) -> (1 y : Form b) -> Form (lmax a b)
+    FMin : (1 x : Form) -> (1 y : Form) -> Form
     ||| Take the maximum between the result of f and g
-    FMax : (1 x : Form a) -> (1 y : Form b) -> Form (lmax a b)
-    
+    FMax : (1 x : Form) -> (1 y : Form) -> Form
+    ||| Left projection of a pair
+    FLeft : (1 f : Form) -> Form
+    ||| Right projection of a pair
+    FRight : (1 f : Form) -> Form
   
 export 
 infixl 4 #+#
@@ -43,31 +44,36 @@ export
 prefix 9 ###
 
 public export
-(#$#) : (1 f : Form a) -> (1 x : Form b) -> Form (lmax a b)
+(#$#) : (1 f : Form) -> (1 x : Form) -> Form
 f #$# x = FApp f x
 public export
-(#+#) : (1 f : Form a) -> (1 g : Form b) -> Form (lmax a b)
+(#+#) : (1 f : Form) -> (1 g : Form) -> Form
 f #+# g = FAdd f g
 public export
-(#*#) : (1 f : Form a) -> (1 g : Form b) -> Form (lmax a b)
+(#*#) : (1 f : Form) -> (1 g : Form) -> Form
 f #*# g = FMul f g
 public export
-(###) : QNat -@ Form 0
+(###) : QNat -@ Form
 (###) n = FVal n
 
 public export
-AForm : Type 
-AForm = Exists QNat Form
+Num Form where 
+    x + y = (x #+# y)
+    x * y = (x #*# y)
+    fromInteger n = FVal (fromInteger n)
 public export
-Num AForm where 
-    (Evidence w x) + (Evidence v y) = Evidence (lmax w v) (x #+# y)
-    (Evidence w x) * (Evidence v y) = Evidence (lmax w v) (x #*# y)
-    fromInteger n = exists $ FVal (fromInteger n)
+Semigroup Form where 
+    f <+> x = FApp f x
 public export
-Semigroup AForm where 
-    (Evidence w f) <+> (Evidence v x) = Evidence (lmax w v) (f #$# x)
+Monoid Form where 
+    neutral = FVar
 public export
-FRange : (1 lo : QNat) -> (1 hi : QNat) -> AForm
-FRange lo hi = exists $ FMax (FMin (FVar 0) (FVal hi)) (FVal lo)
+FRange : (1 lo : QNat) -> (1 hi : QNat) -> Form
+FRange lo hi = FMax (FMin (FVar) (FVal hi)) (FVal lo)
 
   
+export 
+infixl 0 <.>
+public export
+(<.>) : (1 f : Form) -> (1 g : Form -@ Form) -> Form
+f <.> g = FApp f (g FVar)

@@ -39,7 +39,8 @@ cmin Fix y = y
 cmin x Fix = x
 cmin (Fin m) (Fin n) = Fin (lmin m n)
 
-total export
+%noinline
+total public export
 QSucc : (1 n : CNat) -> CNat
 QSucc (Fin n) = Fin (Succ n)
 QSucc n = n

@@ -26,7 +26,7 @@ trans_hetro : forall a, b, c. (a ~=~ b) -> (b ~=~ c) -> (a ~=~ c)
 trans_hetro Refl Refl = Refl
 
 private
-0 uniqueEq : {n : CNat} -> {t : Type} -> {w : t} -> {a : Mu n t w} -> {b : Mu n t w} -> (a === b)
+0 uniqueEq : {n : QNat} -> {t : Type} -> {w : t} -> {a : Mu n t w} -> {b : Mu n t w} -> (a === b)
 uniqueEq {n=Zero} {w=w} {a=MZ,b=MZ} = Refl 
 uniqueEq {n=(Succ n')} {w=w} {a=MS w xs, b=MS w ys} = rewrite__impl 
     (\zs => MS w xs === MS w zs)

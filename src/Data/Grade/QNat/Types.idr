@@ -93,4 +93,3 @@ Eq QNat where
     Zero == Zero = True
     (Succ m) == (Succ n) = m == n
     _ == _ = False
-
