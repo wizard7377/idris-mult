@@ -9,7 +9,9 @@ import Prelude.Ops
 import Data.Grade.Util.Linear
 import Control.Function.FunExt
 import Data.Grade.Util.Unique
-
+import Data.Grade.Alg
+import Data.Grade.CNat
+%auto_lazy off
 %default total
 ||| The Core Mu type, the core construction of this system 
 ||| Intuitively, `Mu n t w` represents `n` copies of the value `w` of type `t`
@@ -22,21 +24,21 @@ import Data.Grade.Util.Unique
 ||| @ t The underlying type
 ||| @ w The witness for the type
 public export 
-data Mu : (n : QNat) -> (t : Type) -> (w : t) -> Type where 
+data Mu : (n : CNat) -> (t : Type) -> (w : t) -> Type where 
     ||| No more copies available
     MZ : 
         {0 t : Type} ->
         {0 w : t} ->
-        Mu Zero t w
+        Mu 0 t w
     ||| Give one more copy
     ||| @ w The value being copied
     ||| @ xs The remaining copies
     MS : 
         {0 t : Type} -> 
-        {0 n : QNat} -> 
+        {0 n : CNat} -> 
         (1 w : t) -> 
-        (1 xs : (Mu n t w)) -> 
-        Mu (Succ n) t w
+        (1 xs : Inf (Mu n t w)) -> 
+        Mu (QSucc n) t w
 public export
 0 witness : Mu n t w -> t
 witness _ = w
@@ -46,33 +48,68 @@ public export
  
 %inline %tcinline 
 public export
-mkMu : forall t. (1 x : t) -> Mu LN1 t x
-mkMu x = MS x MZ
+mkMu : forall t. (1 x : t) -> Mu 1 t x
+mkMu x = (MS x MZ)
 %inline %tcinline
 public export
-unMu : forall t. {0 x : t} -> (1 m : Mu LN1 t x) -> t
-unMu (MS x MZ) = x
-
+unMu : forall t. {0 x : t} -> (1 m : Mu 1 t x) -> t
+unMu x = assert_total $ case x of 
+    MS y MZ => y
 public export
-genMu : forall t. (1 src : (!* t)) -> {1 n : QNat} -> (Mu n t {w=unrestricted src})
-genMu {t=t} src {n=Zero} = seq src MZ
-genMu {t=t} (MkBang src) {n=(Succ n)} = MS src (genMu {t=t} (MkBang src) {n=n})
+genMu : forall t. (1 src : (!* t)) -> {1 n : CNat} -> (Mu n t {w=unrestricted src})
+genMu {t=t} src {n=0} = seq src MZ
+genMu {t=t} src {n=n} = ?h5
 public export
-empty : {auto 0 w : t} -> Mu Zero t w
+empty : {auto 0 w : t} -> Mu 0 t w
 empty {w} = MZ
-public export 
-0 Example : forall t. (n : QNat) -> (w : t) -> Mu n t w
-Example Zero w = MZ
-Example (Succ n) w = MS w (Example n w)
 public export
-0 Repeat : {n : QNat} -> (x : t) -> Mu n t x
-Repeat {n=Zero} x = MZ
-Repeat {n=Succ n} x = MS x (Repeat {n=n} x)
+0 Repeat : (x : t) -> Mu Fix t x
+Repeat x = (MS x (Delay (Repeat x)))
+public export 
+0 Example : forall t. (n : CNat) -> (w : t) -> Mu n t w
+Example 0 w = MZ
+Example Fix w = Repeat w
+Example n w with (nonZero n)
+    Example n w | Yes prf = ?hprf 
+    Example n w | No contra = ?hcontra
+
 
 public export
-Consumable (Mu Zero t w) where
-    consume MZ = ()
+Consumable (Mu 0 t w) where
+    consume x = assert_total $ case x of 
+        MZ => ()
   
 export 
-consumeZero : Consumable (Mu Zero t w) => (0 prf : n === Zero) -> (1 m : Mu n t w) -> ()
+consumeZero : Consumable (Mu 0 t w) => (0 prf : n === 0) -> (1 m : Mu n t w) -> ()
 consumeZero Refl m = consume m
+
+public export
+total 
+coIndMu : 
+    {0 res : {n0 : CNat} -> Inf (Mu n0 t w) -> Type} ->
+    (base : ((1 x : Inf (Mu 0 t w)) -> res x)) -> 
+    (step : (1 n1 : CNat) -> (1 prev : (1 x : Inf (Mu n1 t w)) -> res x) -> (1 y : (Inf (Mu (QSucc n1)t w))) -> res y) ->
+    (1 n : CNat) ->
+    (1 m : Inf (Mu n t w)) ->
+    res m
+coIndMu {res} base step 0 m = base m
+coIndMu {res} base step (Fin (Succ n1)) m = assert_total $ let 
+    r1 : (
+        (1 n2 : QNat) -> 
+        (1 n3 : QNat) -> 
+        (0 prf : n2 === n3) => 
+        ((1 y : Inf (Mu (QSucc (Fin n2)) t w)) -> 
+        res y)) 
+    r1 n2 n3 @{prf} = (
+      step 
+        (Fin n2) 
+        (rewrite prf in (coIndMu 
+          {res=res} 
+          base 
+          step 
+          (Fin n3)
+        )))
+    1 r0 : ((1 m' : Inf (Mu (Fin (Succ n1)) t w)) -> res m') := copyWithEq r1 n1
+    in r0 m
+coIndMu {res} base step Fix m = assert_total $ step Fix (coIndMu {res=res} base step Fix) m
+    

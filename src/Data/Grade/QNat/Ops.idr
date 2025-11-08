@@ -27,7 +27,7 @@ public export
 lsub : (1 k0 : QNat) -> (1 k1 : QNat) -> (0 prf : LLTE k1 k0) => QNat
 lsub k0 Zero @{prf} = k0
 lsub (Succ k0) (Succ k1) @{(LLTE_S prf)} = lsub k0 k1 @{prf}
-public export
+private 
 Num QNat where 
     fromInteger n = mkLN (fromInteger n)
     a + b = ladd a b
@@ -184,17 +184,29 @@ public export
 pairingRep = assert_total (believe_me ())
 public export
 Alg QNat where
+    (=?) = (===)
     toAlg n = mkLN (fromInteger n)
     ALTE m n = LLTE m n
     aeq m n = decEq m n
     aadd = ladd
     amul = lmul
+public export 
+Trail QNat where
+    
     amin = lmin
     amax = lmax
+    aleft n = ?hpl
+    aright n = ?hpr
+
 public export
-Pred QNat where 
+Count QNat where 
     NonZero n = Not (n = Zero)
     nonZero Zero = No (\pf => pf Refl) 
     nonZero (Succ k) = Yes neq_succ
-    pred (Succ k) = k
-    pred Zero @{prf} = absurd (prf Refl)
+    APred (Succ k) = k
+    APred Zero @{prf} = ?h5
+    ASucc = Succ
+ 
+public export
+Lawful QNat where
+    

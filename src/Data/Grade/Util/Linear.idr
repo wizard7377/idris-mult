@@ -72,7 +72,17 @@ Consumable t => Consumable (Clone {t} x) where
 
 public export
 interface Copy a where
-  1 copy : {0 b : a -> a -> Type} -> (1 f : (1 x0 : a) -> (1 x1 : a) -> b x0 x1) -> (1 x : a) -> b x x
+  1 copy : 
+    {0 b : a -> a -> Type} -> 
+    (1 f : (1 x0 : a) -> (1 x1 : a) -> b x0 x1) -> 
+    (1 x : a) -> 
+    b x x
+  1 copyWithEq : 
+    {0 b : a -> a -> Type} -> 
+    (1 f : (1 x0 : a) -> (1 x1 : a) -> (0 prf : x0 === x1) => b x0 x1) -> 
+    (1 x : a) -> 
+    b x x
+  copyWithEq {b} {f} {x} = copy f x
   0 copy_eq : 
     {b : a -> a -> Type} -> 
     {f : (1 x0 : a) -> (1 x1 : a) -> b x0 x1} -> 
@@ -88,4 +98,8 @@ infixr 0 =@
 public export
 (=@) : Type -> Type -> Type
 c =@ t = {auto 1 prf : c} -> t 
- 
+
+%hint
+public export
+seqEq : {0 a : Type} -> {0 b : Type} -> Consumable a => {0 x : a} -> {0 y : b} -> (seq x y = y)
+seqEq = believe_me () 

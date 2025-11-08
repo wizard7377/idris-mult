@@ -12,3 +12,4 @@ import public Data.Linear.LEither
 import public Prelude.Num
 import public Prelude.Ops
 import public Prelude.Types
+import public Prelude.Uninhabited

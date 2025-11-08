@@ -16,6 +16,9 @@ record Exists (t : Type) (p : (t -> Type)) where
     ||| A value of `f x`
     1 snd' : p fst'
 
+public export
+exists : {0 t : Type} -> {0 p : (t -> Type)} -> {0 x : t} -> (1 y : p x) -> Exists t p
+exists {t} {p} {x} y = Evidence x y
 ||| A linear existential type $∃ (x : ty). f x$
 ||| @ ty in the existential
 ||| @ f the predicate that must be satisfied, and the type of the value 

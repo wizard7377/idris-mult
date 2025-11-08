@@ -14,7 +14,7 @@ import Prelude
 import Control.Relation
 
 public export
-Eval' : (1 f : Form) -> (1 x : QNat) -> QNat
+Eval' : (1 f : Form n) -> (1 x : LVect n QNat) -> QNat
 Eval' FVar x = x
 Eval' (FVal n) x = seq x n
 Eval' (FApp g f) x = Eval' g (Eval' f x)
