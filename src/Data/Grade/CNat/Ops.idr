@@ -39,10 +39,26 @@ cmin Fix y = y
 cmin x Fix = x
 cmin (Fin m) (Fin n) = Fin (lmin m n)
 
-public export
-QSucc : CNat -@ CNat
+total export
+QSucc : (1 n : CNat) -> CNat
 QSucc (Fin n) = Fin (Succ n)
-QSucc Fix = Fix 
+QSucc n = n
+%hint
+export
+0 qSuccFin : {1 n : QNat} -> (QSucc (Fin n) === Fin (Succ n))
+qSuccFin {n=n} = Refl
+%hint 
+export 
+0 finQSucc : {n : QNat} -> (Fin (Succ n) === QSucc (Fin n))
+finQSucc {n} = Refl
+%hint 
+export 
+0 fixQSucc : (Fix === QSucc Fix)
+fixQSucc = Refl
+%hint
+export 
+0 qSuccFix : (QSucc Fix === Fix)
+qSuccFix = Refl
 public export
 Alg CNat where
     toAlg n = Fin (mkLN (fromInteger n))
@@ -68,16 +84,6 @@ Count CNat where
     APred Fix = Fix
     ASucc = QSucc
     
-
-%hint
-public export
-0 finQSucc : {n : QNat} -> (Fin (Succ n) === QSucc (Fin n))
-finQSucc {n} = Refl
-
-%hint
-public export
-0 fixQSucc : (Fix === QSucc Fix)
-fixQSucc = Refl
 
 public export
 0 qSuccIsSucc : forall n. (QSucc (Fin n) === Fin (Succ n))

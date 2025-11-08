@@ -16,6 +16,7 @@ import Data.Grade.CNat
 ----------------------------------------------------------------
 -- Basic
 ----------------------------------------------------------------
+
 public export 
 push : {0 n : CNat} -> Mu n (LPair t u) (w0 # w1) -@ (LPair (Mu n t w0) (Mu n u w1))
 push MZ = MZ # MZ
@@ -75,11 +76,16 @@ split {m=Succ m'} x = let
 -}
 public export
 join : {1 m : CNat} -> (0 prf : Finite m) => Mu m (Mu n t w) x -@ Mu (m * n) t w
-joinFin : {1 m : QNat} -> Mu (Fin m) (Mu n t w) x -@ Mu ((Fin m) * n) t w
-joinFin {m=Zero} MZ = let 
-  res : Mu 0 t w = MZ
-  in rewrite cmulZeroLeft {y=n} in res
-joinFin {m=Succ m'} x' = ?jf
+joinFin : {1 m : QNat} -> Mu (Fin m) (Mu n t w) w' -@ Mu ((Fin m) * n) t w
+joinFin {m=Zero} x = let 
+  r : Mu (Fin 0) t w = MZ
+  0 prf0 : ((seq n (Fin 0)) = (Fin 0)) = seqEq
+  r' : Mu (seq n (Fin 0)) t w = rewrite prf0 in r
+  in seq x r'
+joinFin {m=Succ m'} x = let 
+  x' : Mu (QSucc (Fin m')) (Mu n t w) ? = x
+  (MS y ys) = x'
+  in ?jf
 {-
 join MZ = rewrite cmulZeroLeft {y=n} in MZ
 join {m'} {n=n} (MS x xs) = rewrite prf0 in combine x (the (Mu (m' * n) t w) (join xs))

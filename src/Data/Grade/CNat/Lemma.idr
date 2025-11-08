@@ -2,6 +2,10 @@ module Data.Grade.CNat.Lemma
 import public Data.Grade.CNat.Types 
 import public Data.Grade.CNat.Ops
 import Relude
+  
+public export 
+0 succIsSucc : {1 n : QNat} -> (QSucc (Fin n) === Fin (Succ n))
+succIsSucc {n} = ?css
 public export
 0 caddComm : {1 x, y : CNat} -> (cadd x y === cadd y x)
 caddComm {x=Fix} {y=Fix} = Refl
@@ -12,7 +16,7 @@ caddComm {x=(Fin m)} {y=(Fin n)} = ?cac
 
 public export
 0 caddOutLeft : cadd (QSucc x) y === QSucc (cadd x y)
-caddOutLeft {x=Fix} {y=Fix} = Refl
+caddOutLeft {x=Fix} {y=Fix} = ?cal3
 caddOutLeft {x=Fix} {y=(Fin n)} = ?cal0
 caddOutLeft {x=(Fin m)} {y=Fix} = ?cal1
 caddOutLeft {x=(Fin m)} {y=(Fin n)} = ?cal2
@@ -38,6 +42,8 @@ public export
 public export
 0 cmulZeroRight : cmul x (Fin 0) === Fin 0
 
+public export
+0 cmulLeftOne : cmul (Fin 1) y === y
 public export
 0 cmulSuccLeftAntiDistrib : cmul (QSucc x) y === cadd (cmul x y) y
 
