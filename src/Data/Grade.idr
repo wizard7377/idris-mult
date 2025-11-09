@@ -6,8 +6,8 @@
 ||| Exponential types: Types which abstract over the witness
 module Data.Grade
 
-import public Data.Grade.Mu 
-import public Data.Grade.Omega
-import public Data.Grade.Exp
-import public Data.Grade.QNat
-import public Data.Grade.Form 
+import public Data.Grade.Mu as Mu
+import public Data.Grade.Omega as Omega
+import public Data.Grade.Exp as Exp
+import public Data.Grade.QNat as QNat
+import public Data.Grade.Form as Form

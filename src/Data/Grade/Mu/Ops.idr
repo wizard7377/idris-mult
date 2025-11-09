@@ -10,7 +10,7 @@ import Data.Grade.Mu.Types
 import Data.Grade.Util.Linear
 import Control.Function.FunExt
 import Data.Grade.Util.Unique
-
+import Data.Grade.CNat
 %default total
 
 ----------------------------------------------------------------
@@ -29,6 +29,20 @@ map : (f : t -@ u) -> (1 x : Mu n t w) -> Mu n u (f w)
 map f MZ = MZ
 map f (MS x xs) = MS (f x) (map {w=x} f xs)
 
+covering public export
+cpush : CMu n (LPair t u) (w0 # w1) -@ (LPair ((CMu n t w0)) ((CMu n u w1)))
+cpush CMZ = CMZ # CMZ
+cpush (CMS (x # y) z) = let (xs # ys) = cpush z in (CMS x xs # CMS y ys)
+covering public export
+cpull : {1 n : CNat} -> (LPair (CMu n t w0) (CMu n u w1)) -@ CMu n (LPair t u) (w0 # w1)
+cpull (CMZ # CMZ) = CMZ
+cpull {n=n} z = ?cpull_rhs
+public export 
+cmap : (f : t -@ u) -> (1 x : CMu n t w) -> CMu n u (f w)
+cmap f CMZ = CMZ
+cmap f (CMS x xs) = CMS (f x) (cmap f xs)
+
+
 private 
 applyPair : (LPair (t -@ u) (t)) -@ (u)
 applyPair (f # x) = f x
@@ -36,7 +50,11 @@ public export
 app : (1 f : Mu n (t -@ u) wf) -> (1 x : Mu n t wx) -> Mu n u (wf wx)
 app MZ MZ = MZ 
 app (MS f fs) (MS x xs) = MS (f x) (app fs xs)
-  
+
+public export
+capp : {0 n : CNat} -> (1 f : CMu n (t -@ u) wf) -> (1 x : CMu n t wx) -> CMu n u (wf wx) 
+capp CMZ CMZ = CMZ
+capp f x = ?capp_rhs
 
 ----------------------------------------------------------------
 -- Operations on Mu
@@ -46,9 +64,12 @@ once : Mu 1 t w -@ t
 once (MS x MZ) = x
 
 public export
+conce : CMu 1 t w -@ t
+conce (CMS x CMZ) = x
+conce z = ?conce_rhs
+public export
 0 witness : Mu n t w -> t
 witness _ = w
-
 public export 
 dropMu : (0 prf : n === 0) => Mu n t w -@ ()
 dropMu MZ = ()

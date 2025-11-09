@@ -1,6 +1,7 @@
 module Data.Grade.QNat.Types 
 import Builtin
 import Prelude
+import public Data.Grade.Alg
 import Data.Linear.Notation
 import Data.Linear.Interface
 

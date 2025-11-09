@@ -9,7 +9,7 @@ import Prelude.Ops
 import Data.Grade.Util.Linear
 import Control.Function.FunExt
 import Data.Grade.Util.Unique
-
+import Data.Grade.CNat
 %default total
 ||| The Core Mu type, the core construction of this system 
 ||| Intuitively, `Mu n t w` represents `n` copies of the value `w` of type `t`
@@ -37,6 +37,43 @@ data Mu : (n : QNat) -> (t : Type) -> (w : t) -> Type where
         (1 w : t) -> 
         (1 xs : (Mu n t w)) -> 
         Mu (Succ n) t w
+
+||| The Core Mu type, the core construction of this system 
+||| Intuitively, `Mu n t w` represents `n` copies of the value `w` of type `t`
+||| Ie, it is the equivalent of the *judgement* `x : w [n]` as an Idris type
+||| 
+||| This is very much like the `Copies` datatype, per as a matter of fact if `t` were implicit (and we used `Nat` instead of `QNat`) they would be the same type
+||| The choice for both of these had to do with their intended use 
+|||
+||| @ n The number of copies available
+||| @ t The underlying type
+||| @ w The witness for the type
+public export 
+data CMu : (n : CNat) -> (t : Type) -> (w : t) -> Type where 
+    ||| No more copies available
+    CMZ : 
+        {0 t : Type} ->
+        {0 w : t} ->
+        CMu 0 t w
+    ||| Give one more copy
+    ||| @ w The value being copied
+    ||| @ xs The remaining copies
+    CMS : 
+        {0 t : Type} -> 
+        {0 n : CNat} -> 
+        (1 w : t) -> 
+        (1 xs : Inf (CMu n t w)) -> 
+        CMu (QSucc n) t w
+  
+public export
+view : {1 n : QNat} -> CMu (Fin n) t w -> Mu n t w
+view {n=Zero} CMZ = MZ
+view _ = ?view_rhs
+  
+public export
+review : {1 n : QNat} -> Mu n t w -> CMu (Fin n) t w
+review {n=Zero} MZ = CMZ
+review {n=Succ n} (MS x xs) = rewrite finQSucc {n=n} in CMS x (review {n=n} xs)
 public export
 0 witness : Mu n t w -> t
 witness _ = w

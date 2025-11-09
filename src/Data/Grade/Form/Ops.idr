@@ -1,3 +1,4 @@
+
 module Data.Grade.Form.Ops
 import Data.Grade.Form.Types
 import Data.Linear.Notation

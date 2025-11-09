@@ -2,6 +2,8 @@ module Data.Grade.QNat.Ops
 import Builtin
 import Prelude
 import Data.Linear.Notation
+import Decidable.Equality
+import Data.Grade.Alg
 import Data.Linear.LMaybe
 import Data.Linear.Interface
 import Data.Grade.QNat.Types
@@ -25,7 +27,7 @@ public export
 lsub : (1 k0 : QNat) -> (1 k1 : QNat) -> (0 prf : LLTE k1 k0) => QNat
 lsub k0 Zero @{prf} = k0
 lsub (Succ k0) (Succ k1) @{(LLTE_S prf)} = lsub k0 k1 @{prf}
-public export
+private 
 Num QNat where 
     fromInteger n = mkLN (fromInteger n)
     a + b = ladd a b
@@ -180,3 +182,31 @@ pairing' n = assert_total $ case ldiv' n 2 of
 public export
 0 pairingRep : Ops.pairing === Ops.pairing'
 pairingRep = assert_total (believe_me ())
+public export
+Alg QNat where
+    (=?) = (===)
+    toAlg n = mkLN (fromInteger n)
+    ALTE m n = LLTE m n
+    aeq m n = decEq m n
+    aadd = ladd
+    amul = lmul
+public export 
+Trail QNat where
+    
+    amin = lmin
+    amax = lmax
+    aleft n = ?hpl
+    aright n = ?hpr
+
+public export
+Count QNat where 
+    NonZero n = Not (n = Zero)
+    nonZero Zero = No (\pf => pf Refl) 
+    nonZero (Succ k) = Yes neq_succ
+    APred (Succ k) = k
+    APred Zero @{prf} = ?h5
+    ASucc = Succ
+ 
+public export
+Lawful QNat where
+    
