@@ -31,4 +31,3 @@ namespace Exp
     unbox (Evidence n x) = x
     public export
     gen : (!* t) -@ (t ^ p) 
-namespace Exp' 

@@ -17,7 +17,7 @@ record LIso (a : Type) (b : Type) where
 
 public export
 lIso : (f : (1 x : a) -> b) -> (g : (1 y : b) -> a) -> (forall x. (f (g x)) === x) => (forall y. (g (f y)) === y) => LIso a b
-lIso f g @{iL} @{iR} = MkLIso (MkLIso' f g) ?h0 ?h1
+lIso f g @{iL} @{iR} = MkLIso (MkLIso' f g) iR iL
 public export 
 lIso' : (f : (1 x : a) -> b) -> (g : (1 y : b) -> a) -> LIso' a b
 lIso' f g = MkLIso' f g

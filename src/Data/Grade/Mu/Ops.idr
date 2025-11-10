@@ -36,7 +36,7 @@ cpush (CMS (x # y) z) = let (xs # ys) = cpush z in (CMS x xs # CMS y ys)
 covering public export
 cpull : {1 n : CNat} -> (LPair (CMu n t w0) (CMu n u w1)) -@ CMu n (LPair t u) (w0 # w1)
 cpull (CMZ # CMZ) = CMZ
-cpull {n=n} z = ?cpull_rhs
+cpull {n=n} z = ?zz2
 public export 
 cmap : (f : t -@ u) -> (1 x : CMu n t w) -> CMu n u (f w)
 cmap f CMZ = CMZ
@@ -54,7 +54,7 @@ app (MS f fs) (MS x xs) = MS (f x) (app fs xs)
 public export
 capp : {0 n : CNat} -> (1 f : CMu n (t -@ u) wf) -> (1 x : CMu n t wx) -> CMu n u (wf wx) 
 capp CMZ CMZ = CMZ
-capp f x = ?capp_rhs
+capp f x = ?zz3
 
 ----------------------------------------------------------------
 -- Operations on Mu
@@ -65,8 +65,9 @@ once (MS x MZ) = x
 
 public export
 conce : CMu 1 t w -@ t
-conce (CMS x CMZ) = x
-conce z = ?conce_rhs
+conce x = case x of 
+  CMS y CMZ => y
+  _ => ?zz1
 public export
 0 witness : Mu n t w -> t
 witness _ = w

@@ -1,6 +1,7 @@
 module Data.Grade.Form.Types
 import Data.Linear.Notation
 import Data.Grade.Util.Linear
+import Data.Nat
 import Data.Linear.Interface
 import Data.Grade.QNat
 import Prelude.Num
@@ -14,25 +15,19 @@ import Control.Relation
 ||| A formula for an linear natural number, with exactly one variable
 ||| Can easily be evaluated with 'feval'
 public export
-data Form : Type where 
+data Form' : Nat -> Type where 
     ||| The argument variable
-    FVar : Form 
+    FVar : Form' 1
     ||| A constant value
-    FVal : (1 n : QNat) -> Form 
-    ||| Map one formula through another one, ie, g(f(x))
-    FApp : (1 g : Form) -> (1 f : Form) -> Form
+    FVal : (1 n : QNat) -> Form' 0
     ||| Add the result of f with the result of g
-    FAdd : (1 x : Form) -> (1 y : Form) -> Form
+    FAdd : {1 a : Nat} -> (1 x : Form' a) -> (1 y : Form' b) -> Form' (a + b)
     ||| Multiply the result of f with the result of g
-    FMul : (1 x : Form) -> (1 y : Form) -> Form
+    FMul : {1 a : Nat} -> (1 x : Form' a) -> (1 y : Form' b) -> Form' (a + b)
     ||| Take the minimum between the result of f and g
-    FMin : (1 x : Form) -> (1 y : Form) -> Form
+    FMin : {1 a : Nat} -> (1 x : Form' a) -> (1 y : Form' b) -> Form' (a + b)
     ||| Take the maximum between the result of f and g
-    FMax : (1 x : Form) -> (1 y : Form) -> Form
-    ||| Left projection of a pair
-    FLeft : (1 f : Form) -> Form
-    ||| Right projection of a pair
-    FRight : (1 f : Form) -> Form
+    FMax : {1 a : Nat} -> (1 x : Form' a) -> (1 y : Form' b) -> Form' (a + b)
   
 export 
 infixl 4 #+#
@@ -44,36 +39,29 @@ export
 prefix 9 ###
 
 public export
-(#$#) : (1 f : Form) -> (1 x : Form) -> Form
-f #$# x = FApp f x
-public export
-(#+#) : (1 f : Form) -> (1 g : Form) -> Form
+(#+#) : {1 a : Nat} -> (1 f : Form' a) -> (1 g : Form' b) -> Form' (a + b)
 f #+# g = FAdd f g
 public export
-(#*#) : (1 f : Form) -> (1 g : Form) -> Form
+(#*#) : {1 a : Nat} -> (1 f : Form' a) -> (1 g : Form' b) -> Form' (a + b)
 f #*# g = FMul f g
 public export
-(###) : QNat -@ Form
+(###) : QNat -@ Form' 0
 (###) n = FVal n
-
+public export
+record Form where
+    constructor Over 
+    1 vars : Nat
+    1 form : Form' vars
+  
+public export
+over : {1 n : Nat} -> Form' n -> Form
+over {n} f = Over n f
 public export
 Num Form where 
-    x + y = (x #+# y)
-    x * y = (x #*# y)
-    fromInteger n = FVal (fromInteger n)
+    fromInteger n = Over 0 (FVal (fromInteger n))
+    (Over n f) + (Over m g) = Over (n + m) (f #+# g)
+    (Over n f) * (Over m g) = Over (n + m) (f #*# g)
 public export
-Semigroup Form where 
-    f <+> x = FApp f x
-public export
-Monoid Form where 
-    neutral = FVar
-public export
-FRange : (1 lo : QNat) -> (1 hi : QNat) -> Form
-FRange lo hi = FMax (FMin (FVar) (FVal hi)) (FVal lo)
-
+FRange : (1 lo : QNat) -> (1 hi : QNat) -> Form' n -> Form' n
+FRange lo hi f = FMax (FVal lo) (FMin (FVal hi) f) 
   
-export 
-infixl 0 <.>
-public export
-(<.>) : (1 f : Form) -> (1 g : Form -@ Form) -> Form
-f <.> g = FApp f (g FVar)

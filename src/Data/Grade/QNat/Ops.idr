@@ -190,23 +190,13 @@ Alg QNat where
     aeq m n = decEq m n
     aadd = ladd
     amul = lmul
-public export 
-Trail QNat where
-    
-    amin = lmin
-    amax = lmax
-    aleft n = ?hpl
-    aright n = ?hpr
-
 public export
 Count QNat where 
     NonZero n = Not (n = Zero)
     nonZero Zero = No (\pf => pf Refl) 
     nonZero (Succ k) = Yes neq_succ
     APred (Succ k) = k
-    APred Zero @{prf} = ?h5
+    APred Zero @{prf} = falso (prf Refl)
     ASucc = Succ
  
-public export
-Lawful QNat where
     

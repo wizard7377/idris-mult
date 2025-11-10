@@ -71,8 +71,6 @@ public export
 Trail CNat where
     amin = cmin
     amax = cmax
-    aleft n = ?hpl
-    aright n = ?hpr
   
 public export
 Count CNat where 
@@ -81,7 +79,7 @@ Count CNat where
     nonZero (Fin n) = nonZero n
     nonZero Fix = Yes ()
     APred (Fin (Succ k)) = Fin k
-    APred (Fin Zero) @{prf} = ?h5
+    APred (Fin Zero) @{prf} = Fin (APred Zero)
     APred Fix = Fix
     ASucc = QSucc
     

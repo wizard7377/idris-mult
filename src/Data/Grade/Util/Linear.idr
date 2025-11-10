@@ -103,3 +103,8 @@ c =@ t = {auto 1 prf : c} -> t
 public export
 seqEq : {0 a : Type} -> {0 b : Type} -> Consumable a => {0 x : a} -> {0 y : b} -> (seq x y = y)
 seqEq = believe_me () 
+
+%hint 
+public export
+eqSeq : {0 a : Type} -> {0 b : Type} -> Consumable a => {0 x : a} -> {0 y : b} -> (y = seq x y)
+eqSeq = believe_me ()

@@ -2,6 +2,9 @@ module Data.Grade.Alg.Types
 import Data.Linear.Notation
 import Prelude
 import Decidable.Equality
+public export
+falso : forall t. (0 contra : Void) -> t
+falso contra impossible
 
 export
 infix 6 =?
@@ -31,8 +34,6 @@ public export
 interface Alg a => Trail a where
     1 amax : a -@ a -@ a 
     1 amin : a -@ a -@ a 
-    1 aleft : a -@ a 
-    1 aright : a -@ a
     
 public export 
 interface Trail a => Alg a => Count a => Lawful a where 

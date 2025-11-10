@@ -67,9 +67,7 @@ data CMu : (n : CNat) -> (t : Type) -> (w : t) -> Type where
   
 public export
 view : {1 n : QNat} -> CMu (Fin n) t w -> Mu n t w
-view {n=Zero} CMZ = MZ
-view _ = ?view_rhs
-  
+view {n} x = ?zz1
 public export
 review : {1 n : QNat} -> Mu n t w -> CMu (Fin n) t w
 review {n=Zero} MZ = CMZ

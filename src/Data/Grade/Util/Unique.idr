@@ -2,6 +2,7 @@ module Data.Grade.Util.Unique
 import Builtin
 import Data.Linear.Notation
 import Data.Grade.Util.LIso
+import Control.Relation
 ||| There is at most one `t`
 public export
 0 Unique' : Type -> Type  
@@ -85,4 +86,4 @@ uniqueFunUniqueResult @{MkUnique w u} {f} {g} = rewrite (u {x=f,y=g}) in Refl
 
 public export
 0 uniqueLIso : Unique t => Unique u => LIso t u
-uniqueLIso @{MkUnique wt ut} @{MkUnique wu uu} = ?h0
+uniqueLIso @{MkUnique wt ut} @{MkUnique wu uu} = lIso (\1 x => wu) (\1 y => wt)

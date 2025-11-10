@@ -2,7 +2,7 @@ module Main
 import Tests.Mu
 import Tests.Exp
 import Tests.Omega
-import Tests.Eval
+import Tests.Eval'
 main : IO ()
 main = do 
     putStrLn "Starting tests..."

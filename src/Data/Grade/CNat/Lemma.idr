@@ -2,7 +2,7 @@ module Data.Grade.CNat.Lemma
 import public Data.Grade.CNat.Types 
 import public Data.Grade.CNat.Ops
 import Relude
-  
+{-  
 public export 
 0 succIsSucc : {1 n : QNat} -> (QSucc (Fin n) === Fin (Succ n))
 succIsSucc {n} = ?css
@@ -23,7 +23,11 @@ caddOutLeft {x=(Fin m)} {y=(Fin n)} = ?cal2
 
 public export
 0 caddOutRight : cadd x (QSucc y) === QSucc (cadd x y)
-
+caddOutRight {x=Fix} {y=Fix} = Refl
+caddOutRight {x=Fix} {y=(Fin n)} = ?car0
+             
+caddOutRight {x=(Fin m)} {y=Fix} = ?car1
+caddOutRight {x=(Fin m)} {y=(Fin n)} = ?car2
 public export
 0 caddZeroLeft : cadd (Fin 0) y === y
 
@@ -63,7 +67,7 @@ finiteQSucc : {n : CNat} -> Finite n => Finite (QSucc n)
 %hint 
 public export
 finiteQPred : {n : CNat} -> Finite (QSucc n) => Finite n
-
+-}
 public export
 Uninhabited (Finite Fix) where
     uninhabited pf = pf Refl

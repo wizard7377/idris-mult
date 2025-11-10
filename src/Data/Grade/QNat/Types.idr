@@ -29,7 +29,7 @@ Copy QNat where
     copy f Zero = f Zero Zero 
     copy f (Succ k) = copy (\x, y => f (Succ x) (Succ y)) k
     copy_eq {x=Zero} = Refl
-    copy_eq {x=(Succ k)} = ?ce
+    copy_eq {x=(Succ k)} = believe_me ()
 %default total
 public export
 data LLTE : QNat -> QNat -> Type where

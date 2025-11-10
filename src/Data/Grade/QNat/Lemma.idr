@@ -47,7 +47,7 @@ lmul_comm {m} {n} = rewrite mulRep in lmul_comm' {m} {n}
 
 public export
 0 pair_power' : {x, y : QNat} -> (pairing' ((lpower 2 x) * (lpower 3 y)) === (x # y))
-pair_power' = ?h0
+pair_power' = ?zz0
 public export
 0 surj_pair : {x, y : QNat} -> (n : QNat ** (pairing' n === (x # y)))
 surj_pair {x} {y} = MkDPair ((lpower 2 x) * (lpower 3 y)) (pair_power' {x} {y})

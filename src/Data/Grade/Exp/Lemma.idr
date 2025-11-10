@@ -18,11 +18,11 @@ import Data.Grade.Omega
 import Data.Grade.Mu
 import Builtin
 %default total
- 
+{- 
 public export
 0 Inv : Type -> Type
 Inv t = t -@ () 
-{n : QNat} -> Isomorphic (t ^ (FVal n)) (t ^^ n) where
+{n : QNat} -> Isomorphic (t ^ (over $ FVal n)) (t ^^ n) where
   foward f = mapSnd foward f
   backward f = mapSnd backward f
   
@@ -50,10 +50,10 @@ public export
       (Evidence 
         w.fst 
         (\n => let 
-            1 x' : (Mu (Eval q n) (Exists t (Omega p t)) w) = x n
+            1 x' : (Mu (Eval' q n) (Exists t (Omega p t)) w) = x n
             0 xw0 : (Exists t (Omega p t)) = x'.witness
             0 xw1 : (Omega p t xw0.fst) = xw0.snd
-            1 x1 : (Mu (Eval q n) (Omega p t xw0.fst) xw1) = ?h3
+            1 x1 : (Mu (Eval' q n) (Omega p t xw0.fst) xw1) = ?h3
             in ?h2
         )
       )
@@ -63,3 +63,6 @@ distr_func : (t -@ u) ^ p  -@ (t ^ p) -@ (u ^ p)
  
 
 
+inverse_exp_rev : ((Inv t) ^ p) -@ (Inv (t ^ p))
+inverse_exp_rev (Evidence w f) = ?ier
+-}

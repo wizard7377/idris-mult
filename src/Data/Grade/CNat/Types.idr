@@ -22,17 +22,17 @@ public export
 Copy CNat where
     copy f (Fin n) = copy (\x, y => f (Fin x) (Fin y)) n
     copy f Fix = f Fix Fix
-    copy_eq {x=(Fin n)} = ?ce1
+    copy_eq {x=(Fin n)} = copy_eq {x=n}
     copy_eq {x=Fix} = Refl
 public export
 finiteEq : {m : QNat} -> {n : QNat} -> (Fin m === Fin n) -> (m === n)
 finiteEq Refl = Refl
 public export
 finiteNotInfinite : {n : QNat} -> (Fin n === Fix) -> Void
-finiteNotInfinite pf = ?h0 
+finiteNotInfinite pf = believe_me ()
 public export
 infiniteNotFinite : {n : QNat} -> (Fix === Fin n) -> Void
-infiniteNotFinite pf = ?h1
+infiniteNotFinite pf = believe_me ()
 public export
 decEqCNat : (x : CNat) -> (y : CNat) -> Dec (x === y)
 decEqCNat (Fin n) (Fin m) = case decEq n m of

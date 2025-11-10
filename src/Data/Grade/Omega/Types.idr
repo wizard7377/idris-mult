@@ -37,11 +37,10 @@ fromCPS f {n} = f n (\x => x)
 ||| @ w The witness for the type
 public export 
 0 Omega : (p : Form) -> (t : Type) -> (w : t) -> Type
-Omega p t w = (1 n : QNat) -> (Mu (Eval p n) t w)
-
+Omega p t w = (1 n : LVect p.vars QNat) -> (Mu (Eval' p.form n) t w)
 
 public export
-gen : forall t. (1 src : (!* t)) -> (Omega Id t {w=unrestricted src})
-gen {t=t} src {n=Zero} = seq src MZ
-gen {t=t} (MkBang src) {n=(Succ n)} = MS src (gen {t=t} (MkBang src) {n=n})
-
+gen : forall t. (1 src : (!* t)) -> (Omega (Over 1 FVar) t {w=unrestricted src})
+gen {t} (MkBang src) {n} = case n of 
+  [Zero] => MZ
+  [Succ n'] => MS src (gen {t=t} (MkBang src) {n=[n']})
