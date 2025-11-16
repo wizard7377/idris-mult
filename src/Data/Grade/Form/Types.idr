@@ -12,23 +12,73 @@ import Data.Linear.LMaybe
 import Data.Grade.Util.LPair
 import Prelude
 import Control.Relation
+import Relude
+
+
+||| A vector with a linear natural number length
+public export
+data QVect : QNat -> Type -> Type where 
+    Nil : QVect 0 a
+    (::) : (1 x : a) -> (1 xs : QVect n a) -> QVect (Succ n) a
+
+||| Append an element to the end of a linear vector
+public export
+snoc : {1 n : QNat} -> (1 xs : QVect n a) -> (1 x : a) -> QVect (Succ n) a
+snoc Nil x = x :: Nil
+snoc (y :: ys) x = y :: snoc ys x
+||| Append two linear vectors 
+public export
+append : QVect m a -> QVect n a -> QVect (m + n) a
+append Nil ys = ys
+append (x :: xs) ys = x :: append xs ys
+||| Split a linear vector at a given position
+public export
+splitAt : (1 m : QNat) -> (1 xs : QVect (m + n) a) -> LPair (QVect m a) (QVect n a)
+splitAt Zero xs = Nil # xs
+splitAt (Succ m') (x :: xs) = let 
+  1 r = splitAt m' xs
+  (y # z) = r
+  in (x :: y) # z
+public export  
+data FOp = AddOp | MulOp | MaxOp | MinOp
+
+public export
+Consumable FOp where 
+    consume AddOp = ()
+    consume MulOp = ()
+    consume MaxOp = ()
+    consume MinOp = ()
+public export 
+runOp : FOp -@ QNat -@ QNat -@ QNat
+runOp AddOp = ladd 
+runOp MulOp = lmul
+runOp MaxOp = lmax
+runOp MinOp = lmin
 ||| A formula for an linear natural number, with exactly one variable
 ||| Can easily be evaluated with 'feval'
 public export
-data Form' : Nat -> Type where 
+data Form' : QNat -> Type where 
     ||| The argument variable
-    FVar : Form' 1
+    FVar' : Form' 1
     ||| A constant value
-    FVal : (1 n : QNat) -> Form' 0
-    ||| Add the result of f with the result of g
-    FAdd : {1 a : Nat} -> (1 x : Form' a) -> (1 y : Form' b) -> Form' (a + b)
-    ||| Multiply the result of f with the result of g
-    FMul : {1 a : Nat} -> (1 x : Form' a) -> (1 y : Form' b) -> Form' (a + b)
-    ||| Take the minimum between the result of f and g
-    FMin : {1 a : Nat} -> (1 x : Form' a) -> (1 y : Form' b) -> Form' (a + b)
-    ||| Take the maximum between the result of f and g
-    FMax : {1 a : Nat} -> (1 x : Form' a) -> (1 y : Form' b) -> Form' (a + b)
-  
+    FVal' : (1 n : QNat) -> Form' 0
+    FApp' : (1 op : FOp) -> {1 a : QNat} -> (1 x : Form' a) -> (1 y : Form' b) -> Form' (a + b)
+%name Form' φ, ψ    
+
+public export
+Consumable (Form' n) where 
+  consume f = assert_total $ case f of 
+    FVar' => ()
+    FVal' n => consume n
+    FApp' {a} op x y => seq a $ seq x $ seq y $ consume op
+
+public export 
+Copy (Form' n) where 
+  copy f x = assert_total $ case x of 
+    FVar' => f FVar' FVar'
+    FVal' n => copy (\a, b => f (FVal' a) (FVal' b)) n
+    FApp' {a} op x y => ?fa
+  copy_eq = ?ce
 export 
 infixl 4 #+#
 export 
@@ -39,29 +89,78 @@ export
 prefix 9 ###
 
 public export
-(#+#) : {1 a : Nat} -> (1 f : Form' a) -> (1 g : Form' b) -> Form' (a + b)
-f #+# g = FAdd f g
+(#+#) : {1 a : QNat} -> (1 f : Form' a) -> (1 g : Form' b) -> Form' (a + b)
+f #+# g = (FApp' AddOp) f g
 public export
-(#*#) : {1 a : Nat} -> (1 f : Form' a) -> (1 g : Form' b) -> Form' (a + b)
-f #*# g = FMul f g
+(#*#) : {1 a : QNat} -> (1 f : Form' a) -> (1 g : Form' b) -> Form' (a + b)
+f #*# g = (FApp' MulOp) f g
 public export
 (###) : QNat -@ Form' 0
-(###) n = FVal n
+(###) n = FVal' n
+
+||| A formula abstracted over a number of variables
 public export
 record Form where
     constructor Over 
-    1 vars : Nat
+    1 vars : QNat
     1 form : Form' vars
-  
+||| Smart constructor for Form 
 public export
-over : {1 n : Nat} -> Form' n -> Form
+over : {1 n : QNat} -> Form' n -@ Form
 over {n} f = Over n f
 public export
+(.under) : (1 x : Form) -> Form' x.vars
+(.under) (Over n f) = seq n f
+ 
+public export
+getVars : (1 f : Form) -> QNat
+getVars (Over n g) = seq g n
+public export
 Num Form where 
-    fromInteger n = Over 0 (FVal (fromInteger n))
+    fromInteger n = Over 0 (FVal' (fromInteger n))
     (Over n f) + (Over m g) = Over (n + m) (f #+# g)
     (Over n f) * (Over m g) = Over (n + m) (f #*# g)
+ 
+public export 
+FVar : Form 
+FVar = over FVar' 
 public export
-FRange : (1 lo : QNat) -> (1 hi : QNat) -> Form' n -> Form' n
-FRange lo hi f = FMax (FVal lo) (FMin (FVal hi) f) 
-  
+FVal : (1 n : QNat) -> Form
+FVal n = over (FVal' n)
+
+-- TODO: MAKE THIS SAFE
+public export
+FLift : ({1 a : QNat} -> {0 b : QNat} -> Form' a -@ Form' b -@ Form' (a + b)) -@ (Form -@ Form -@ Form)
+FLift op (Over m f) (Over n g) = let 
+  [m0, m1] = m.clone 2
+  0 prf0 : (m0.val === m) = sym m0.prf
+  0 prf1 : (m1.val === m) = sym m1.prf
+  0 prf01 : (m1.val === m0.val) = rewrite prf0 in prf1
+  in Over (ladd m0.val n) (rewrite sym prf01 in op {a = m1.val} {b = n} (rewrite prf1 in f) g)
+public export
+FApp : (1 op : FOp) -> (1 f : Form) -> (1 g : Form) -> Form
+FApp op f g = FLift (FApp' op) f g
+public export
+FAdd : (1 f : Form) -> (1 g : Form) -> Form
+FAdd f g = FLift (FApp' AddOp) f g
+public export
+FMul : (1 f : Form) -> (1 g : Form) -> Form
+FMul f g = FLift (FApp' MulOp) f g
+public export
+FMax : (1 f : Form) -> (1 g : Form) -> Form
+FMax f g = FLift (FApp' MaxOp) f g
+public export
+FMin : (1 f : Form) -> (1 g : Form) -> Form
+FMin f g = FLift (FApp' MinOp) f g
+export
+FRange : (1 lo : QNat) -> (1 hi : QNat) -> (1 f : Form) -> Form
+FRange lo hi (Over n f) = ?hfr
+
+export
+Var : Form 
+Var = FVar
+public export
+Simple : (Form -@ Form) -@ Form 
+Simple f = f FVar
+
+%name Form φ, ψ    

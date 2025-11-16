@@ -30,7 +30,9 @@ record Subset (t : Type) (p : (t -> Type)) where
     ||| A value of `f x`
     0 snd' : p fst'
 
-
+public export
+0 Forall : (t : Type) -> (p : (t -> Type)) -> Type
+Forall t p = {0 x : t} -> p x
 export typebind infixr 0 #?
 
 %inline %tcinline
@@ -129,3 +131,12 @@ namespace Subset
         (Subset a p -@ Subset c r)
     compose m n {f} {g} (Element x y) = Element (n (m x)) (g (f y))
     
+public export
+NegationExists : Not (Exists t p) -> {w : t} -> Not (p w)
+NegationExists notEx {w} prf = 
+    let ex : Exists t p
+        ex = Evidence w prf
+    in notEx ex
+public export
+ExistsNegation : Forall t (\x => Not (p x)) -> Not (Exists t p)
+ExistsNegation allNot (Evidence x prf) = allNot {x} prf

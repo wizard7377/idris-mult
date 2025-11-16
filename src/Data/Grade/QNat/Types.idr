@@ -31,9 +31,12 @@ Copy QNat where
     copy_eq {x=Zero} = Refl
     copy_eq {x=(Succ k)} = believe_me ()
 %default total
+||| The less than or equal relation on QNat
 public export
 data LLTE : QNat -> QNat -> Type where
+  ||| Zero <= n
   LLTE_Z : LLTE Zero n
+  ||| If m <= n then Succ m <= Succ n
   LLTE_S : (0 _ : LLTE m n) -> LLTE (Succ m) (Succ n)
 
 
@@ -76,7 +79,21 @@ DecEq QNat where
     No contra => No (\prf => contra (succ_inj prf))
   decEq (Succ m) Zero = No neq_succ
   decEq Zero (Succ n) = No neq_succ'
+  
+public export
+noLTEZero : {n : QNat} -> Not (LLTE (Succ n) Zero)
+noLTEZero prf = believe_me ()
 
+||| Decidable less than or equal on QNat
+public export
+0 DecLTE : {m, n : QNat} -> Dec (LLTE m n)
+DecLTE {m=Zero} {n=n} = Yes LLTE_Z
+DecLTE {m=Succ m'} {n=Zero} = No (\prf => noLTEZero prf)
+DecLTE {m=Succ m'} {n=Succ n'} = case DecLTE {m=m'} {n=n'} of 
+  Yes prf => Yes (LLTE_S prf)
+  No contra => No (\prf => contra (case prf of LLTE_S prf' => prf'))
+
+||| Convert QNat to Nat
 public export
 toNat : QNat -> Nat
 toNat Zero = Z

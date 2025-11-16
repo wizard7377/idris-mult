@@ -14,3 +14,12 @@ import public Prelude.Ops
 import public Prelude.Types
 import public Prelude.Uninhabited
 import public Data.Grade.Util.Ops
+
+%inline %tcinline
+public export %unsafe
+trust_me : a -@ b
+trust_me x = prim__believe_me a b x
+%inline %tcinline
+public export %unsafe
+axiom : a
+axiom = prim__believe_me () a ()

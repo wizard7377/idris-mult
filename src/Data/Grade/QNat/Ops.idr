@@ -200,3 +200,6 @@ Count QNat where
     ASucc = Succ
  
     
+public export
+lrange : (1 lo : QNat) -> (1 hi : QNat) -> QNat -@ QNat
+lrange lo hi n = lmin (lmax lo n) hi

@@ -22,7 +22,7 @@ import Builtin
 public export
 0 Inv : Type -> Type
 Inv t = t -@ () 
-{n : QNat} -> Isomorphic (t ^ (over $ FVal n)) (t ^^ n) where
+{n : QNat} -> Isomorphic (t ^ (over $ FVal' n)) (t ^^ n) where
   foward f = mapSnd foward f
   backward f = mapSnd backward f
   

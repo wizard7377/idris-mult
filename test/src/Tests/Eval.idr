@@ -7,7 +7,7 @@ import Data.Grade.QNat
 import Common
 private 
 formula1 : Form 
-formula1 = FApp (FMul FVar (FVal 0)) (FMul FVar FVar)
+formula1 = FApp (FMul' FVar' (FVal' 0)) (FMul' FVar' FVar')
 
 private 
 Show QNat where 

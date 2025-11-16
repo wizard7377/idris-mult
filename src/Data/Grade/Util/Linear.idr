@@ -93,6 +93,8 @@ public export
 Copy () where 
     copy f () = f () ()
     copy_eq {b} {f} {x=()} = Refl
+
+
 export
 infixr 0 =@ 
 public export

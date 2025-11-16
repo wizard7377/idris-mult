@@ -4,6 +4,7 @@ module Data.Grade.Exp.Types
 import Data.Grade.Util.Relude
 import Data.Grade.Mu.Ops
 import Data.Grade.Form
+import Data.Grade.Form.Sugar
 import Data.Grade.Mu.Types
 import Data.Grade.Omega.Types
 import Decidable.Equality
@@ -42,15 +43,17 @@ public export
 (^) t p = AW p t
 -}
 
-
+export 
+0 Exp : (t : Type) -> (p : Form) -> Type
+Exp t p = (w : t) #? (Omega p t w)
 export 
 infixl 1 ^
 ||| The exponential type
 ||| This abstract over both the specific formula and the underlying witness, allowing for us to work with more "intuitive" values 
 ||| Because `Form` is a `Num`, type signatures like `String ^ 3` are perfectly valid 
 public export
-0 (^) :  (t : Type) -> (p : Form) -> Type
-(^) t p = (w : t) #? (Omega p t w)
+0 (^) : Formula f => (t : Type) -> (p : f) -> Type
+(t ^ p) = Exp t (formula p)
 
 
 export 
