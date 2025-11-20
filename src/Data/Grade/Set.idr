@@ -2,7 +2,7 @@ module Data.Grade.Set
 
 import Data.Grade.Util.Relude 
 import Prelude.Uninhabited
-import public Data.Grade.Util.LPair
+import public Data.Grade.Logic
 
 ||| A set over some type, that is, `Set ty` is a predicate over `ty`
 %inline %tcinline

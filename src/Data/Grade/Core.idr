@@ -6,6 +6,6 @@ import Data.Grade.Util.Types
 import Data.Nat
 --import Data.Qty
 import Prelude.Types
-import Data.Grade.Util.LPair
-import Data.Grade.Util.LPair as Exists
+import Data.Grade.Logic
+import Data.Grade.Logic as Exists
 

@@ -37,7 +37,7 @@ modules =
 	Data.Grade.Util.Unique,
 	Data.Grade.Util.Nth,
 	Data.Grade.Util.LIso,
-	Data.Grade.Util.LPair,
+	Data.Grade.Logic,
 	Data.Grade.Util.Relude,
 	Data.Grade.Util.Types,
 	Data.Grade.Util.Equal,

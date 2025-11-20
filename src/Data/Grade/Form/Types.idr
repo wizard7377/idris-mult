@@ -9,7 +9,7 @@ import Builtin
 import Prelude.Types
 import Data.Linear.LVect
 import Data.Linear.LMaybe
-import Data.Grade.Util.LPair
+import Data.Grade.Logic
 import Prelude
 import Control.Relation
 import Relude
@@ -128,30 +128,24 @@ public export
 FVal : (1 n : QNat) -> Form
 FVal n = over (FVal' n)
 
--- TODO: MAKE THIS SAFE
-public export
-FLift : ({1 a : QNat} -> {0 b : QNat} -> Form' a -@ Form' b -@ Form' (a + b)) -@ (Form -@ Form -@ Form)
-FLift op (Over m f) (Over n g) = let 
-  [m0, m1] = m.clone 2
-  0 prf0 : (m0.val === m) = sym m0.prf
-  0 prf1 : (m1.val === m) = sym m1.prf
-  0 prf01 : (m1.val === m0.val) = rewrite prf0 in prf1
-  in Over (ladd m0.val n) (rewrite sym prf01 in op {a = m1.val} {b = n} (rewrite prf1 in f) g)
 public export
 FApp : (1 op : FOp) -> (1 f : Form) -> (1 g : Form) -> Form
-FApp op f g = FLift (FApp' op) f g
+FApp op (Over n f) (Over m g) = let 
+  [n0, n1] = n.clone 2
+  1 f' : Form' n1.val := rewrite sym n1.prf in f
+  in Over (ladd n0.val m) (rewrite cloneEq {a=n0} {b=n1} in FApp' op f' g)
 public export
 FAdd : (1 f : Form) -> (1 g : Form) -> Form
-FAdd f g = FLift (FApp' AddOp) f g
+FAdd = FApp AddOp
 public export
 FMul : (1 f : Form) -> (1 g : Form) -> Form
-FMul f g = FLift (FApp' MulOp) f g
+FMul = FApp MulOp
 public export
 FMax : (1 f : Form) -> (1 g : Form) -> Form
-FMax f g = FLift (FApp' MaxOp) f g
+FMax = FApp MaxOp
 public export
 FMin : (1 f : Form) -> (1 g : Form) -> Form
-FMin f g = FLift (FApp' MinOp) f g
+FMin = FApp MinOp
 export
 FRange : (1 lo : QNat) -> (1 hi : QNat) -> (1 f : Form) -> Form
 FRange lo hi (Over n f) = ?hfr
@@ -163,4 +157,21 @@ public export
 Simple : (Form -@ Form) -@ Form 
 Simple f = f FVar
 
+public export
+VectSplitEq : Exists (QVect (m + n) a) p <=> Exists (QVect m a) (\x => (Exists (QVect n a) (\y => p (append x y))))
+VectSplitEq = MkEquivalence fwd bck 
+  where 
+    fwd : 
+       Exists (QVect (m + n) a) p -> 
+       Exists (QVect m a) (\x => (Exists (QVect n a) (\y => p (append x y)))) 
+    fwd (Given v prf) = ?hf
+    bck : 
+      (Exists (QVect m a) (\x => (Exists (QVect n a) (\y => p (append x y))))) -> 
+      Exists (QVect (m + n) a) p
+    bck (Given x (Given y prf)) = Given (append x y) prf
+     
+  
+export 
+FAddVars : ((FApp op p q).vars === p.vars + q.vars)
+FAddVars {op} {p} {q} = ?fav
 %name Form φ, ψ    

@@ -28,8 +28,8 @@ Inv t = t -@ ()
   
 private 
 Isomorphic t (t ^^ 1) where 
-    foward f = (Evidence f (mkMu f))
-    backward (Evidence _ x) = once x
+    foward f = (Given f (mkMu f))
+    backward (Given _ x) = once x
 public export
 {t : Type} -> Isomorphic t (t ^ 1) where 
     foward x = let 
@@ -46,8 +46,8 @@ public export
 
 public export
 {t : Type} -> {q, p : Form} -> Isomorphic ((t ^ p) ^ q) (t ^ (q * p)) where
-    foward (Evidence w x) = 
-      (Evidence 
+    foward (Given w x) = 
+      (Given 
         w.fst 
         (\n => let 
             1 x' : (Mu (Eval' q n) (Exists t (Omega p t)) w) = x n
@@ -57,12 +57,12 @@ public export
             in ?h2
         )
       )
-    backward (Evidence w y) = ?h1
+    backward (Given w y) = ?h1
 distr_prod : ((LPair t u) ^ p)  -@ LPair (t ^ p) (u ^ p)
 distr_func : (t -@ u) ^ p  -@ (t ^ p) -@ (u ^ p)
  
 
 
 inverse_exp_rev : ((Inv t) ^ p) -@ (Inv (t ^ p))
-inverse_exp_rev (Evidence w f) = ?ier
+inverse_exp_rev (Given w f) = ?ier
 -}

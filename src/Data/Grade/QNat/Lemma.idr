@@ -109,3 +109,24 @@ public export
 ||| a + b = c implies b <= c
 public export
 0 lte_sum_r : {a, b, c : QNat} -> (a + b = c) -> LLTE b c
+
+parameters {a, b, c : QNat}
+    private 
+    0 min_lte_lte_l : ((lmin a b) === c) -> Either (a === c, LLTE a b) (b === c, LLTE b a)
+    min_lte_lte_l prf = case a of 
+      Zero => Left (the (Zero = c) (rewrite sym $ seqEq {y=Zero} in prf) , LLTE_Z)
+      Succ a' => case b of 
+        Zero => Right (the (Zero = c) (rewrite sym $ seqEq {y=Zero} in prf), LLTE_Z)
+        Succ b' => case decLTE {m=a'} {n=b'} of 
+            Yes lte_prf => ?h0 
+            No contra => ?h1
+            
+    private
+    0 min_lte_lte_r : Either (a === c, LLTE a b) (b === c, LLTE b a) -> ((lmin a b) === c)
+    public export
+    0 min_lte_lte : ((lmin a b) === c <=> Either (a === c, LLTE a b) (b === c, LLTE b a))
+    min_lte_lte = MkEquivalence min_lte_lte_l min_lte_lte_r
+    where
+        f : ((lmin a b) === c) -> Either (a === c, LLTE a b) (b === c, LLTE b a)
+0 max_gte_gte : {a, b : QNat} -> ((lmax a b) === c <=> Either (a === c, LLTE a b) (b === c, LLTE b a))
+

@@ -1,6 +1,6 @@
 module Data.Grade.Util.Logic
 
-import public Data.Grade.Util.LPair
+import public Data.Grade.Logic
 import Builtin
 import Prelude.Types
 import Prelude.Basics

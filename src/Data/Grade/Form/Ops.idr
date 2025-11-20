@@ -8,7 +8,7 @@ import Prelude.Num
 import Builtin
 import Prelude.Types
 import Data.Linear.LMaybe
-import Data.Grade.Util.LPair
+import Data.Grade.Logic
 import Prelude
 import Control.Relation
 %hide Data.Linear.Copies.splitAt 
@@ -28,7 +28,7 @@ Eval (Over v f) x = assert_linear (\_ => Eval' f x) v
 %inline 
 public export
 0 Solve : (1 f : Form) -> (1 n : QNat) -> Type
-Solve f n = (LPair.Subset (QVect f.vars QNat) (\x => (Eval' f.form x === n)))
+Solve f n = (Subset (QVect f.vars QNat) (\x => (Eval' f.form x === n)))
   
 public export
 0 SolveAbove : (1 f : Form) -> (1 n : QNat) -> Type

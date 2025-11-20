@@ -1,8 +1,9 @@
-module Data.Grade.Util.LPair
+module Data.Grade.Logic.Types
 import Builtin
 import Prelude.Basics
 import Data.Linear.Notation
 import Data.Grade.Util.Types
+import Data.Linear.Interface
 import Prelude.Types
  
 ||| A linear existential type $∃ (x : ty). f x$
@@ -10,7 +11,7 @@ import Prelude.Types
 ||| @ f the predicate that must be satisfied, and the type of the value 
 public export
 record Exists (t : Type) (p : (t -> Type)) where
-    constructor Evidence
+    constructor Given
     ||| A certain `x`
     0 fst' : t 
     ||| A value of `f x`
@@ -18,17 +19,29 @@ record Exists (t : Type) (p : (t -> Type)) where
 
 public export
 exists : {0 t : Type} -> {0 p : (t -> Type)} -> {0 x : t} -> (1 y : p x) -> Exists t p
-exists {t} {p} {x} y = Evidence x y
+exists {t} {p} {x} y = Given x y
 ||| A linear existential type $∃ (x : ty). f x$
 ||| @ ty in the existential
 ||| @ f the predicate that must be satisfied, and the type of the value 
 public export
 record Subset (t : Type) (p : (t -> Type)) where
-    constructor Element
+    constructor Elem
     ||| A certain `x`
     1 fst' : t 
     ||| A value of `f x`
     0 snd' : p fst'
+
+||| A linear existential type $∃ (x : ty). f x$
+||| @ ty in the existential
+||| @ f the predicate that must be satisfied, and the type of the value 
+public export
+record Sigma (t : Type) (p : (t -> Type)) where
+    constructor For
+    ||| A certain `x`
+    1 fst' : t 
+    ||| A value of `f x`
+    1 snd' : p fst'
+
 
 public export
 0 Forall : (t : Type) -> (p : (t -> Type)) -> Type
@@ -45,18 +58,18 @@ export infixl 9 #*
 %inline %tcinline
 public export
 (#*) : (fst : t) -> (snd : f fst) -> (Exists t f)
-(#*) x y = Evidence x y
+(#*) x y = Given x y
 %hide Basics.(.)
 namespace Exists
     
     %inline %tcinline 
     public export
     0 (.fst) : (ex : Exists ty f) -> ty
-    (.fst) (Evidence x y) = x
+    (.fst) (Given x y) = x
     %inline %tcinline 
     public export
     (.snd) : (1 ex : Exists ty f) -> f (ex.fst)
-    (.snd) (Evidence x y) = y
+    (.snd) (Given x y) = y
     %inline %tcinline 
     public export
     0 fst : (ex : Exists ty f) -> ty
@@ -72,11 +85,11 @@ namespace Exists
     {0 m : (a -> b)} -> 
     (1 f : forall x. p x -@ q (m x)) -> 
     (Exists a p -@ Exists b q)
-    map f (Evidence x y) = Evidence (m x) (f y)
+    map f (Given x y) = Given (m x) (f y)
 
     public export
     mapSnd : {0 p : a -> Type} -> {0 q : (a -> Type)} -> (1 f : forall x. p x -@ q x) -> (Exists a p -@ Exists a q)
-    mapSnd f (Evidence x y) = Evidence x (f y)
+    mapSnd f (Given x y) = Given x (f y)
     public export
     compose : 
         {0 p : a -> Type} -> 
@@ -87,18 +100,18 @@ namespace Exists
         (1 f : forall x. p x -@ q (m x)) -> 
         (1 g : forall y. q y -@ r (n y)) ->
         (Exists a p -@ Exists c r)
-    compose f g (Evidence x y) = Evidence (n (m x)) (g (f y))
+    compose f g (Given x y) = Given (n (m x)) (g (f y))
     
 namespace Subset
     
     %inline %tcinline 
     public export
     (.fst) : (1 ex : Subset ty f) -> ty
-    (.fst) (Element x y) = x
+    (.fst) (Elem x y) = x
     %inline %tcinline 
     public export
     0 (.snd) : (1 ex : Subset ty f) -> f (ex.fst)
-    (.snd) (Element x y) = y
+    (.snd) (Elem x y) = y
     %inline %tcinline 
     public export
     fst : (1 ex : Subset ty f) -> ty
@@ -114,11 +127,11 @@ namespace Subset
     (1 m : (a -@ b)) -> 
     {0 f : forall x. p x -> q (m x)} -> 
     (Subset a p -@ Subset b q)
-    map m {f} (Element x y) = Element (m x) (f y)
+    map m {f} (Elem x y) = Elem (m x) (f y)
 
     public export
     mapSnd : {0 p : a -> Type} -> {0 q : (a -> Type)} -> (0 f : forall x. p x -@ q x) -> (Subset a p -@ Subset a q)
-    mapSnd f (Element x y) = Element x (f y)
+    mapSnd f (Elem x y) = Elem x (f y)
     public export
     compose : 
         {0 p : a -> Type} -> 
@@ -129,14 +142,57 @@ namespace Subset
         {0 f : forall x. p x -@ q (m x)} -> 
         {0 g : forall y. q y -@ r (n y)} ->
         (Subset a p -@ Subset c r)
-    compose m n {f} {g} (Element x y) = Element (n (m x)) (g (f y))
+    compose m n {f} {g} (Elem x y) = Elem (n (m x)) (g (f y))
     
 public export
 NegationExists : Not (Exists t p) -> {w : t} -> Not (p w)
 NegationExists notEx {w} prf = 
     let ex : Exists t p
-        ex = Evidence w prf
+        ex = Given w prf
     in notEx ex
 public export
 ExistsNegation : Forall t (\x => Not (p x)) -> Not (Exists t p)
-ExistsNegation allNot (Evidence x prf) = allNot {x} prf
+ExistsNegation allNot (Given x prf) = allNot {x} prf
+
+namespace Sigma
+    
+    %inline %tcinline 
+    public export
+    0 (.fst) : (Sigma ty f) -@ ty
+    (.fst) (For x y) = x
+    %inline %tcinline 
+    public export
+    0 (.snd) : (1 ex : Sigma ty f) -> f (ex.fst)
+    (.snd) (For x y) = y
+    %inline %tcinline 
+    public export
+    0 fst : (1 ex : Sigma ty f) -> ty
+    fst = (.fst)
+    %inline %tcinline 
+    public export
+    0 snd : (1 ex : Sigma ty f) -> f (ex.fst)
+    snd = (.snd)
+    public export 
+    map : 
+    {0 p : a -> Type} -> 
+    {0 q : b -> Type} -> 
+    {1 m : (a -@ b)} -> 
+    (1 f : forall x. p x -@ q (m x)) -> 
+    (Sigma a p -@ Sigma b q)
+    map f (For x y) = For (m x) (f y)
+
+    public export
+    mapSnd : {0 p : a -> Type} -> {0 q : (a -> Type)} -> (1 f : forall x. p x -@ q x) -> (Sigma a p -@ Sigma a q)
+    mapSnd f (For x y) = For x (f y)
+    public export
+    compose : 
+        {0 p : a -> Type} -> 
+        {0 q : b -> Type} -> 
+        {0 r : c -> Type} -> 
+        {1 m : (a -@ b)} -> 
+        {1 n : (b -@ c)} -> 
+        (1 f : forall x. p x -@ q (m x)) -> 
+        (1 g : forall y. q y -@ r (n y)) ->
+        (Sigma a p -@ Sigma c r)
+    compose f g (For x y) = For (n (m x)) (g (f y))
+ 

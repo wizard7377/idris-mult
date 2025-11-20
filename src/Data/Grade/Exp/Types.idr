@@ -61,4 +61,4 @@ infix 9 ~?
 ||| The equality relation for existentials
 public export
 0 (~~) : Exists ty p -> Exists ty q -> Type
-(Evidence n x) ~~ (Evidence m y) = (n === m)
+(Given n x) ~~ (Given m y) = (n === m)

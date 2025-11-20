@@ -65,4 +65,4 @@ namespace Omega
     app f x = Omega.map f x
     public export
     combine : {1 p : Form} -> Omega p t w -@ Omega q t w -@ Omega (p + q) t w
-    combine x y n @{(Element input prf)} = ?comb
+    combine x y n @{(Elem input prf)} = ?comb
