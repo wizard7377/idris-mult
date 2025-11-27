@@ -4,7 +4,7 @@ import Prelude
 import public Data.Grade.Alg
 import Data.Linear.Notation
 import Data.Linear.Interface
-
+import public Data.Grade.Logic.QDec
 import public Data.Grade.Util.Linear
 import Decidable.Equality
   
@@ -61,24 +61,24 @@ export
 succEq : forall m, n. (m === n) -> (Succ m === Succ n)
 succEq Refl = Refl
 export
-succ_inj : forall m, n. (Succ m === Succ n) -> (m === n)
+succ_inj : forall m, n. (Succ m === Succ n) -@ (m === n)
 succ_inj Refl = Refl
 %unsafe
 export
-neq_succ : Not (Succ m === Zero)
-neq_succ prf = believe_me ()
+neq_succ : QNot (Succ m === Zero)
+neq_succ prf = assert_linear believe_me prf
 %unsafe 
 export
-neq_succ' : Not (Zero === Succ n)
-neq_succ' prf = believe_me ()
+neq_succ' : QNot (Zero === Succ n)
+neq_succ' prf = assert_linear believe_me prf
 public export
 DecEq QNat where
   decEq Zero Zero = Yes Refl
   decEq (Succ m) (Succ n) = case decEq m n of 
     Yes prf => rewrite prf in Yes Refl
     No contra => No (\prf => contra (succ_inj prf))
-  decEq (Succ m) Zero = No neq_succ
-  decEq Zero (Succ n) = No neq_succ'
+  decEq (Succ m) Zero = No (MkNot neq_succ)
+  decEq Zero (Succ n) = No (MkNot neq_succ')
   
 public export
 noLTEZero : {n : QNat} -> Not (LLTE (Succ n) Zero)
@@ -92,7 +92,14 @@ DecLTE {m=Succ m'} {n=Zero} = No (\prf => noLTEZero prf)
 DecLTE {m=Succ m'} {n=Succ n'} = case DecLTE {m=m'} {n=n'} of 
   Yes prf => Yes (LLTE_S prf)
   No contra => No (\prf => contra (case prf of LLTE_S prf' => prf'))
-
+public export
+QDecEq QNat where
+    qDecEq {x=Zero} {y=Zero} = QYes Refl
+    qDecEq {x=Succ m'} {y=Zero} = seq m' (QNo neq_succ)
+    qDecEq {x=Zero} {y=Succ n'} = seq n' (QNo neq_succ')
+    qDecEq {x=Succ m'} {y=Succ n'} = case qDecEq {x=m'} {y=n'} of 
+        QYes prf => seq prf (QYes (rewrite prf in Refl))
+        QNo contra => QNo (\prf => contra (succ_inj prf))
 ||| Convert QNat to Nat
 public export
 toNat : QNat -> Nat

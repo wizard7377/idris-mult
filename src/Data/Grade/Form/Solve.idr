@@ -8,15 +8,21 @@ import Data.Grade.Logic
 import Decidable.Decidable
 import Decidable.Equality
 import Data.Grade.QNat.QFin
-mutual 
-  0 DecSolveVal : (val : QNat) -> (y : QNat) -> Dec (Solve (FVal val) y)
-  DecSolveVal val y = let 
-        prf : Dec (val === y)
-        prf = decEq val y
-    in case prf of 
-        Yes prf' => Yes (Elem Nil prf') 
-        No contra => No (\(Elem [] prf') => contra prf')
-  0 DecSolveVar : (y : QNat) -> Dec (Solve (FVar) y)
-  DecSolveVar y = Yes (Elem [y] Refl)
-  0 DecSolveApp : {op : FOp} -> (p, q : Form) -> (y : QNat) -> Dec (Solve (FApp op p q) y)
-  0 DecSolve : (p : Form) -> (y : QNat) -> Dec (Solve p y)
+parameters (1 y : QNat)
+    mutual 
+        0 DecSolveOpGTE : (op : FOp) -> (1 f, g : Form) -> (1 n : QNat) -> QDec (SolveAbove (FApp op f g) n)
+        0 DecSolveValGTE : (1 n : QNat) -> QDec (SolveAbove (FVal n) y)
+        0 DecSolveVarGTE : QDec (SolveAbove FVar y)
+        0 DecSolveGTE : (1 f : Form) -> (1 n : QNat) -> QDec (SolveAbove f n)
+        DecSolveVal : {1 n : QNat} -> QDec (Solve (FVal n) y)
+        DecSolveVal {n} = case qDecEq {x=n} {y=y} of 
+            QYes prf => seq prf (QYes (Elem [] prf))
+            QNo prf => QNo (\(Elem [] prf') => seq (prf (scandel prf')) (efalse (prf prf')))
+        DecSolveVar : QDec (Solve FVar y)
+        DecSolveVar = QYes (Elem [y] Refl)
+        DecSolveOp : (1 op : FOp) -> (1 f, g : Form) -> QDec (Solve (FApp op f g) y)
+        DecSolveOp op f g = ?hdso
+            
+
+          
+        0 DecSolve : (1 f : Form) -> QDec (Solve f y)

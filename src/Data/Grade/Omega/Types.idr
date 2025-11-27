@@ -42,4 +42,4 @@ Omega p t w = (1 n : QNat) -> (0 prf : Solve p n) => Mu n t w
 public export
 gen : forall t. (1 src : (!* t)) -> (Omega FVar t {w=unrestricted src})
 gen {t} (MkBang src) {n=Zero} @{prf} = MZ
-gen {t} (MkBang src) {n=Succ n'} @{prf} = ?h0
+gen {t} (MkBang src) {n=Succ n'} @{prf} = ?gen_succ

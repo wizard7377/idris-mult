@@ -194,7 +194,7 @@ public export
 Count QNat where 
     NonZero n = Not (n = Zero)
     nonZero Zero = No (\pf => pf Refl) 
-    nonZero (Succ k) = Yes neq_succ
+    nonZero (Succ k) = Yes (MkNot neq_succ)
     APred (Succ k) = k
     APred Zero @{prf} = falso (prf Refl)
     ASucc = Succ

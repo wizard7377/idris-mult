@@ -41,8 +41,9 @@ record Sigma (t : Type) (p : (t -> Type)) where
     1 fst' : t 
     ||| A value of `f x`
     1 snd' : p fst'
-
-
+public export
+data Erase : Type -> Type where
+    MkErase : (0 x : t) -> Erase t
 public export
 0 Forall : (t : Type) -> (p : (t -> Type)) -> Type
 Forall t p = {0 x : t} -> p x
@@ -60,6 +61,10 @@ public export
 (#*) : (fst : t) -> (snd : f fst) -> (Exists t f)
 (#*) x y = Given x y
 %hide Basics.(.)
+
+public export
+Duple : Type -> Type -> Type
+Duple a b = Sigma a (\_ => b)
 namespace Exists
     
     %inline %tcinline 

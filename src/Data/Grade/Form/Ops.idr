@@ -24,22 +24,29 @@ public export
 Eval : (1 f : Form) -> (1 x : QVect f.vars QNat) -> QNat
 Eval (Over v f) x = assert_linear (\_ => Eval' f x) v
 
+public export 
+0 Solve' : {1 n : QNat} -> (1 f : Form' n) -> (1 z : QNat) -> Type
+Solve' {n} f z = (Subset (QVect n QNat) (\x => (Eval' f x === z)))
 ||| Solve the formula `f` for the value `n`, ∈
 %inline 
 public export
 0 Solve : (1 f : Form) -> (1 n : QNat) -> Type
-Solve f n = (Subset (QVect f.vars QNat) (\x => (Eval' f.form x === n)))
+Solve f n = Solve' f.form n
   
 public export
 0 SolveAbove : (1 f : Form) -> (1 n : QNat) -> Type
-SolveAbove (Over v f) n = (Subset (QVect v QNat) (\x => (LLTE n (Eval' f x))))
+SolveAbove f y = (Subset QNat (\y' => (Solve f y' `LPair` LLTE y y'))) 
+ 
+public export
+SolveToAbove : {1 y : QNat} -> Solve f y => SolveAbove f y
+SolveToAbove {y} @{Elem x prf} = Elem y ((Elem x prf) # lte_refl)
 public export
 0 SolveBelow : (1 f : Form) -> (1 n : QNat) -> Type
 SolveBelow (Over v f) n = (Subset (QVect v QNat) (\x => (LLTE (Eval' f x) n)))
 ||| That `f` is a less general form that `g`, that is, `g` maps to everything that `f` maps to
 public export
 0 Unify : Rel Form
-Unify f g = (1 x : QVect f.vars QNat) -> (Subset (QVect g.vars QNat) (\y => (Eval' f.form x === Eval' g.form y)))
+Unify f g = {0 n : QNat} -> (Solve f n) -> Solve g n
 
 public export
 0 Equiv : Rel Form

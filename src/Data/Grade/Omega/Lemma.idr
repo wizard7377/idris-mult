@@ -17,15 +17,13 @@ import Data.Grade.Form
 import Data.Grade.Mu
 import Data.Grade.Util.LIso
 %default total
-{-
-omegaToMu : Omega (over $ FVal' n) t w -@ Mu n t w
-omegaToMu x = rewrite seqEq {x=n} {y=[]} in x {n=[]}
+omegaToMu : Omega (FVal n) t w -@ Mu n t w
+omegaToMu x = ?h0
 
-muToOmega : {0 n : QNat} -> Mu n t w -@ Omega (over $ FVal' n) t w
-muToOmega x = \y => rewrite const_val {n=n} {x=y} in seq y x
+muToOmega : {0 n : QNat} -> Mu n t w -@ Omega (FVal n) t w
+muToOmega x n @{prf} = ?h1
   
 public export
-{n : QNat} -> Isomorphic (Omega (FVal' n) t w) (Mu n t w) where
+{n : QNat} -> Isomorphic (Omega (FVal n) t w) (Mu n t w) where
   foward = omegaToMu
   backward = muToOmega
--}

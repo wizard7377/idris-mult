@@ -52,8 +52,8 @@ modules =
 
 -- name of executable
 -- executable =
--- opts = "--no-prelude --total"
-opts = "--no-prelude --show-machine-names --total" 
+opts = "--no-prelude --total"
+-- opts = "--no-prelude --show-machine-names --total" 
 -- opts = "--no-prelude --show-implicits --show-machine-names --total"
 sourcedir = "src"
 -- builddir =

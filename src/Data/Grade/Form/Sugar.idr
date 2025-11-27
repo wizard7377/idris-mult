@@ -28,7 +28,11 @@ public export
 public export 
 Formula t => Formula (Form -@ t) where 
     formula f = formula $ f FVar
-  
+ 
+public export 
+Formula t => Formula (Form -> t) where 
+    formula f = formula $ f FVar
+   
  
 export 
 infixl 4 |+| 

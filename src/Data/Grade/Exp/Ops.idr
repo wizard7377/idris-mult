@@ -4,6 +4,7 @@ module Data.Grade.Exp.Ops
 import Data.Grade.Util.Relude
 import Data.Grade.Form
 import Data.Grade.Omega.Types
+import Data.Grade.Omega.Ops
 import Data.Grade.Mu.Types
 import Data.Grade.Exp.Types
 import Data.Grade.Mu.Ops
@@ -30,4 +31,13 @@ namespace Exp
     unbox : (1 x : t ^ p) -> Omega p t x.fst
     unbox (Given n x) = x
     public export
-    gen : (!* t) -@ (t ^ p) 
+    weaken : {0 p : Form} -> {0 q : Form} -> (prf : Unify q p) => (t ^ p) -@ (t ^ q)
+    weaken @{prf} (Given n x) = Given n (Omega.weaken @{ ?weaken_prf } x)
+    private 
+    gen' : (!* t) -@ (t ^ (\x : Form => x))
+    gen' (MkBang x) = (Given x (Omega.Types.gen (MkBang x)))
+    public export
+    gen : {p : Form} -> (!* t) -@ (t ^ p) 
+    gen x = ?hgen
+    public export
+    combine : {0 m, n : QNat} -> (t ^ m) -@ (t ^ n) -@ (t ^ (m + n))

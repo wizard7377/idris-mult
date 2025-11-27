@@ -23,3 +23,9 @@ trust_me x = prim__believe_me a b x
 public export %unsafe
 axiom : a
 axiom = prim__believe_me () a ()
+
+public export
+($|) : ((a -> b) -@ c) -@ b -@ c
+($|) f x = f (\_ => x)
+export
+infixl 9 $|

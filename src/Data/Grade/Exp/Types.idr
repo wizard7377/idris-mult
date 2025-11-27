@@ -15,7 +15,7 @@ import Prelude.Ops
 import Data.Grade.Util.Linear
 import Control.Function.FunExt
 import Data.Grade.Util.Unique
-
+import public Data.Grade.Form.Sugar
 %default total
 
 %inline %tcinline
@@ -43,7 +43,7 @@ public export
 (^) t p = AW p t
 -}
 
-export 
+public export 
 0 Exp : (t : Type) -> (p : Form) -> Type
 Exp t p = (w : t) #? (Omega p t w)
 export 

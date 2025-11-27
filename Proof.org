@@ -1,0 +1,26 @@
+
+* [2/3] Main Proof
+That ~n : Nat~ then ~f ? n~ is decidable
+
+** DONE ~FVal~
+** DONE ~FVar~
+** TODO [0/4] ~FOp~
+*** TODO (Splitting of Cases)
+*** TODO ~|+|~
+*** TODO ~|*|~
+*** TODO ~|&|~
+*** TODO ~|^|~
+
+* TODO [2/3] Solve Above 
+That for any ~n : Nat~ ~exists y . (f ? y , y >= n)~
+** DONE ~FVal~
+Simple case (decide on gte)
+** DONE ~FVar~
+Trivial case (just ~y = x~)
+** TODO [0/4] ~FOp~
+Firstly, we assume that ~f~, ~g~ are formulas, and ~f ? x~, ~g ? y~ are always decidable
+*** TODO ~|+|~
+*** TODO ~|*|~
+*** TODO ~|&|~
+*** TODO ~|^|~
+

@@ -110,3 +110,9 @@ seqEq = believe_me ()
 public export
 eqSeq : {0 a : Type} -> {0 b : Type} -> Consumable a => {0 x : a} -> {0 y : b} -> (y = seq x y)
 eqSeq = believe_me ()
+public export
+Consumable (Equal x y) where 
+  consume Refl = ()
+public export
+Consumable Type where 
+  consume t = assert_linear (\t' => ()) t
