@@ -16,7 +16,9 @@ record Exists (t : Type) (p : (t -> Type)) where
     0 fst' : t 
     ||| A value of `f x`
     1 snd' : p fst'
-
+public export
+Exists2 : (t1 : Type) -> (t2 : Type) -> (t1 -> t2 -> Type) -> Type
+Exists2 t1 t2 p = Exists t1 (\x => Exists t2 (\y => p x y))
 public export
 exists : {0 t : Type} -> {0 p : (t -> Type)} -> {0 x : t} -> (1 y : p x) -> Exists t p
 exists {t} {p} {x} y = Given x y
@@ -31,6 +33,9 @@ record Subset (t : Type) (p : (t -> Type)) where
     ||| A value of `f x`
     0 snd' : p fst'
 
+public export
+Subset2 : (t1 : Type) -> (t2 : Type) -> (t1 -> t2 -> Type) -> Type
+Subset2 t1 t2 p = Subset t1 (\x => Subset t2 (\y => p x y))
 ||| A linear existential type $∃ (x : ty). f x$
 ||| @ ty in the existential
 ||| @ f the predicate that must be satisfied, and the type of the value 
@@ -200,4 +205,10 @@ namespace Sigma
         (1 g : forall y. q y -@ r (n y)) ->
         (Sigma a p -@ Sigma c r)
     compose f g (For x y) = For (n (m x)) (g (f y))
- 
+
+%inline %tcinline 
+public export
+All : List Type -> Type
+All [] = ()
+All (x :: []) = x 
+All (x :: xs) = (Duple x (All xs))

@@ -29,3 +29,10 @@ public export
 ($|) f x = f (\_ => x)
 export
 infixl 9 $|
+
+%unsafe 
+public export
+fix_later : {0 a, b : Type} -> a -@ b
+fix_later {a,b} x = prim__believe_me a b x
+
+

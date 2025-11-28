@@ -35,8 +35,8 @@ uniqueEq {n=(Succ n')} {w=w} {a=MS w xs, b=MS w ys} = rewrite__impl
 
 %hint
 public export
-0 uniqueMu : Unique (Mu n t w)
-uniqueMu = unique @{Example n w} @{Lemma.uniqueEq}
+0 uniqueMu : Contractible (Mu n t w)
+uniqueMu = ?unique_mu -- unique @{Example n w} @{Lemma.uniqueEq}
 
 public export
 expand : {1 m : QNat} -> {1 n : QNat} -> Mu (m * n) t w -@ Mu m (Mu n t w) (Example n w)

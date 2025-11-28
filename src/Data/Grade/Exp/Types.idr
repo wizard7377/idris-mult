@@ -35,7 +35,7 @@ public export
 {-
 public export
 0 AW : (p : (Qty -@ QNat)) -> (t : Type) -> Type
-AW p t = A (Omega p t)
+AW p t = A (Omega' p t)
 public export
 infixl 1 ^
 public export
@@ -60,5 +60,5 @@ export
 infix 9 ~?
 ||| The equality relation for existentials
 public export
-0 (~~) : Exists ty p -> Exists ty q -> Type
-(Given n x) ~~ (Given m y) = (n === m)
+0 (~?) : Exists ty p -> Exists ty q -> Type
+x ~? y = (x.fst = y.fst)
