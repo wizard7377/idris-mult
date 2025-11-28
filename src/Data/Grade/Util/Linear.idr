@@ -100,15 +100,18 @@ infixr 0 =@
 public export
 (=@) : Type -> Type -> Type
 c =@ t = {auto 1 prf : c} -> t 
-
+%inline %tcinline
+public export
+qseq : Consumable a => (a -@ (b -@ b))
+qseq {a} {b} x y = let r : Unit = consume x in case r of () => y
 %hint
 public export
-seqEq : {0 a : Type} -> {0 b : Type} -> Consumable a => {0 x : a} -> {0 y : b} -> (seq x y = y)
+seqEq : {0 a : Type} -> {0 b : Type} -> Consumable a => {0 x : a} -> {0 y : b} -> (qseq x y = y)
 seqEq = believe_me () 
 
 %hint 
 public export
-eqSeq : {0 a : Type} -> {0 b : Type} -> Consumable a => {0 x : a} -> {0 y : b} -> (y = seq x y)
+eqSeq : {0 a : Type} -> {0 b : Type} -> Consumable a => {0 x : a} -> {0 y : b} -> (y = qseq x y)
 eqSeq = believe_me ()
 public export
 Consumable (Equal x y) where 

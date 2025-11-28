@@ -17,13 +17,13 @@ import Data.Grade.Form
 import Data.Grade.Mu
 import Data.Grade.Util.LIso
 %default total
-omegaToMu : Omega (FVal n) t w -@ Mu n t w
+omegaToMu : Omega' (FVal [n]) t w -@ Mu n t w
 omegaToMu x = ?h0
 
-muToOmega : {0 n : QNat} -> Mu n t w -@ Omega (FVal n) t w
+muToOmega : {0 n : QNat} -> Mu n t w -@ Omega' (FVal [n]) t w
 muToOmega x n @{prf} = ?h1
   
 public export
-{n : QNat} -> Isomorphic (Omega (FVal n) t w) (Mu n t w) where
+{n : QNat} -> Isomorphic (Omega' (FVal [n]) t w) (Mu n t w) where
   foward = omegaToMu
   backward = muToOmega

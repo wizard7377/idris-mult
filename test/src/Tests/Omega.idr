@@ -9,7 +9,7 @@ import Data.Grade.Set
 
 public export
 0 MostOnce : ? -> ? -> ?
-MostOnce t w = Omega (FRange 0 1) t w
+MostOnce t w = Omega' (FRange 0 1) t w
 
 public export
 omegaTest : IO ()

@@ -3,8 +3,7 @@ module Data.Grade.Exp.Ops
 
 import Data.Grade.Util.Relude
 import Data.Grade.Form
-import Data.Grade.Omega.Types
-import Data.Grade.Omega.Ops
+import Data.Grade.Omega
 import Data.Grade.Mu.Types
 import Data.Grade.Exp.Types
 import Data.Grade.Mu.Ops
@@ -33,11 +32,22 @@ namespace Exp
     public export
     weaken : {0 p : Form} -> {0 q : Form} -> (prf : Unify q p) => (t ^ p) -@ (t ^ q)
     weaken @{prf} (Given n x) = Given n (Omega.weaken @{ ?weaken_prf } x)
-    private 
-    gen' : (!* t) -@ (t ^ (\x : Form => x))
-    gen' (MkBang x) = (Given x (Omega.Types.gen (MkBang x)))
     public export
     gen : {p : Form} -> (!* t) -@ (t ^ p) 
-    gen x = ?hgen
+    gen (MkBang x) = Given x (gen (MkBang x))
     public export
-    combine : {0 m, n : QNat} -> (t ^ m) -@ (t ^ n) -@ (t ^ (m + n))
+    combine : {0 m, n : QNat} -> (1 x : t ^ m) -> (1 y : t ^ n) -> (x ~? y) ==> (t ^ (m |+| n))
+    combine x y @{prf} = let 
+      x' : Omega (formula m) t x.fst = unbox x
+      y' : Omega (formula n) t y.fst = unbox y
+      y'' : Omega (formula n) t x.fst = rewrite prf in y' 
+      r : Omega (formula (m |+| n)) t x.fst = Omega.combine x' y''
+      in box r
+    public export
+    join : {0 m, n : Form} -> ((t ^ n) ^ m) -@ (t ^ (m |*| n)) 
+    join (Given w x) = let 
+      x' : Omega (formula m) (t ^ n) _ = unbox (Given w x)
+      x'' : Omega (formula m) (Omega n t _) _ = Omega.map unbox x'
+      x''' : Omega' (formula m) (Omega n t w.fst) w.snd = Omega.forget x''
+      r : Omega (formula (m |*| n)) t w.fst = Omega.join x'''
+      in box r

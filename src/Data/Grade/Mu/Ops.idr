@@ -82,13 +82,13 @@ conce x = case x of
 ||| This never actually uses the arguement, just the type
 public export
 0 witness : Mu n t w -> t
-witness _ = w
+witness x = w
 ||| Drop a Mu of size 0
 public export 
-dropMu : (0 prf : n === 0) => Mu n t w -@ ()
+dropMu : {0 n : QNat} -> (0 prf : (n = Zero)) => Mu n t w -@ ()
 dropMu MZ = ()
 public export
-seqMu : (0 prf : n === 0) => Mu n t w -@ a -@ a
+seqMu : {0 n : QNat} -> (0 prf : (n = Zero)) => Mu n t w -@ a -@ a
 seqMu MZ x = x
 
 ||| Append two Mu's (of the same value) together
@@ -109,3 +109,4 @@ join {m=Succ m'} {n=n} (MS x xs) = rewrite prf0 in combine x (the (Mu (m' * n) t
   where 
     0 prf0 : (lmul (Succ m') n = n + lmul m' n)
     prf0 = rewrite mulRep in Refl
+-- -}

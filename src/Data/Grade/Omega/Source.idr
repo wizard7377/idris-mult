@@ -10,7 +10,7 @@ data Stream : (t : Type) -> (x : t) -> Type where
 
 public export
 0 Source : (t : Type) -> (w : t) -> Type
-Source t w = Stream (Omega FVar t w) ?source_example
+Source t w = Stream (Omega' FVar t w) ?source_example
 
 export 
 splitStream : Stream t x -@ Duple (Stream t x) (Stream t x)

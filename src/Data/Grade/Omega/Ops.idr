@@ -3,7 +3,7 @@ module Data.Grade.Omega.Ops
 
 import Data.Grade.Util.Relude
 import Data.Grade.Mu.Ops
-import Data.Grade.Mu.Types
+import Data.Grade.Mu
 import Data.Grade.Form
 import Data.Grade.Omega.Types
 import Decidable.Equality
@@ -18,64 +18,60 @@ import Data.Grade.Form.Sugar
 import Prelude.Types
 %default total
 
+public export
+weaken : Omega p t w -@ ((0 prf : Unify p q) => Omega q t w)
+weaken f @{prf} = case f of
+  OmegaVal mv => ?weaken_omega_val
+  OmegaVar mv => ?weaken_omega_var
+  OmegaAdd f1 f2 => ?weaken_omega_add
+  OmegaMul f' => ?weaken_omega_mul
 
-namespace Omega
-    ||| Given that we have p ⊑ q, we can weaken an Omega p t w to an Omega q t w
-    ||| We do this by using the evidence from Unify q p to convert the Mu (Eval' p n) t w to Mu (Eval' q n) t w
-    public export
-    weaken : (1 x : Omega p t w) -> (1 prf : Unify p q) => Omega q t w
-    weaken x @{prf} {t} n = x n @{?h0}
+public export
+combine : Omega p t w -@ Omega q t w -@ Omega (p |+| q) t w
+combine f g = OmegaAdd f g
 
-    ||| Convert an Omega p t w to Mu n t w, given a proof that p is solvable at n
-    ||| This is different from simply applying n.
-    ||| Rather then getting the result of the formula at n, we get exactly n, so long as we have some input that evaluates p to n
+public export
+join : Omega' p (Omega q t w) _ -@ Omega (p |*| q) t w
+join f = OmegaMul f
+
+public export
+split : Omega (p |+| q) t w -@ (Duple (Omega p t w) (Omega q t w))
+split (OmegaAdd f g) = For f g
+
+public export
+expand : Omega (p |*| q) t w -@ Omega' p (Omega q t w) _
+expand (OmegaMul f) = prim__believe_me ? ? f
+mutual
     public export
-    reify : 
-        (1 x : Omega p t w) -> 
-        {1 n : QNat} ->
-        (0 prf : Solve p n) => 
-        Mu n t w
-    reify x {n} @{prf} = x {n} @{prf}
-    ||| Omega is unique up to equality 
-    public export
-    uniqueOmega : forall p, t, w. Unique (Omega p t w)
-    uniqueOmega = ?uo
-    ||| A "simple" mapping of a linear function over Omega.
-    ||| This is different from Omega.map in that the function is unrestricted, so we mark it as unsafe, to keep with the notion of a "completly" linear system
-    %unsafe
-    private
-    simpleMapOmega : 
-        (f : t -@ u) -> 
-        Omega p t w -@ 
-        Omega p u (f w)
-    simpleMapOmega f x {n} = Mu.Ops.map' f (x {n})
-    ||| Map a linear function over a value by distributing it through the Omega
-    ||| Roughly equivalent to the fact that `(a -> b) [n] -> a [n] -> b [n]` in GrTT
-    public export
-    map : 
-        Omega p (t -@ u) wf -@
-        Omega p t wx -@
-        Omega p u (wf wx)
-    map f x {n} = let 
-        1 [n0,n1] = n.clone 2 
-        in app (f $$ n0) (x $$ n1)
-    
-    ||| An alias for `map`
-    public export 
-    app : Omega p (t -@ u) wf -@ Omega p t wx -@ Omega p u (wf wx) 
-    app f x = Omega.map f x
-    public export
-    combine : {0 p : Form} -> Omega p t w -@ Omega q t w -@ Omega (p |+| q) t w
-    combine x y n @{prf} = seq n $ let 
-        1 prf' = SplitOp {p=p,q=q,op=AddOp} @{prf}
-        1 (For n1 (Elem n2 prf0)) = prf'
-        0 prf_0_0 = Sigma.fst prf0
-        0 prf_0_1 = Subset.snd prf_0_0
-        0 prf_1_0 = Sigma.snd prf0
-        0 prf_1_1 = Sigma.fst prf_1_0
-        0 prf_1_2 = Subset.snd prf_1_1
-        1 x' : (Mu n1 t w) = x n1 @{ (Elem (Subset.fst prf_0_0) prf_0_1) }
-        1 y' : (Mu n2 t w) = y n2 @{ (Elem (Subset.fst prf_1_1) prf_1_2) } 
-        1 z' : Mu (n1 + n2) t w = Mu.Ops.combine x' y'
-        0 prf_s_eq : (n1 + n2 = n) = Sigma.snd (Sigma.snd prf0)
-        in rewrite sym prf_s_eq in z'
+    app : Omega p (t -@ u) wf -@ Omega p t wx -@ Omega p u (wf wx)
+    app (OmegaVal mf) (OmegaVal mx) = OmegaVal ?h0
+    app (OmegaVar f) (OmegaVar x) = OmegaVar (go (OmegaVar f) (OmegaVar x))
+        where 
+            go : (Omega FVar (t -@ u) wf) -@ (Omega FVar t wx) -@ ((1 n : QNat) -> Mu n u (wf wx))
+            go (OmegaVar mf) (OmegaVar mx) n = let 
+                [n0, n1] = n.clone 2 
+                in Mu.app (mf $$ n0) (mx $$ n1)
+    app (OmegaAdd f1 f2) (OmegaAdd x1 x2) = combine (app f1 x1) (app f2 x2)
+    app (OmegaMul f') (OmegaMul x') = ?omega_mul
+    app2 : Omega p (a -@ b -@ c) wf -@ Omega p a wx -@ Omega p b wy -@ Omega p c (wf wx wy)
+    app2 f x y = app (app f x) y
+public export
+map : {1 p : Form} -> (f : t -@ u) -> Omega p t w -@ Omega p u (f w)
+map f x = app (genW f) x
+
+public export
+forget : Omega p t w -@ Omega' p t w
+forget (OmegaVal mv) @{prf} n = mv @{prf} n 
+forget (OmegaVar mv) @{prf} n = mv n
+forget (OmegaAdd f g) @{prf} n = ?forget_omega_add
+forget (OmegaMul f) @{prf} n = ?forget_omega_mul
+namespace Notation
+  public export
+  pure : (1 w : t) -> Omega (FVal [1]) t w
+  pure w = ?pure_omega 
+  public export
+  (<$>) : {1 p : Form} -> (f : t -@ u) -> Omega p t w -@ Omega p u (f w)
+  (<$>) = map
+  public export
+  (<*>) : Omega p (t -@ u) wf -@ Omega p t wx -@ Omega p u (wf wx)
+  (<*>) = app

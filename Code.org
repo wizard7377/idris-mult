@@ -1,0 +1,14 @@
+#+TODO: TODO(t) PROGRESS(p!) POLISH(a!) | DONE(d!) REMOVED(r@)
+#+TAGS: PROOF CITE WRITE
+
+* ~Data.Grade.Mu~
+** TODO [/] ~Lemma~
+- [ ] Add proof that ~expand~ is total
+* ~Data.Grade.Omega~
+** TODO [/] Change weaken to restrict
+
+* General
+** TODO Simplify and idiomize proofs
+*** TODO Follow naming convention
+*** TODO Don't name simple subproofs
+
