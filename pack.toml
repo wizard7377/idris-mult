@@ -1,6 +1,12 @@
+[custom.all.idris-copy]
+type = "local"
+path = "idris-copy"
+ipkg = "idris-copy.ipkg"
+
+
 [custom.all.idris-mult]
 type = "local"
-path = "."
+path = "idris-mult"
 ipkg = "idris-mult.ipkg"
 test = "test/test.ipkg"
 

@@ -1,0 +1,78 @@
+package idris-mult
+version = 0.1.0
+authors = "Asher Frost"
+-- maintainers =
+-- license =
+-- brief =
+-- readme =
+-- homepage =
+-- sourceloc =
+-- bugtracker =
+
+-- the Idris2 version required (e.g. langversion >= 0.5.1)
+-- langversion
+
+-- packages to add to search path
+depends = linear, idris-copy
+
+-- modules to install
+modules =
+	Prelude.Linear,
+	Prelude.Logic,
+	Data.Grade,
+	Data.Grade.Core,
+	Data.Grade.Proof,
+	Data.Grade.Form,
+	Data.Grade.Lemma,
+	Data.Grade.Interface,
+	Data.Grade.Set,
+	Data.Grade.Omega,
+	Data.Grade.String,
+	Data.Grade.Exp,
+	Data.Grade.Types,
+	Data.Grade.Mu,
+	Data.Grade.QNat,
+	Data.Grade.Util.Countable,
+	Data.Grade.Util.Linear,
+	Data.Grade.Util.Unique,
+	Data.Grade.Util.Nth,
+	Data.Grade.Util.LIso,
+	Data.Grade.Logic,
+	Data.Grade.Util.Relude,
+	Data.Grade.Util.Types,
+	Data.Grade.Util.Equal,
+	Data.Grade.Util.Nth.NPair
+
+
+
+
+
+-- main file (i.e. file to load at REPL)
+-- main =
+
+-- name of executable
+-- executable =
+opts = "--no-prelude --total"
+-- opts = "--no-prelude --show-machine-names --total" 
+-- opts = "--no-prelude --show-implicits --show-machine-names --total"
+sourcedir = "src"
+-- builddir =
+-- outputdir =
+
+-- script to run before building
+-- prebuild =
+
+-- script to run after building
+-- postbuild =
+
+-- script to run after building, before installing
+-- preinstall =
+
+-- script to run after installing
+-- postinstall =
+
+-- script to run before cleaning
+-- preclean =
+
+-- script to run after cleaning
+-- postclean =
