@@ -66,15 +66,14 @@ record Equiv p q where
     1 rtl : Unify q p
 
 public export 
-data Path : Nat -> Rel [Form, Form] where 
-    ||| A path of length zero between two identical formulas
-    LoopStep : p === q |- Path 1 p q
-    ||| Transititivity of paths
-    JoinStep : Path len0 p q =@ Path len1 q r =@ Path (len0 + len1) p r
-    ||| (P ~> Q), R |- (P * R ~> (P * Q))
-    MultStep : Path len0 p p' =@ Path len1 q q' =@ Path (len0 + len1) (FMul p q) (FMul p' q')
-    ||| (P ~> Q), R |- (P + R ~> (P + Q))
-    AddStep : Path len0 p p' =@ Path len1 q q' =@ Path (len0 + len1) (FAdd p q) (FAdd p' q')
+data Path : Rel [Form, Form] where 
+    Path_Refl : Path p p
+    Path_Trans : Path p q -@ Path q r -@ Path p r
+    Path_Top : Path p FTop
+    Path_Bot : Path FBot p
+    Path_Add_Comm : Path (FAdd p q) (FAdd q p)
+    Path_Add_Both : Path p p' -@ Path q q' -@ Path (FAdd p q) (FAdd p' q')
+    Path_Mul_Both : Path p p' -@ Path q q' -@ Path (FMul p q) (FMul p' q')
     
 
 public export
@@ -97,9 +96,9 @@ p <: q = Unify p q
 p :> q = Unify q p
 %inline %tcinline public export
 0 (#>) : Rel [Form, Form]
-p #> q = (Exists Nat (\len => Path len p q))
+p #> q = Path p q
 %inline %tcinline public export
 0 (<#) : Rel [Form, Form]
-p <# q = (Exists Nat (\len => Path len q p))
+p <# q = Path q p
 
     

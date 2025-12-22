@@ -1,0 +1,3 @@
+[submodule "idris-mult-paper"]
+	path = idris-mult-paper
+	url = https://github.com/wizard7377/idris-mult-paper.git
