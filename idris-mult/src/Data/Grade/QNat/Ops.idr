@@ -3,7 +3,6 @@ import Builtin
 import Prelude
 import Data.Linear.Notation
 import Decidable.Equality
-import Data.Grade.Alg
 import Data.Linear.LMaybe
 import Data.Linear.Interface
 import Data.Grade.QNat.Types

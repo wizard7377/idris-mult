@@ -1,34 +1,20 @@
 module Data.Grade.Omega.Ops
-
-
-import Data.Grade.Util.Relude
-import Data.Grade.Mu.Ops
-import Data.Grade.Mu
-import Data.Grade.Form
+import Relude 
 import Data.Grade.Omega.Types
-import Decidable.Equality
-import Data.Grade.Set
-import Data.Linear.LVect
-import Data.Grade.Mu.Lemma
-import Prelude.Ops
-import Data.Grade.Util.Linear
-import Control.Function.FunExt
-import Data.Grade.Util.Unique
-import Data.Grade.Form.Sugar
-import Prelude.Types
-%default total
+import Data.Grade.Mu
+import Data.Grade.List
+public export
+map : (f : t -@ u) -> Omega p t w -@ Omega p u (f w)
+map f omega n @{prf} = Mu.map f (omega n @{prf})
 
 public export
-combine : Omega (p :: r) t w -@ Omega (q :: r) t w -@ Omega ((FAdd p q) :: r) t w
-combine = Combine
+app : Omega p (t -@ u) w_f -@ Omega p t w_x -@ Omega p u (w_f w_x)
+app omega_f omega_x n @{prf} = let 
+    1 [n0, n1] = n.clone 1
+    0 prf0 : Elem n0.val p = rewrite sym n0.prf in prf
+    0 prf1 : Elem n1.val p = rewrite sym n1.prf in prf
+    in rewrite n0.prf in Mu.app (omega_f n0.val @{prf0}) (rewrite cloneEq {a=n0} in (omega_x n1.val @{prf1}))
+
 public export
-split : Omega ((FAdd p q) :: r) t w -@ Duple (Omega (p :: r) t w) (Omega (q :: r) t w)
-split (Combine x y) = (For x y) 
-private
-reflect : {1 p : Form} -> Omega (p :: r) t w -@ Omega r (Omega [p] t w) ?ref
-reflect {p = FTop} x = ?reflect_rhs_0
-reflect {p = FBot} x = ?reflect_rhs_1
-reflect {p = (FVal y)} x = ?reflect_rhs_2
-reflect {p = (FAlt p q)} x = ?reflect_rhs_3
-reflect {p = (FAdd p q)} x = ?reflect_rhs_4
-reflect {p = (FMul p q)} x = ?reflect_rhs_5
+combine : Omega p t w -@ Omega q t w -@ Omega (p |+| q) t w
+combine omega1 omega2 n @{prf} = ?combine_rhs

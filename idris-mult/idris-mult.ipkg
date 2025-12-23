@@ -17,12 +17,9 @@ depends = linear, idris-copy
 
 -- modules to install
 modules =
-	Prelude.Linear,
-	Prelude.Logic,
 	Data.Grade,
 	Data.Grade.Core,
 	Data.Grade.Proof,
-	Data.Grade.Form,
 	Data.Grade.Lemma,
 	Data.Grade.Interface,
 	Data.Grade.Set,
@@ -31,17 +28,7 @@ modules =
 	Data.Grade.Exp,
 	Data.Grade.Types,
 	Data.Grade.Mu,
-	Data.Grade.QNat,
-	Data.Grade.Util.Countable,
-	Data.Grade.Util.Linear,
-	Data.Grade.Util.Unique,
-	Data.Grade.Util.Nth,
-	Data.Grade.Util.LIso,
-	Data.Grade.Logic,
-	Data.Grade.Util.Relude,
-	Data.Grade.Util.Types,
-	Data.Grade.Util.Equal,
-	Data.Grade.Util.Nth.NPair
+	Data.Grade.QNat
 
 
 
