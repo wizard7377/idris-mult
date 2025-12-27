@@ -18,17 +18,9 @@ depends = linear, idris-copy
 -- modules to install
 modules =
 	Data.Grade,
-	Data.Grade.Core,
-	Data.Grade.Proof,
-	Data.Grade.Lemma,
-	Data.Grade.Interface,
-	Data.Grade.Set,
 	Data.Grade.Omega,
-	Data.Grade.String,
 	Data.Grade.Exp,
-	Data.Grade.Types,
-	Data.Grade.Mu,
-	Data.Grade.QNat
+	Data.Grade.Mu
 
 
 

@@ -7,6 +7,7 @@ import Data.Linear.LMaybe
 import Data.Linear.Interface
 import Data.Grade.QNat.Types
 import Data.Grade.Util.Unique
+import Prelude.Clone
 %default total
 
 ||| Add two linear natural numbers 
@@ -20,8 +21,8 @@ export
 lmul : QNat -@ QNat -@ QNat
 lmul Zero n = seq n Zero
 lmul (Succ m) n = let 
-    1 [n1, n2] = n.clone' 2
-    in ladd ((lmul m) $$ n1) &$ n2
+    1 [n1, n2] = (clone 1 n)
+    in ladd ((lmul m) n1.val) n2.val
 
 ||| The runtime implementation of linear subtraction for linear natural numbers (proof of k1 <= k0 required)
 public export
@@ -52,15 +53,6 @@ lmax m n = go 0 m n
     go acc Zero n = ladd acc n
     go acc m Zero = ladd acc m
     go acc (Succ m) (Succ n) = go (Succ acc) m n
-  
-||| Runtime implementation of exponentiation for linear natural numbers
-export
-lpower : QNat -@ QNat -@ QNat
-lpower m Zero = seq m 1
-lpower m (Succ n) = assert_total $ let 
-  1 [m1, m2] = m.clone' 2
-  in lmul (lpower &$ m1 $ n) &$ m2
-
 ||| Runtime implementation of linear subtraction for linear natural numbers (Maybe for underflow) 
 export
 lminus : (1 k0 : QNat) -> (1 k1 : QNat) -> LMaybe QNat
@@ -74,38 +66,6 @@ gte Zero y = seq y False
 gte (Succ x) Zero = seq x True
 gte (Succ x) (Succ y) = gte x y
 
-||| Runtime implementation of integral division for linear natural numbers 
-||| If the reminder is non-zero, Nothing is returned
-||| If the second argument is zero, Just Zero is returned
-export 
-ldiv : (1 x : QNat) -> (1 y : QNat) -> LMaybe QNat
-ldiv x Zero = seq x $ Just Zero
-ldiv Zero y = seq y $ Just Zero
-ldiv x y = assert_total $ let 
-  1 [x0] = x.clone' 1
-  1 [y0, y1] = y.clone' 2
-  in case lminus &$ x0 &$ y0 of 
-    Nothing => seq y1 $ Nothing 
-    Just r => case ldiv r &$ y1 of 
-      Nothing => Nothing
-      Just q => Just (Succ q)
-||| Runtime implementation of pairing function for linear natural numbers
-||| If a number n is of the form 2^x * 3^y, it is mapped to the pair (x, y)
-||| Otherwise, it is mapped to (0, 0)
-export
-pairing : (1 x : QNat) -> LPair QNat QNat 
-pairing Zero = seq Zero $ (Zero # Zero)
-pairing n = assert_total $ let 
-  1 [n0, n1] = n.clone' 2
-  in case (ldiv n0.val) 2 of 
-    Nothing => case (ldiv n1.val) 3 of 
-      Nothing => (Zero # Zero)
-      Just q => let 
-        (x' # y') = pairing q
-        in (x' # Succ y')
-    Just q => seq n1 $ let 
-      (x' # y') = pairing q
-      in (Succ x' # y')
 
 --- REPRESENTATIONS
 
@@ -120,19 +80,6 @@ lmul' (Succ m) n = ladd n (lmul' m n)
 public export
 0 mulRep : Ops.lmul === Ops.lmul' 
 mulRep = assert_total (believe_me ())
-
-
-||| The ghost implementation of exponentiation for linear natural numbers
-public export
-0 lpower' : QNat -@ QNat -@ QNat
-lpower' m Zero = 1
-lpower' m (Succ n) = lmul' (lpower' m n) m
-
-||| The proof that runtime and ghost exponentiation are equivalent
-%unsafe %hint 
-public export
-0 powerRep : Ops.lpower === Ops.lpower'
-powerRep = believe_me ()
 
 public export
 lrange : (1 lo : QNat) -> (1 hi : QNat) -> QNat -@ QNat

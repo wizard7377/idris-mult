@@ -3,7 +3,6 @@ module Data.Grade.Util.Relude
 import public Builtin
 import public Prelude.Basics
 import public Prelude.Cast
-import public Data.Grade.Util.Types
 import public Data.Grade.QNat
 import public Data.Nat
 import public Data.Linear.Notation

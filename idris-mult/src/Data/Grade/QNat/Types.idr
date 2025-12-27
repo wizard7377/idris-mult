@@ -3,7 +3,6 @@ import Builtin
 import Prelude
 import Data.Linear.Notation
 import Data.Linear.Interface
-import public Data.Grade.Logic.QDec
 import public Data.Grade.Util.Linear
 import Decidable.Equality
   
@@ -18,6 +17,11 @@ public export
 Consumable QNat where
   consume Zero = ()
   consume (Succ k) = consume k
+  
+public export
+Drop QNat where
+  drop Zero = ()
+  drop (Succ k) = drop k
 public export
 Duplicable QNat where
   duplicate Zero = [Zero, Zero]
@@ -25,10 +29,8 @@ Duplicable QNat where
 
 public export
 Copy QNat where
-    copy f Zero = f Zero Zero 
-    copy f (Succ k) = copy (\x, y => f (Succ x) (Succ y)) k
-    copy_eq {x=Zero} = Refl
-    copy_eq {x=(Succ k)} = believe_me ()
+    copy Zero f = f Zero Zero 
+    copy (Succ k) f = copy k (\x, y => f (Succ x) (Succ y))
 %default total
 ||| The less than or equal relation on QNat
 public export
@@ -62,13 +64,17 @@ succEq Refl = Refl
 export
 succ_inj : forall m, n. (Succ m === Succ n) -@ (m === n)
 succ_inj Refl = Refl
+  
+private 
+use_absurd : Void -@ a
+use_absurd v impossible
 %unsafe
 export
-neq_succ : QNot (Succ m === Zero)
+neq_succ : Not (Succ m === Zero)
 neq_succ prf = assert_linear believe_me prf
 %unsafe 
 export
-neq_succ' : QNot (Zero === Succ n)
+neq_succ' : Not (Zero === Succ n)
 neq_succ' prf = assert_linear believe_me prf
 public export
 DecEq QNat where
@@ -76,8 +82,8 @@ DecEq QNat where
   decEq (Succ m) (Succ n) = case decEq m n of 
     Yes prf => rewrite prf in Yes Refl
     No contra => No (\prf => contra (succ_inj prf))
-  decEq (Succ m) Zero = No (MkNot neq_succ)
-  decEq Zero (Succ n) = No (MkNot neq_succ')
+  decEq (Succ m) Zero = No ?dec_eq_1
+  decEq Zero (Succ n) = No ?dec_eq_2
   
 public export
 noLTEZero : {n : QNat} -> Not (LLTE (Succ n) Zero)
@@ -91,14 +97,7 @@ DecLTE {m=Succ m'} {n=Zero} = No (\prf => noLTEZero prf)
 DecLTE {m=Succ m'} {n=Succ n'} = case DecLTE {m=m'} {n=n'} of 
   Yes prf => Yes (LLTE_S prf)
   No contra => No (\prf => contra (case prf of LLTE_S prf' => prf'))
-public export
-QDecEq QNat where
-    qDecEq {x=Zero} {y=Zero} = QYes Refl
-    qDecEq {x=Succ m'} {y=Zero} = seq m' (QNo neq_succ)
-    qDecEq {x=Zero} {y=Succ n'} = seq n' (QNo neq_succ')
-    qDecEq {x=Succ m'} {y=Succ n'} = case qDecEq {x=m'} {y=n'} of 
-        QYes prf => seq prf (QYes (rewrite prf in Refl))
-        QNo contra => QNo (\prf => contra (succ_inj prf))
+
 ||| Convert QNat to Nat
 public export
 toNat : QNat -> Nat

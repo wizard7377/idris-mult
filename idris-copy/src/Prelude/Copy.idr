@@ -58,7 +58,7 @@ infixr 0 |-
 public export
 (|-) : Type -> Type -> Type
 hypo |- goal = {auto 0 prf : hypo} -> goal 
-  
+public export  
 interface Drop a where
   constructor MkDrop
   drop : (1 x : a) -> Unit
@@ -99,3 +99,13 @@ SC f g x = let
   
 
 -}
+
+%defaulthint
+public export
+0 ECopy : forall a. Copy a
+ECopy = MkCopy (\x, f => f x x)
+
+%defaulthint 
+public export
+0 EDrop : forall a. Drop a
+EDrop = MkDrop (\x => ())
