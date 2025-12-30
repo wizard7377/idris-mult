@@ -2,10 +2,6 @@ module Prelude.Copy
 
 
 import public Builtin
-import public Data.Linear.Notation
-import public Data.Linear.Interface
-import Data.Linear.Copies
-import public Data.Linear.LVect
 import Prelude
 %default total
 public export
@@ -22,7 +18,7 @@ copyWithEq :
     {0 b : a -> a -> Type} ->
     (1 _ : Copy a) => 
     (1 x : a) ->
-    ((1 y : a) -> (1 z : a) -> (0 prfY : y === x) => (0 prfZ : z === x) => b y z) -@
+    (1 _ : ((1 y : a) -> (1 z : a) -> (0 prfY : y === x) => (0 prfZ : z === x) => b y z)) ->
     b x x
 
   
@@ -32,13 +28,13 @@ copyWithEq @{(MkCopy copy_inst)} x f =
   in g
   
 public export
-copy' : (1 _ : Copy a) => a -@ (a -@ a -@ b) -@ b 
+copy' : (1 _ : Copy a) => (1 _ : a) -> (1 _ : ((1 _ : a) -> (1 _ : a) -> b)) -> b
 copy' @{(MkCopy copy_inst)} x f = copy_inst x f
 public export
 copyWithEq' : 
     (1 _ : Copy a) => 
     (1 x : a) ->
-    ((1 y : a) -> (1 z : a) -> (0 prfY : y === x) => (0 prfZ : z === x) => b) -@
+    (1 _ : (1 y : a) -> (1 z : a) -> (0 prfY : y === x) => (0 prfZ : z === x) => b) ->
     b
 copyWithEq' @{(MkCopy copy_inst)} x f = copyWithEq @{MkCopy copy_inst} x (\y, z => f y z)
 public export
@@ -46,12 +42,6 @@ Copy () where
     copy () f = f () ()
     
 
-
-export
-infixr 0 =@ 
-public export
-(=@) : Type -> Type -> Type
-c =@ t = {auto 1 prf : c} -> t 
 
 export
 infixr 0 |-
@@ -65,21 +55,21 @@ interface Drop a where
   
   
 export 
-free : Drop a =@ a -@ b -@ b
+free : (1 prf : Drop a) => (1 _ : a) -> (1 _ : b) -> b
 free @{(MkDrop drop_inst)} x y = case drop_inst x of 
   () => y
 export 
 free_eq : (1 _ : Drop a) => {0 x : a} -> (Copy.free x y) === y
 free_eq @{drop_inst} = prim__believe_me ? ? drop_inst
 public export 
-linear_absurd : Void -@ a
+linear_absurd : (1 prf : Void) -> a
 linear_absurd prf impossible
 
 public export
 SC : 
   {0 a : Type} -> 
   Copy a =>
-  Consumable a => --TODO: remove this constraint by changing how we clone'
+  Drop a => --TODO: remove this constraint by changing how we clone'
   {0 p : a -> Type} ->
   {0 q : (x : a) -> p x -> Type} ->
   (1 f : ((1 x' : a) -> (1 y' : p x') -> q x' y')) ->

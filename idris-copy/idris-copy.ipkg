@@ -16,7 +16,7 @@ authors = "Asher Frost"
 depends = linear
 
 -- modules to install
-modules = Prelude.Copy, Prelude.Clone
+modules = Prelude.Copy, Prelude.Clone, Prelude.Linear
 	
 
 

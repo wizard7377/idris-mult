@@ -108,9 +108,9 @@ pull (MS x xs # MS y ys) = MS (x # y)  (pull (xs # ys))
   
 ||| Maps a linear function external to the linear values over a linear mu
 public export 
-map : (f : t -@ u) -> (1 x : Mu n t w) -> Mu n u (f w)
+map : (f : t -@ u) -> Mu n t w -@ Mu n u (f w)
 map f MZ = MZ
-map f (MS x xs) = MS (f x) (map {w=x} f xs)
+map f (MS x xs) = MS (f x) (map f xs)
 
 
 
@@ -120,7 +120,7 @@ applyPair (f # x) = f x
 
 ||| Mapping internal to the linear values over a linear mu
 public export 
-app : (1 f : Mu n (t -@ u) wf) -> (1 x : Mu n t wx) -> Mu n u (wf wx)
+app : Mu n (t -@ u) wf -@ Mu n t wx -@ Mu n u (wf wx)
 app MZ MZ = MZ 
 app (MS f fs) (MS x xs) = MS (f x) (app fs xs)
 ----------------------------------------------------------------
@@ -146,17 +146,23 @@ combine MZ ys = ys
 combine (MS x xs) ys = MS x (combine xs ys)
 ||| Split a Mu at a given position
 public export
-split : {1 m : QNat} -> Mu (m + n) t w -@ LPair (Mu m t w) (Mu n t w)
-split {m=Zero} xs = MZ # xs
-split {m=Succ m'} (MS x xs) = let (ys # zs) = split {m=m'} xs in (MS x ys # zs)
+split : {1 m : QNat} -> Mu (m + n) t w -@ (Mu m t w) <&> (Mu n t w)
+split {m=Zero} xs = And MZ xs
+split {m=Succ m'} (MS x xs) = let (And ys zs) = split {m=m'} xs in (And (MS x ys) zs)
+
+
 ||| Join a Mu of Mu's into a single Mu
 public export
 join : Mu m (Mu n t w) v -@ Mu (m * n) t w
-join MZ = rewrite lmul_zero_left {k=n} in MZ
-join {m=Succ m'} {n=n} (MS x xs) = rewrite prf0 in combine x (the (Mu (m' * n) t w) (join xs))
-  where 
-    0 prf0 : (lmul (Succ m') n = n + lmul m' n)
-    prf0 = rewrite mulRep in Refl
+join {m=Zero} MZ = let
+  0 prf : (0 * n === 0) = lmul_zero_left
+  in rewrite prf in MZ
+join {m=Succ m'} (MS x xs) = let
+  1 y : Mu n t w = x
+  1 ys : Mu (m' * n) t w = join xs
+  0 prf : ((Succ m') * n === n + (m' * n)) = lmul_succ_left
+  1 z : Mu (Succ m' * n) t w = rewrite prf in combine y ys
+  in z
 
 
 %hint
@@ -172,3 +178,10 @@ uniqueMu {w} {n=Succ n'} = contract @{MS w uniqueMu.center} @{ ?contract_proof }
 public export
 expand : {1 m : QNat} -> {1 n : QNat} -> Mu (m * n) t w -@ Mu m (Mu n t w) Point 
 
+export
+mu_ind :
+  {p : (n' : QNat) -> (t : Type) -> (w : t) -> Mu n' t w -> Type} ->
+  p 0 t w MZ -@
+  ({0 n' : QNat} -> (1 w : t) -> (1 x : Mu n' t w) -> (1 prf : p n' t w x) -> p (Succ n') t w (MS w x)) ->
+  {1 n : QNat} ->
+  p n t w Point
