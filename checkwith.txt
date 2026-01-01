@@ -1,0 +1,311 @@
+idris2   --build ./idris-mult/idris-mult.ipkg 
+12/18: Building Data.Grade.Mu (src/Data/Grade/Mu.idr)
+LOG quantity:5: Linearity check on : {0 a : Type} -> {auto 0 {conArg:832} : (Data.Grade.Logic.Contractible a[0])} -> {0 x : a[1]} -> {0 y : a[2]} -> (Builtin.(===) a[3] x[1] y[0])
+LOG quantity:5: In env
+LOG quantity:15: lcheck Bind
+LOG quantity:15: lcheck TType
+LOG quantity:15: lcheck Bind
+LOG quantity:15: lcheck App Data.Grade.Logic.Contractible a[0]
+LOG quantity:15: lcheck Ref TyCon 1 Data.Grade.Logic.Contractible
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Bind
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Bind
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck App (Builtin.(===) a[3] x[1]) y[0]
+LOG quantity:15: lcheck App (Builtin.(===) a[3]) x[1]
+LOG quantity:15: lcheck App Builtin.(===) a[3]
+LOG quantity:15: lcheck Ref Func Builtin.(===)
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:5: Used: []
+LOG quantity:5: Linearity check on : let 0 prfX : (Builtin.(===) a[4] x[1] center'[3]) = (prf[2] x[1]) in let 0 prfY : (Builtin.(===) a[5] center'[4] y[1]) = (Builtin.sym a[5] a[5] y[1] center'[4] (prf[3] y[1])) in (Builtin.trans a[6] x[3] center'[5] y[2] prfX[1] prfY[0])
+LOG quantity:5: In env
+LOG quantity:5: In env:Rig0 Explicit y: a[3]
+LOG quantity:5: In env:Rig0 Explicit x: a[2]
+LOG quantity:5: In env:Rig0 Explicit prf: {x : a[1]} -> (Builtin.(===) a[2] x[0] center'[1])
+LOG quantity:5: In env:Rig0 Explicit center': a[0]
+LOG quantity:5: In env:Rig0 Explicit a: Type
+LOG quantity:15: lcheck Bind
+LOG quantity:15: lcheck App (Builtin.(===) a[4] x[1]) center'[3]
+LOG quantity:15: lcheck App (Builtin.(===) a[4]) x[1]
+LOG quantity:15: lcheck App Builtin.(===) a[4]
+LOG quantity:15: lcheck Ref Func Builtin.(===)
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck App prf[2] x[1]
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Bind
+LOG quantity:15: lcheck App (Builtin.(===) a[5] center'[4]) y[1]
+LOG quantity:15: lcheck App (Builtin.(===) a[5]) center'[4]
+LOG quantity:15: lcheck App Builtin.(===) a[5]
+LOG quantity:15: lcheck Ref Func Builtin.(===)
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck App (Builtin.sym a[5] a[5] y[1] center'[4]) (prf[3] y[1])
+LOG quantity:15: lcheck App (Builtin.sym a[5] a[5] y[1]) center'[4]
+LOG quantity:15: lcheck App (Builtin.sym a[5] a[5]) y[1]
+LOG quantity:15: lcheck App (Builtin.sym a[5]) a[5]
+LOG quantity:15: lcheck App Builtin.sym a[5]
+LOG quantity:15: lcheck Ref Func Builtin.sym
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck App prf[3] y[1]
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck App (Builtin.trans a[6] x[3] center'[5] y[2] prfX[1]) prfY[0]
+LOG quantity:15: lcheck App (Builtin.trans a[6] x[3] center'[5] y[2]) prfX[1]
+LOG quantity:15: lcheck App (Builtin.trans a[6] x[3] center'[5]) y[2]
+LOG quantity:15: lcheck App (Builtin.trans a[6] x[3]) center'[5]
+LOG quantity:15: lcheck App (Builtin.trans a[6]) x[3]
+LOG quantity:15: lcheck App Builtin.trans a[6]
+LOG quantity:15: lcheck Ref Func Builtin.trans
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:5: Used: []
+LOG quantity:5: Linearity check on : (Data.Grade.Mu.Setpoint [__]@a[4] (Data.Grade.Logic.Contract a[4] center'[3] prf[2]) x[1] y[0])
+LOG quantity:5: In env
+LOG quantity:5: In env:Rig0 Explicit y: a[3]
+LOG quantity:5: In env:Rig0 Explicit x: a[2]
+LOG quantity:5: In env:Rig0 Explicit prf: {x : a[1]} -> (Builtin.(===) a[2] x[0] center'[1])
+LOG quantity:5: In env:Rig0 Explicit center': a[0]
+LOG quantity:5: In env:Rig0 Explicit a: Type
+LOG quantity:15: lcheck App (Data.Grade.Mu.Setpoint [__]@a[4] (Data.Grade.Logic.Contract a[4] center'[3] prf[2]) x[1]) y[0]
+LOG quantity:15: lcheck App (Data.Grade.Mu.Setpoint [__]@a[4] (Data.Grade.Logic.Contract a[4] center'[3] prf[2])) x[1]
+LOG quantity:15: lcheck App (Data.Grade.Mu.Setpoint [__]@a[4]) (Data.Grade.Logic.Contract a[4] center'[3] prf[2])
+LOG quantity:15: lcheck App Data.Grade.Mu.Setpoint [__]@a[4]
+LOG quantity:15: lcheck Ref Func Data.Grade.Mu.Setpoint
+LOG quantity:15: lcheck As
+LOG quantity:15: lcheck Erased
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck App (Data.Grade.Logic.Contract a[4] center'[3]) prf[2]
+LOG quantity:15: lcheck App (Data.Grade.Logic.Contract a[4]) center'[3]
+LOG quantity:15: lcheck App Data.Grade.Logic.Contract a[4]
+LOG quantity:15: lcheck Ref DataCon 0 3 Data.Grade.Logic.Contract
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:5: Used: []
+LOG quantity:5: Linearity check on : let 0 prfX : (Builtin.(===) a[4] x[1] center'[3]) = (prf[2] x[1]) in let 0 prfY : (Builtin.(===) a[5] center'[4] y[1]) = (Builtin.sym a[5] a[5] y[1] center'[4] (prf[3] y[1])) in (Builtin.trans a[6] x[3] center'[5] y[2] prfX[1] prfY[0])
+LOG quantity:5: In env
+LOG quantity:5: In env:Rig0 Explicit y: a[3]
+LOG quantity:5: In env:Rig0 Explicit x: a[2]
+LOG quantity:5: In env:Rig0 Explicit prf: {x : a[1]} -> (Builtin.(===) a[2] x[0] center'[1])
+LOG quantity:5: In env:Rig0 Explicit center': a[0]
+LOG quantity:5: In env:Rig0 Explicit a: Type
+LOG quantity:15: lcheck Bind
+LOG quantity:15: lcheck App (Builtin.(===) a[4] x[1]) center'[3]
+LOG quantity:15: lcheck App (Builtin.(===) a[4]) x[1]
+LOG quantity:15: lcheck App Builtin.(===) a[4]
+LOG quantity:15: lcheck Ref Func Builtin.(===)
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck App prf[2] x[1]
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Bind
+LOG quantity:15: lcheck App (Builtin.(===) a[5] center'[4]) y[1]
+LOG quantity:15: lcheck App (Builtin.(===) a[5]) center'[4]
+LOG quantity:15: lcheck App Builtin.(===) a[5]
+LOG quantity:15: lcheck Ref Func Builtin.(===)
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck App (Builtin.sym a[5] a[5] y[1] center'[4]) (prf[3] y[1])
+LOG quantity:15: lcheck App (Builtin.sym a[5] a[5] y[1]) center'[4]
+LOG quantity:15: lcheck App (Builtin.sym a[5] a[5]) y[1]
+LOG quantity:15: lcheck App (Builtin.sym a[5]) a[5]
+LOG quantity:15: lcheck App Builtin.sym a[5]
+LOG quantity:15: lcheck Ref Func Builtin.sym
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck App prf[3] y[1]
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck App (Builtin.trans a[6] x[3] center'[5] y[2] prfX[1]) prfY[0]
+LOG quantity:15: lcheck App (Builtin.trans a[6] x[3] center'[5] y[2]) prfX[1]
+LOG quantity:15: lcheck App (Builtin.trans a[6] x[3] center'[5]) y[2]
+LOG quantity:15: lcheck App (Builtin.trans a[6] x[3]) center'[5]
+LOG quantity:15: lcheck App (Builtin.trans a[6]) x[3]
+LOG quantity:15: lcheck App Builtin.trans a[6]
+LOG quantity:15: lcheck Ref Func Builtin.trans
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:5: Used: []
+LOG quantity:5: Linearity check on : {0 t : Type} -> {0 w : t[0]} -> {1 m : Data.Grade.QNat.Types.QNat} -> {1 n : Data.Grade.QNat.Types.QNat} -> (Data.Linear.Notation.(-@) (Data.Grade.Mu.Mu (Prelude.Num.(*) Data.Grade.QNat.Types.QNat Data.Grade.QNat.Ops.Num implementation at Data.Grade.QNat.Ops:32:1--36:21 m[1] n[0]) t[3] w[2]) (Data.Grade.Mu.Mu m[1] (Data.Grade.Mu.Mu n[0] t[3] w[2]) (Data.Grade.Logic.Point (Data.Grade.Mu.Mu n[0] t[3] w[2]) (Data.Grade.Mu.uniqueMu t[3] w[2] n[0]))))
+LOG quantity:5: In env
+LOG quantity:15: lcheck Bind
+LOG quantity:15: lcheck TType
+LOG quantity:15: lcheck Bind
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Bind
+LOG quantity:15: lcheck Ref TyCon 0 Data.Grade.QNat.Types.QNat
+LOG quantity:15: lcheck Bind
+LOG quantity:15: lcheck Ref TyCon 0 Data.Grade.QNat.Types.QNat
+LOG quantity:15: lcheck App (Data.Linear.Notation.(-@) (Data.Grade.Mu.Mu (Prelude.Num.(*) Data.Grade.QNat.Types.QNat Data.Grade.QNat.Ops.Num implementation at Data.Grade.QNat.Ops:32:1--36:21 m[1] n[0]) t[3] w[2])) (Data.Grade.Mu.Mu m[1] (Data.Grade.Mu.Mu n[0] t[3] w[2]) (Data.Grade.Logic.Point (Data.Grade.Mu.Mu n[0] t[3] w[2]) (Data.Grade.Mu.uniqueMu t[3] w[2] n[0])))
+LOG quantity:15: lcheck App Data.Linear.Notation.(-@) (Data.Grade.Mu.Mu (Prelude.Num.(*) Data.Grade.QNat.Types.QNat Data.Grade.QNat.Ops.Num implementation at Data.Grade.QNat.Ops:32:1--36:21 m[1] n[0]) t[3] w[2])
+LOG quantity:15: lcheck Ref Func Data.Linear.Notation.(-@)
+LOG quantity:15: lcheck App (Data.Grade.Mu.Mu (Prelude.Num.(*) Data.Grade.QNat.Types.QNat Data.Grade.QNat.Ops.Num implementation at Data.Grade.QNat.Ops:32:1--36:21 m[1] n[0]) t[3]) w[2]
+LOG quantity:15: lcheck App (Data.Grade.Mu.Mu (Prelude.Num.(*) Data.Grade.QNat.Types.QNat Data.Grade.QNat.Ops.Num implementation at Data.Grade.QNat.Ops:32:1--36:21 m[1] n[0])) t[3]
+LOG quantity:15: lcheck App Data.Grade.Mu.Mu (Prelude.Num.(*) Data.Grade.QNat.Types.QNat Data.Grade.QNat.Ops.Num implementation at Data.Grade.QNat.Ops:32:1--36:21 m[1] n[0])
+LOG quantity:15: lcheck Ref TyCon 3 Data.Grade.Mu.Mu
+LOG quantity:15: lcheck App (Prelude.Num.(*) Data.Grade.QNat.Types.QNat Data.Grade.QNat.Ops.Num implementation at Data.Grade.QNat.Ops:32:1--36:21 m[1]) n[0]
+LOG quantity:15: lcheck App (Prelude.Num.(*) Data.Grade.QNat.Types.QNat Data.Grade.QNat.Ops.Num implementation at Data.Grade.QNat.Ops:32:1--36:21) m[1]
+LOG quantity:15: lcheck App (Prelude.Num.(*) Data.Grade.QNat.Types.QNat) Data.Grade.QNat.Ops.Num implementation at Data.Grade.QNat.Ops:32:1--36:21
+LOG quantity:15: lcheck App Prelude.Num.(*) Data.Grade.QNat.Types.QNat
+LOG quantity:15: lcheck Ref Func Prelude.Num.(*)
+LOG quantity:15: lcheck Ref TyCon 0 Data.Grade.QNat.Types.QNat
+LOG quantity:15: lcheck Ref Func Data.Grade.QNat.Ops.Num implementation at Data.Grade.QNat.Ops:32:1--36:21
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck App (Data.Grade.Mu.Mu m[1] (Data.Grade.Mu.Mu n[0] t[3] w[2])) (Data.Grade.Logic.Point (Data.Grade.Mu.Mu n[0] t[3] w[2]) (Data.Grade.Mu.uniqueMu t[3] w[2] n[0]))
+LOG quantity:15: lcheck App (Data.Grade.Mu.Mu m[1]) (Data.Grade.Mu.Mu n[0] t[3] w[2])
+LOG quantity:15: lcheck App Data.Grade.Mu.Mu m[1]
+LOG quantity:15: lcheck Ref TyCon 3 Data.Grade.Mu.Mu
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck App (Data.Grade.Mu.Mu n[0] t[3]) w[2]
+LOG quantity:15: lcheck App (Data.Grade.Mu.Mu n[0]) t[3]
+LOG quantity:15: lcheck App Data.Grade.Mu.Mu n[0]
+LOG quantity:15: lcheck Ref TyCon 3 Data.Grade.Mu.Mu
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck App (Data.Grade.Logic.Point (Data.Grade.Mu.Mu n[0] t[3] w[2])) (Data.Grade.Mu.uniqueMu t[3] w[2] n[0])
+LOG quantity:15: lcheck App Data.Grade.Logic.Point (Data.Grade.Mu.Mu n[0] t[3] w[2])
+LOG quantity:15: lcheck Ref Func Data.Grade.Logic.Point
+LOG quantity:15: lcheck App (Data.Grade.Mu.Mu n[0] t[3]) w[2]
+LOG quantity:15: lcheck App (Data.Grade.Mu.Mu n[0]) t[3]
+LOG quantity:15: lcheck App Data.Grade.Mu.Mu n[0]
+LOG quantity:15: lcheck Ref TyCon 3 Data.Grade.Mu.Mu
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck App (Data.Grade.Mu.uniqueMu t[3] w[2]) n[0]
+LOG quantity:15: lcheck App (Data.Grade.Mu.uniqueMu t[3]) w[2]
+LOG quantity:15: lcheck App Data.Grade.Mu.uniqueMu t[3]
+LOG quantity:15: lcheck Ref Func Data.Grade.Mu.uniqueMu
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:5: Used: []
+LOG quantity:5: Linearity check on : (Data.Linear.Interface.seq ?Data.Grade.Mu.{b:893}_[t[3], w[2], n[1], x[0]] Builtin.Unit Data.Linear.Interface.Consumable implementation at Data.Linear.Interface:18:1--19:34 (Data.Grade.Mu.dropMu t[3] w[2] ?Data.Grade.Mu.{n:898}_[t[3], w[2], n[1], x[0]] (Data.Grade.QNat.Ops.lmul_zero_left n[1]) x[0]) (Data.Linear.Interface.seq ?Data.Grade.Mu.{b:901}_[t[3], w[2], n[1], x[0]] Builtin.Unit Data.Linear.Interface.Consumable implementation at Data.Linear.Interface:18:1--19:34 (Prelude.Copy.drop Data.Grade.QNat.Types.QNat Data.Grade.QNat.Types.Drop implementation at Data.Grade.QNat.Types:21:1--24:25 n[1]) (Data.Grade.Mu.MZ (Data.Grade.Mu.Mu n[1] t[3] w[2]) (Data.Grade.Logic.Point (Data.Grade.Mu.Mu n[1] t[3] w[2]) (Data.Grade.Mu.uniqueMu t[3] w[2] n[1])))))
+LOG quantity:5: In env
+LOG quantity:5: In env:Rig1 Explicit x: (Data.Grade.Mu.Mu (Prelude.Num.(*) Data.Grade.QNat.Types.QNat Data.Grade.QNat.Ops.Num implementation at Data.Grade.QNat.Ops:32:1--36:21 Data.Grade.QNat.Types.Zero n[0]) t[2] [__]@w[1])
+LOG quantity:5: In env:Rig1 Explicit n: Data.Grade.QNat.Types.QNat
+LOG quantity:5: In env:Rig0 Explicit w: t[0]
+LOG quantity:5: In env:Rig0 Explicit t: Type
+LOG quantity:15: lcheck App (Data.Linear.Interface.seq ?Data.Grade.Mu.{b:893}_[t[3], w[2], n[1], x[0]] Builtin.Unit Data.Linear.Interface.Consumable implementation at Data.Linear.Interface:18:1--19:34 (Data.Grade.Mu.dropMu t[3] w[2] ?Data.Grade.Mu.{n:898}_[t[3], w[2], n[1], x[0]] (Data.Grade.QNat.Ops.lmul_zero_left n[1]) x[0])) (Data.Linear.Interface.seq ?Data.Grade.Mu.{b:901}_[t[3], w[2], n[1], x[0]] Builtin.Unit Data.Linear.Interface.Consumable implementation at Data.Linear.Interface:18:1--19:34 (Prelude.Copy.drop Data.Grade.QNat.Types.QNat Data.Grade.QNat.Types.Drop implementation at Data.Grade.QNat.Types:21:1--24:25 n[1]) (Data.Grade.Mu.MZ (Data.Grade.Mu.Mu n[1] t[3] w[2]) (Data.Grade.Logic.Point (Data.Grade.Mu.Mu n[1] t[3] w[2]) (Data.Grade.Mu.uniqueMu t[3] w[2] n[1]))))
+LOG quantity:15: lcheck App (Data.Linear.Interface.seq ?Data.Grade.Mu.{b:893}_[t[3], w[2], n[1], x[0]] Builtin.Unit Data.Linear.Interface.Consumable implementation at Data.Linear.Interface:18:1--19:34) (Data.Grade.Mu.dropMu t[3] w[2] ?Data.Grade.Mu.{n:898}_[t[3], w[2], n[1], x[0]] (Data.Grade.QNat.Ops.lmul_zero_left n[1]) x[0])
+LOG quantity:15: lcheck App (Data.Linear.Interface.seq ?Data.Grade.Mu.{b:893}_[t[3], w[2], n[1], x[0]] Builtin.Unit) Data.Linear.Interface.Consumable implementation at Data.Linear.Interface:18:1--19:34
+LOG quantity:15: lcheck App (Data.Linear.Interface.seq ?Data.Grade.Mu.{b:893}_[t[3], w[2], n[1], x[0]]) Builtin.Unit
+LOG quantity:15: lcheck App Data.Linear.Interface.seq ?Data.Grade.Mu.{b:893}_[t[3], w[2], n[1], x[0]]
+LOG quantity:15: lcheck Ref Func Data.Linear.Interface.seq
+LOG quantity:15: lcheck Meta
+LOG quantity:10: Rig0: Data.Grade.Mu.{b:893} Data.Grade.Mu:186:27--186:86
+"\\(0 t : [__]) => \\(0 w : [__]) => \\(1 n : [__]) => \\(1 x : [__]) => (Data.Grade.Mu.Mu Data.Grade.QNat.Types.Zero ?Data.Grade.Mu.{t:905}_[t[3], w[2], n[1], x[0]] ?Data.Grade.Mu.{w:906}_[t[3], w[2], n[1], x[0]])"
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Ref TyCon 0 Builtin.Unit
+LOG quantity:15: lcheck Ref Func Data.Linear.Interface.Consumable implementation at Data.Linear.Interface:18:1--19:34
+LOG quantity:15: lcheck App (Data.Grade.Mu.dropMu t[3] w[2] ?Data.Grade.Mu.{n:898}_[t[3], w[2], n[1], x[0]] (Data.Grade.QNat.Ops.lmul_zero_left n[1])) x[0]
+LOG quantity:15: lcheck App (Data.Grade.Mu.dropMu t[3] w[2] ?Data.Grade.Mu.{n:898}_[t[3], w[2], n[1], x[0]]) (Data.Grade.QNat.Ops.lmul_zero_left n[1])
+LOG quantity:15: lcheck App (Data.Grade.Mu.dropMu t[3] w[2]) ?Data.Grade.Mu.{n:898}_[t[3], w[2], n[1], x[0]]
+LOG quantity:15: lcheck App (Data.Grade.Mu.dropMu t[3]) w[2]
+LOG quantity:15: lcheck App Data.Grade.Mu.dropMu t[3]
+LOG quantity:15: lcheck Ref Func Data.Grade.Mu.dropMu
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Meta
+LOG quantity:10: Rig0: Data.Grade.Mu.{n:898} Data.Grade.Mu:186:27--186:55
+"\\(0 t : [__]) => \\(0 w : [__]) => \\(1 n : [__]) => \\(1 x : [__]) => (Data.Grade.QNat.Ops.lmul Data.Grade.QNat.Types.Zero ?Data.Grade.Mu.{k:899}_[t[3], w[2], n[1], x[0]])"
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck App Data.Grade.QNat.Ops.lmul_zero_left n[1]
+LOG quantity:15: lcheck Ref Func Data.Grade.QNat.Ops.lmul_zero_left
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck App (Data.Linear.Interface.seq ?Data.Grade.Mu.{b:901}_[t[3], w[2], n[1], x[0]] Builtin.Unit Data.Linear.Interface.Consumable implementation at Data.Linear.Interface:18:1--19:34 (Prelude.Copy.drop Data.Grade.QNat.Types.QNat Data.Grade.QNat.Types.Drop implementation at Data.Grade.QNat.Types:21:1--24:25 n[1])) (Data.Grade.Mu.MZ (Data.Grade.Mu.Mu n[1] t[3] w[2]) (Data.Grade.Logic.Point (Data.Grade.Mu.Mu n[1] t[3] w[2]) (Data.Grade.Mu.uniqueMu t[3] w[2] n[1])))
+LOG quantity:15: lcheck App (Data.Linear.Interface.seq ?Data.Grade.Mu.{b:901}_[t[3], w[2], n[1], x[0]] Builtin.Unit Data.Linear.Interface.Consumable implementation at Data.Linear.Interface:18:1--19:34) (Prelude.Copy.drop Data.Grade.QNat.Types.QNat Data.Grade.QNat.Types.Drop implementation at Data.Grade.QNat.Types:21:1--24:25 n[1])
+LOG quantity:15: lcheck App (Data.Linear.Interface.seq ?Data.Grade.Mu.{b:901}_[t[3], w[2], n[1], x[0]] Builtin.Unit) Data.Linear.Interface.Consumable implementation at Data.Linear.Interface:18:1--19:34
+LOG quantity:15: lcheck App (Data.Linear.Interface.seq ?Data.Grade.Mu.{b:901}_[t[3], w[2], n[1], x[0]]) Builtin.Unit
+LOG quantity:15: lcheck App Data.Linear.Interface.seq ?Data.Grade.Mu.{b:901}_[t[3], w[2], n[1], x[0]]
+LOG quantity:15: lcheck Ref Func Data.Linear.Interface.seq
+LOG quantity:15: lcheck Meta
+LOG quantity:10: Rig0: Data.Grade.Mu.{b:901} Data.Grade.Mu:186:62--186:86
+"\\(0 t : [__]) => \\(0 w : [__]) => \\(1 n : [__]) => \\(1 x : [__]) => (Data.Grade.Mu.Mu Data.Grade.QNat.Types.Zero ?Data.Grade.Mu.{t:905}_[t[3], w[2], n[1], x[0]] ?Data.Grade.Mu.{w:906}_[t[3], w[2], n[1], x[0]])"
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Ref TyCon 0 Builtin.Unit
+LOG quantity:15: lcheck Ref Func Data.Linear.Interface.Consumable implementation at Data.Linear.Interface:18:1--19:34
+LOG quantity:15: lcheck App (Prelude.Copy.drop Data.Grade.QNat.Types.QNat Data.Grade.QNat.Types.Drop implementation at Data.Grade.QNat.Types:21:1--24:25) n[1]
+LOG quantity:15: lcheck App (Prelude.Copy.drop Data.Grade.QNat.Types.QNat) Data.Grade.QNat.Types.Drop implementation at Data.Grade.QNat.Types:21:1--24:25
+LOG quantity:15: lcheck App Prelude.Copy.drop Data.Grade.QNat.Types.QNat
+LOG quantity:15: lcheck Ref Func Prelude.Copy.drop
+LOG quantity:15: lcheck Ref TyCon 0 Data.Grade.QNat.Types.QNat
+LOG quantity:15: lcheck Ref Func Data.Grade.QNat.Types.Drop implementation at Data.Grade.QNat.Types:21:1--24:25
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck App (Data.Grade.Mu.MZ (Data.Grade.Mu.Mu n[1] t[3] w[2])) (Data.Grade.Logic.Point (Data.Grade.Mu.Mu n[1] t[3] w[2]) (Data.Grade.Mu.uniqueMu t[3] w[2] n[1]))
+LOG quantity:15: lcheck App Data.Grade.Mu.MZ (Data.Grade.Mu.Mu n[1] t[3] w[2])
+LOG quantity:15: lcheck Ref DataCon 0 2 Data.Grade.Mu.MZ
+LOG quantity:15: lcheck App (Data.Grade.Mu.Mu n[1] t[3]) w[2]
+LOG quantity:15: lcheck App (Data.Grade.Mu.Mu n[1]) t[3]
+LOG quantity:15: lcheck App Data.Grade.Mu.Mu n[1]
+LOG quantity:15: lcheck Ref TyCon 3 Data.Grade.Mu.Mu
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck App (Data.Grade.Logic.Point (Data.Grade.Mu.Mu n[1] t[3] w[2])) (Data.Grade.Mu.uniqueMu t[3] w[2] n[1])
+LOG quantity:15: lcheck App Data.Grade.Logic.Point (Data.Grade.Mu.Mu n[1] t[3] w[2])
+LOG quantity:15: lcheck Ref Func Data.Grade.Logic.Point
+LOG quantity:15: lcheck App (Data.Grade.Mu.Mu n[1] t[3]) w[2]
+LOG quantity:15: lcheck App (Data.Grade.Mu.Mu n[1]) t[3]
+LOG quantity:15: lcheck App Data.Grade.Mu.Mu n[1]
+LOG quantity:15: lcheck Ref TyCon 3 Data.Grade.Mu.Mu
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck App (Data.Grade.Mu.uniqueMu t[3] w[2]) n[1]
+LOG quantity:15: lcheck App (Data.Grade.Mu.uniqueMu t[3]) w[2]
+LOG quantity:15: lcheck App Data.Grade.Mu.uniqueMu t[3]
+LOG quantity:15: lcheck Ref Func Data.Grade.Mu.uniqueMu
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:15: lcheck Local
+LOG quantity:5: Used: [0, 1]
+Error: While processing right hand side of expand. n1 is not accessible in this context.
+
+Data.Grade.Mu:204:11--204:13
+ 200 |   1 zs''' : Mu m' (Mu n t w) y' = rewrite prfM'0 in zs''
+ 201 |   1 r0 : Mu (Succ m') (Mu n t w) y' = MS y' zs'''
+ 202 |   0 prfYP : Point === y' = ?prfYP_h
+ 203 |   1 r1 : Mu (Succ m') (Mu n t w) Point = rewrite prfYP in r0
+ 204 |   in drop n1 `seq` r1
+                 ^^
+

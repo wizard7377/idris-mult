@@ -146,7 +146,7 @@ combine MZ ys = ys
 combine (MS x xs) ys = MS x (combine xs ys)
 ||| Split a Mu at a given position
 public export
-split : {1 m : QNat} -> Mu (m + n) t w -@ (Mu m t w) <&> (Mu n t w)
+split : {1 m : QNat} -> Mu (m + n) t w -@ (Mu m t w) *** (Mu n t w)
 split {m=Zero} xs = And MZ xs
 split {m=Succ m'} (MS x xs) = let (And ys zs) = split {m=m'} xs in (And (MS x ys) zs)
 
@@ -174,9 +174,36 @@ uniqueMu {n=Zero} = contract @{MZ} @{deforming}
     deforming {y=MZ} = Refl
 
 uniqueMu {w} {n=Succ n'} = contract @{MS w uniqueMu.center} @{ ?contract_proof }
-    
+
 public export
-expand : {1 m : QNat} -> {1 n : QNat} -> Mu (m * n) t w -@ Mu m (Mu n t w) Point 
+Setpoint : (0 _ : Contractible a) => {0 x, y : a} -> x === y
+Setpoint @{ Contract center' prf } {x, y} = let
+  0 prfX : x === center' = prf
+  0 prfY : center' === y = sym prf
+  in trans prfX prfY
+public export
+expand :  {1 m : QNat} -> {1 n : QNat} -> (0 UM : Contractible (Mu n t w)) => Mu (m * n) t w -@ Mu m (Mu n t w) (Point @{ UM })
+expand {m=Zero} {n=n} x = dropMu @{ lmul_zero_left } x `seq` drop {a=QNat} n `seq` MZ
+expand {m=Succ m'} {n=n} x = ?expand_mu_rhs {- let
+ 
+  1 [m0] = m'.clone 0
+  1 [n0, n1, n2] = n.clone 2
+  1 x' : Mu (n + (m' * n)) t w = rewrite sym $ lmul_succ_left {m=m'} {n=n} in x
+  1 x'' : Mu (n0.val + (m' * n1.val)) t w = rewrite n0.prf in rewrite n1.prf in x'
+  1 (And y ys) : ((Mu n0.val t w) *** (Mu (m' * n1.val) t w)) = split {m=n0.val} {n=(m' * n1.val)} x''
+  1 y' : Mu n t w = rewrite sym n0.prf in y
+  0 prfN02 : n0.val === n2.val = trans n0.prf (sym n2.prf)
+  0 prfN12 : n1.val === n2.val = trans n1.prf (sym n2.prf)
+  0 prfM0' : m' === m0.val = sym m0.prf
+  1 zs : (Mu m0.val (Mu n1.val t w) (Point @{ UM })) = 
+    rewrite prfN12 in expand {m=m0.val} {n=n2.val} (rewrite sym prfN12 in rewrite sym prfM0' in ys)
+  1 zs' : Mu m0.val (Mu n t w) (Point @{ UM } ) = rewrite sym n1.prf in zs
+  1 zs'' : Mu m0.val (Mu n t w) y' = rewrite Setpoint {x=y'} {y=Point} in zs'
+  1 zs''' : Mu m' (Mu n t w) y' = rewrite prfM0' in zs''
+  1 r0 : Mu (Succ m') (Mu n t w) y' = MS y' zs'''
+  0 prfYP : Point === y' = Setpoint {x=Point} {y=y'}
+  1 r1 : Mu (Succ m') (Mu n t w) Point = rewrite prfYP in r0
+  in r1 -}
 
 export
 mu_ind :
@@ -185,3 +212,17 @@ mu_ind :
   ({0 n' : QNat} -> (1 w : t) -> (1 x : Mu n' t w) -> (1 prf : p n' t w x) -> p (Succ n') t w (MS w x)) ->
   {1 n : QNat} ->
   p n t w Point
+public export
+react :
+  {1 n0, n1 : QNat} -> {0 n2 : QNat} ->
+  {0 t, u : Type} -> {0 w_t : t} -> {0 w_u : u} -> {0 w_f : Mu n1 t w_t -@ Mu n2 u w_u} ->
+  Mu n0 (Mu n1 t w_t -@ Mu n2 u w_u) w_f -@
+  Mu (n0 * n1) t w_t -@
+  Mu (n0 * n2) u w_u
+react {n0, n1} f x = join $ app f $ expand x
+public export
+extract : Mu 1 t w -@ t
+extract (MS w MZ) = w
+public export
+pure : (1 x : t) -> Mu 1 t x
+pure x = MS x MZ

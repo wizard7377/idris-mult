@@ -1,6 +1,13 @@
 module Prelude.Linear
 import Prelude.Copy
 import Data.Linear.Notation
+
+-- public export
+-- infixr 0 ⊸
+
+public export
+⊸ : Type -> Type -> Type
+⊸ = (-@)
 public export
 data Lin : Type -> Type where
   Once : (1 _ : a) -> Lin a

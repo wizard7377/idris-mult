@@ -1,9 +1,9 @@
 IDRIS ?= idris2 
 PACK ?= pack 
 IDRIS_OPTS ?= 
-LIB_FILES := $(wildcard ./src/*.idr)
+LIB_FILES := $(wildcard ./idris-mult/src/*.idr)
 TEST_FILES := $(wildcard ./test/*.idr)
-LIB_PKG := ./idris-mult.ipkg 
+LIB_PKG := ./idris-mult/idris-mult.ipkg 
 TEST_PKG := ./test/test.ipkg
 TEST_EXEC := ./test/build/exec/idris-mult-test
 all: clean build test docs install 

@@ -1,0 +1,12 @@
+idris2   --build ./idris-mult/idris-mult.ipkg 
+12/18: Building Data.Grade.Mu (src/Data/Grade/Mu.idr)
+Error: While processing right hand side of expand. n1 is not accessible in this context.
+
+Data.Grade.Mu:203:42--203:44
+ 199 |   1 zs'' : Mu m0.val (Mu n t w) y' = rewrite Setpoint {x=y'} {y=Point} in zs'
+ 200 |   1 zs''' : Mu m' (Mu n t w) y' = rewrite prfM'0 in zs''
+ 201 |   1 r0 : Mu (Succ m') (Mu n t w) y' = MS y' zs'''
+ 202 |   0 prfYP : Point === y' = ?prfYP_h
+ 203 |   1 r1 : Mu (Succ m') (Mu n t w) Point = n1 >>> rewrite prfYP in r0
+                                                ^^
+

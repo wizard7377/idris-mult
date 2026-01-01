@@ -47,11 +47,16 @@ public export
 decScandel : (0 prf : Dec (x = y)) -> Dec (x === y)
 decScandel = believe_me ()
 export
-infixr 2 <&> </>
+infixr 2 ***, +++
 public export
-data (<&>) : Type -> Type -> Type where
-  And : (1 fst : a) -> (1 snd : b) -> a <&> b
+data (***) : Type -> Type -> Type where
+  And : (1 fst : a) -> (1 snd : b) -> a *** b
 public export
-data (</>) : Type -> Type -> Type where
-  InL : (1 left : a) -> a </> b
-  InR : (1 right : b) -> a </> b
+data (+++) : Type -> Type -> Type where
+  InL : (1 left : a) -> a +++ b
+  InR : (1 right : b) -> a +++ b
+export
+infixr 0 >>>
+public export
+(>>>) : Drop a => a -@ b -@ b
+x >>> y = drop x `seq` y

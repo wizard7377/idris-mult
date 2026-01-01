@@ -132,3 +132,7 @@ Num (QList QNat) where
   (+) xs ys = ?add_list
   (*) xs ys = ?mul_list
 
+
+public export
+IsElemSingle : (1 _ : IsElem x [y]) => x === y
+IsElemSingle @{ Here } = Refl
