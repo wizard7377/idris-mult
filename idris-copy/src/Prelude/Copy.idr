@@ -59,8 +59,8 @@ free : (1 prf : Drop a) => (1 _ : a) -> (1 _ : b) -> b
 free @{(MkDrop drop_inst)} x y = case drop_inst x of 
   () => y
 export 
-free_eq : (1 _ : Drop a) => {0 x : a} -> (Copy.free x y) === y
-free_eq @{drop_inst} = prim__believe_me ? ? drop_inst
+free_eq : (0 _ : Drop a) => {0 x : a} -> (0 y : b) -> (Copy.free x y) === y
+free_eq @{drop_inst} {x} y = ?free_eq_rhs
 public export 
 linear_absurd : (1 prf : Void) -> a
 linear_absurd prf impossible
@@ -90,12 +90,10 @@ SC f g x = let
 
 -}
 
-%defaulthint
 public export
 0 ECopy : forall a. Copy a
 ECopy = MkCopy (\x, f => f x x)
 
-%defaulthint 
 public export
 0 EDrop : forall a. Drop a
 EDrop = MkDrop (\x => ())

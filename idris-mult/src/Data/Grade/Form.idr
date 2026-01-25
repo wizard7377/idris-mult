@@ -10,23 +10,24 @@ Form : Type
 Form = QList QNat
 public export
 Solve : Form -> Type
-Solve l = Subset QNat (\n => IsElem n l)
+Solve l = Sigma QNat (\n => IsElem n l)
 
 %inline %tcinline
 public export
 (.val) : Solve l -@ QNat
-(.val) (Elem v prf) = v
+(.val) (For v prf) = v
 public export
 interface Formula a where
   constructor MkFormula
   1 formula : a -@ Form
 public export
 Drop (Solve l) where
-  drop (Elem x prf) = drop x
+  drop (For x prf) = drop x
 
 public export
 Copy (Solve l) where
   copy x f = ?copy_solve
+  {-
 export 
 infixl 5 |+|
 export 
@@ -47,5 +48,6 @@ public export
 Formula (QList QNat) where
   formula x = x
 public export
-SolveFun : {0 f : QNat -@ QNat -@ QNat} -> (1 s : Solve (App2 f p q)) => Subset (Solve p *** Solve q) (\ (And s_p s_q) => f s_p.val s_q.val === s.val)
-SolveFun {f} @{(Elem s_val s_prf)} = Elem (And (Elem ?s_p_n ?s_p_prf) (Elem ?s_q_n ?s_q_prf)) ?solve_fun_rhs
+SolveFun : {0 f : QNat -@ QNat -@ QNat} -> (1 s : Solve (App2 f p q)) => Sigma (Solve p :*: Solve q) (\ (And s_p s_q) => f s_p.val s_q.val === s.val)
+SolveFun {f} @{(For s_val s_prf)} = For (And (For ?s_p_n ?s_p_prf) (For ?s_q_n ?s_q_prf)) ?solve_fun_rhs
+-}

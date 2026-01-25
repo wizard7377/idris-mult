@@ -18,8 +18,8 @@ depends = linear, idris-copy
 -- modules to install
 modules =
 	Data.Grade,
-	Data.Grade.Omega,
 	Data.Grade.Exp,
+	Data.Grade.Omega,
 	Data.Grade.Mu
 
 

@@ -10,7 +10,7 @@ import Data.Grade.Util.Linear
 import Control.Function.FunExt
 import Data.Grade.Util.Unique
 import Data.Grade.Logic
-
+import Prelude.Clone
 
 import Data.Grade.Util.Relude
 import Decidable.Equality
@@ -40,7 +40,7 @@ data Mu : (n : QNat) -> (t : Type) -> (w : t) -> Type where
     MZ : 
         {0 t : Type} ->
         {0 w : t} ->
-        Mu Zero t w
+        Mu 0 t w
     ||| Give one more copy
     ||| @ w The value being copied
     ||| @ xs The remaining copies
@@ -50,43 +50,62 @@ data Mu : (n : QNat) -> (t : Type) -> (w : t) -> Type where
         (1 w : t) -> 
         (1 xs : (Mu n t w)) -> 
         Mu (Succ n) t w
- 
+export 
+infix 0 :> 
+%inline %tcinline public export
+(:>) : (t : Type) -> (w : t) -> QNat -> Type
+(:>) t w n = Mu n t w
+
+||| Extract the witness from a mu
+||| The arguement itself is ignored, as the witness is in the type
 public export
 0 witness : Mu n t w -> t
 witness _ = w
 public export
 0 (.witness) : Mu n t w -> t
 (.witness) _ = w
- 
-%inline %tcinline 
-public export
-mkMu : forall t. (1 x : t) -> Mu LN1 t x
-mkMu x = MS x MZ
 %inline %tcinline
 public export
-unMu : forall t. {0 x : t} -> (1 m : Mu LN1 t x) -> t
+unMu : forall t. {0 x : t} -> (1 m : Mu 1 t x) -> t
 unMu (MS x MZ) = x
 
 public export
 genMu : forall t. (1 src : (!* t)) -> {1 n : QNat} -> (Mu n t {w=unrestricted src})
-genMu {t=t} src {n=Zero} = seq src MZ
-genMu {t=t} (MkBang src) {n=(Succ n)} = MS src (genMu {t=t} (MkBang src) {n=n})
+genMu src {n=Zero} = seq src MZ
+genMu (MkBang src) {n=(Succ n)} = MS src (genMu (MkBang src))
+  
+||| Generate a mu from a unrestricted source 
+public export 
+gen : forall t. (src : t) -> {1 n : QNat} -> (Mu n t src)
+gen src = genMu (MkBang src) 
+  
+||| The empty mu, of size 0, just given a witness
 public export
 empty : {auto 0 w : t} -> Mu Zero t w
 empty {w} = MZ 
+  
+||| An example mu, of size n, with all copies being w
 public export 
 0 Example : forall t. (n : QNat) -> (w : t) -> Mu n t w
 Example Zero w = MZ
 Example (Succ n) w = MS w (Example n w)
+  
+||| Repeat a value n times into a Mu, (v ⋄ v ⋄ ... ⋄ v)
 public export
 0 Repeat : {n : QNat} -> (x : t) -> Mu n t x
 Repeat {n=Zero} x = MZ
 Repeat {n=Succ n} x = MS x (Repeat {n=n} x)
 
+||| Consume a Mu of size 0
 public export
 Consumable (Mu Zero t w) where
     consume MZ = ()
-  
+
+||| Drop all values from a Mu
+public export 
+Drop t => Drop (Mu n t w) where
+    drop MZ = ()
+    drop (MS x xs) = x >>> drop xs 
 export 
 consumeZero : Consumable (Mu Zero t w) => (0 prf : n === Zero) -> (1 m : Mu n t w) -> ()
 consumeZero Refl m = consume m
@@ -97,14 +116,14 @@ consumeZero Refl m = consume m
 ----------------------------------------------------------------
 ||| Take a mu of pairs and turn it into a pair of mu's
 public export 
-push : Mu n (LPair t u) (w0 # w1) -@ (LPair (Mu n t w0) (Mu n u w1))
-push MZ = MZ # MZ
-push (MS (x # y) z) = let (xs # ys) = push z in (MS x  xs # MS y  ys)
+push : Mu n (t :*: u) w -@ ((Mu n t (fst w)) :*: (Mu n u (snd w)))
+push MZ = MZ `And` MZ
+push (MS (x `And` y) z) = let (xs `And` ys) = push z in (MS x  xs `And` MS y  ys)
 ||| Take a pair of mu's and turn it into a mu of pairs
 public export 
-pull : (LPair (Mu n t w0) (Mu n u w1)) -@ Mu n (LPair t u) (w0 # w1)
-pull (MZ # MZ) = MZ
-pull (MS x xs # MS y ys) = MS (x # y)  (pull (xs # ys))
+pull : ((Mu n t w0) :*: (Mu n u w1)) -@ Mu n (t :*: u) (And w0 w1)
+pull (MZ `And` MZ) = MZ
+pull (MS x xs `And` MS y ys) = MS (x `And` y)  (pull (xs `And` ys))
   
 ||| Maps a linear function external to the linear values over a linear mu
 public export 
@@ -112,7 +131,10 @@ map : (f : t -@ u) -> Mu n t w -@ Mu n u (f w)
 map f MZ = MZ
 map f (MS x xs) = MS (f x) (map f xs)
 
-
+public export 
+map' : (f : (1 x : t) -> x === w |- u) -> Mu n t w -@ Mu n u (f w)
+map' f MZ = MZ
+map' f (MS x xs) = MS (f x) (map' f xs)
 
 private 
 applyPair : (LPair (t -@ u) (t)) -@ (u)
@@ -146,21 +168,21 @@ combine MZ ys = ys
 combine (MS x xs) ys = MS x (combine xs ys)
 ||| Split a Mu at a given position
 public export
-split : {1 m : QNat} -> Mu (m + n) t w -@ (Mu m t w) *** (Mu n t w)
+split : {1 m : QNat} -> {0 n : QNat} -> Mu (m + n) t w -@ (Mu m t w) :*: (Mu n t w)
 split {m=Zero} xs = And MZ xs
 split {m=Succ m'} (MS x xs) = let (And ys zs) = split {m=m'} xs in (And (MS x ys) zs)
 
 
 ||| Join a Mu of Mu's into a single Mu
 public export
-join : Mu m (Mu n t w) v -@ Mu (m * n) t w
+join : {0 m , n : QNat} -> {0 v : Mu n t w} -> Mu m (Mu n t w) v -@ Mu (m * n) t w
 join {m=Zero} MZ = let
-  0 prf : (0 * n === 0) = lmul_zero_left
+  0 prf : (0 * n === 0) = lmul_zero_left n
   in rewrite prf in MZ
 join {m=Succ m'} (MS x xs) = let
   1 y : Mu n t w = x
   1 ys : Mu (m' * n) t w = join xs
-  0 prf : ((Succ m') * n === n + (m' * n)) = lmul_succ_left
+  0 prf : ((Succ m') * n === n + (m' * n)) = lmul_succ_left m' n
   1 z : Mu (Succ m' * n) t w = rewrite prf in combine y ys
   in z
 
@@ -181,30 +203,6 @@ Setpoint @{ Contract center' prf } {x, y} = let
   0 prfX : x === center' = prf
   0 prfY : center' === y = sym prf
   in trans prfX prfY
-public export
-expand :  {1 m : QNat} -> {1 n : QNat} -> (0 UM : Contractible (Mu n t w)) => Mu (m * n) t w -@ Mu m (Mu n t w) (Point @{ UM })
-expand {m=Zero} {n=n} x = dropMu @{ lmul_zero_left } x `seq` drop {a=QNat} n `seq` MZ
-expand {m=Succ m'} {n=n} x = ?expand_mu_rhs {- let
- 
-  1 [m0] = m'.clone 0
-  1 [n0, n1, n2] = n.clone 2
-  1 x' : Mu (n + (m' * n)) t w = rewrite sym $ lmul_succ_left {m=m'} {n=n} in x
-  1 x'' : Mu (n0.val + (m' * n1.val)) t w = rewrite n0.prf in rewrite n1.prf in x'
-  1 (And y ys) : ((Mu n0.val t w) *** (Mu (m' * n1.val) t w)) = split {m=n0.val} {n=(m' * n1.val)} x''
-  1 y' : Mu n t w = rewrite sym n0.prf in y
-  0 prfN02 : n0.val === n2.val = trans n0.prf (sym n2.prf)
-  0 prfN12 : n1.val === n2.val = trans n1.prf (sym n2.prf)
-  0 prfM0' : m' === m0.val = sym m0.prf
-  1 zs : (Mu m0.val (Mu n1.val t w) (Point @{ UM })) = 
-    rewrite prfN12 in expand {m=m0.val} {n=n2.val} (rewrite sym prfN12 in rewrite sym prfM0' in ys)
-  1 zs' : Mu m0.val (Mu n t w) (Point @{ UM } ) = rewrite sym n1.prf in zs
-  1 zs'' : Mu m0.val (Mu n t w) y' = rewrite Setpoint {x=y'} {y=Point} in zs'
-  1 zs''' : Mu m' (Mu n t w) y' = rewrite prfM0' in zs''
-  1 r0 : Mu (Succ m') (Mu n t w) y' = MS y' zs'''
-  0 prfYP : Point === y' = Setpoint {x=Point} {y=y'}
-  1 r1 : Mu (Succ m') (Mu n t w) Point = rewrite prfYP in r0
-  in r1 -}
-
 export
 mu_ind :
   {p : (n' : QNat) -> (t : Type) -> (w : t) -> Mu n' t w -> Type} ->
@@ -213,6 +211,55 @@ mu_ind :
   {1 n : QNat} ->
   p n t w Point
 public export
+extract : Mu 1 t w -@ t
+extract (MS w MZ) = w
+public export
+pure : (1 x : t) -> Mu 1 t x
+pure x = MS x MZ
+private
+0 mu_replace_prim : {n1, n2 : QNat} -> {t1, t2 : Type} -> {w1 : t1} -> {w2 : t} -> (1 prfN : n1 = n2) -> (1 prfT : t1 = t2) -> (1 prfW : w1 ~=~ w2) -> (Mu n1 t1 w1 ~=~ Mu n2 ? w2)
+mu_replace_prim {n1} {n2} {t1} {t2} {w1} {w2} prfN prfT prfW = case prfN of
+  Refl => case prfT of
+    Refl => case prfW of
+      Refl => Refl
+public export
+expand :  {1 m : QNat} -> {1 n : QNat} -> Mu (m * n) t w -@ Mu m (Mu n t w) Point
+expand {m=Zero} {n=n} x = dropMu @{ lmul_zero_left n } x `seq` drop {a=QNat} n `seq` MZ
+expand {m=Succ m} {n=n} x = let 
+    1 [n0, n1] = n.clone 1
+    1 [m0, m1] = m.clone 1
+    1 x' = expand_off {m=m0.val} {n=n0.val} (rewrite m0.prf in rewrite n0.prf in x)
+  in 
+    (use_and $ \1 y => \1 ys => let
+        1 y' = 
+          rewrite n1.prf in rewrite sym n0.prf in y
+        1 ys' = 
+          rewrite sym m1.prf in 
+          rewrite sym n1.prf in 
+          rewrite Setpoint {x=y'} in 
+          expand {m=assert_smaller m m1.val} {n=assert_smaller n n1.val} $ 
+          rewrite CloneEq {a=m1} {b=m0} in 
+          rewrite CloneEq {a=n1} {b=n0} in 
+          ys
+        0 prf : (Mu (Succ m) (Mu n1.val t w) y' = Mu (Succ m) (Mu n t w) Point) = 
+          rewrite sym n1.prf in mu_replace_prim %search %search Setpoint
+        1 res : Mu (Succ m) (Mu n t w) Point = 
+          rewrite sym prf in MS y' ys'
+        in m0 >>> res
+        ) x'
+  where
+    1 expand_off : {0 m : QNat} -> {1 n : QNat} -> Mu ((Succ m) * n) t w -@ (Mu n t w) :*: (Mu (m * n) t w)
+    expand_off {m, n} v = let 
+        1 v' : Mu (n + (m * n)) t w = rewrite sym (lmul_succ_left m n) in v
+        in split {m=n} v'
+    1 use_and : (a -@ b -@ c) -@ (a :*: b) -@ c
+    use_and f (And x y) = f x y
+
+    
+
+
+
+public export
 react :
   {1 n0, n1 : QNat} -> {0 n2 : QNat} ->
   {0 t, u : Type} -> {0 w_t : t} -> {0 w_u : u} -> {0 w_f : Mu n1 t w_t -@ Mu n2 u w_u} ->
@@ -220,9 +267,17 @@ react :
   Mu (n0 * n1) t w_t -@
   Mu (n0 * n2) u w_u
 react {n0, n1} f x = join $ app f $ expand x
-public export
-extract : Mu 1 t w -@ t
-extract (MS w MZ) = w
-public export
-pure : (1 x : t) -> Mu 1 t x
-pure x = MS x MZ
+
+private 
+react_sugar : 
+  {1 n0, n1 : QNat} -> {0 n2 : QNat} ->  
+  forall w_f.
+  (((t :> w_t) n1 -@ (u :> w_u) n2) :> w_f) n0 ->
+  (t :> w_t) (n0 * n1) -@ (u :> w_u) (n0 * n2)
+react_sugar f x = react f x
+ 
+------- MORE LEMMAS
+export 
+mu_comm : {0 n, m : QNat} -> {0 t : Type} -> {0 w : t} -> Mu (n + m) t w = Mu (m + n) t w
+mu_comm {n} {m} = ?mu_comm_proof
+  

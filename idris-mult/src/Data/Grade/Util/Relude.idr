@@ -34,4 +34,42 @@ public export
 fix_later : {0 a, b : Type} -> a -@ b
 fix_later {a,b} x = prim__believe_me a b x
 
+infixr 0 =@
+public export
+(=@) : Type -> Type -> Type
+(=@) a b = (1 _ : a) => b
+export
+infixr 0 >>>
+public export
+(>>>) : Drop a => a -@ b -@ b
+x >>> y = drop x `seq` y
+  
+public export
+Drop (a === b) where 
+  drop Refl = ()
 
+-- infixr 0 ->@  
+export
+typebind infixr 0 ->@
+%inline %tcinline
+public export 
+0 (->@) : (a : Type) -> (a -> Type) -> Type
+(->@) a b = (1 x : a) -> b x
+export
+typebind infixr 0 =>@
+%inline %tcinline
+public export 
+0 (=>@) : (a : Type) -> (a -> Type) -> Type
+(=>@) a b = (1 x : a) => b x
+export
+typebind infixr 0 ->?
+%inline %tcinline
+public export 
+0 (->?) : (a : Type) -> (a -> Type) -> Type
+(->?) a b = (0 x : a) -> b x
+export
+typebind infixr 0 =>?
+%inline %tcinline
+public export 
+0 (=>?) : (a : Type) -> (a -> Type) -> Type
+(=>?) a b = (0 x : a) => b x

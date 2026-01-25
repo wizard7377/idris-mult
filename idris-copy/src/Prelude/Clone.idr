@@ -46,3 +46,14 @@ public export
 public export 
 0 CloneEq : {a : Cloned t {x}} -> {b : Cloned t {x}} -> a.val === b.val
 CloneEq {a=(MkCloned y0 prf0)} {b=(MkCloned y1 prf1)} = trans prf0 (sym prf1)
+
+public export
+(.use) : forall t. {0 x : t} -> {0 p : t -> Type} -> (1 c : Cloned t {x}) -> (1 f : (1 y : t) -> p y) -> p x
+v.use f = rewrite sym v.prf in f v.val
+
+public export
+Drop a => Drop (Cloned a {x}) where
+    drop (MkCloned y prf) = drop y
+public export
+Copy a => Copy (Cloned a {x}) where
+  copy = ?copy_proof

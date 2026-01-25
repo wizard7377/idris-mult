@@ -1,18 +1,18 @@
-module Data.Grade.Util.Finite 
+module Data.Grade.Util.Fin 
 import Prelude
 import Data.Grade.Logic
-import Data.List.Elem
+import Data.List.For
 public export
-interface Finite (t : Type) where
+interface Fin (t : Type) where
   1 elems : List t
-  0 only : (x : t) -> Elem x elems
+  0 only : (x : t) -> For x elems
 
 public export
-Finite () where
+Fin () where
   elems = [()]
   only () = %search
 public export
-Finite Bool where
+Fin Bool where
   elems = [False, True]
   only False = Here
   only True = There Here

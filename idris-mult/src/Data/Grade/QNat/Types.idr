@@ -13,24 +13,42 @@ data QNat : Type where
   Zero : QNat
   ||| The successor of a natural number
   Succ : (1 k : QNat) -> QNat
-public export
-Consumable QNat where
-  consume Zero = ()
-  consume (Succ k) = consume k
   
+  
+public export
+data CNat : Type where 
+  Fin : (1 n : QNat) -> CNat
+  ∞ : CNat
+  
+%inline %tcinline public export
+Infinite : CNat
+Infinite = ∞
+public export 
+CSucc : CNat -@ CNat 
+CSucc (Fin n) = Fin (Succ n)
+CSucc ∞ = ∞
+
 public export
 Drop QNat where
   drop Zero = ()
   drop (Succ k) = drop k
-public export
-Duplicable QNat where
-  duplicate Zero = [Zero, Zero]
-  duplicate (Succ k) = Succ <$> duplicate k
 
+public export 
+Drop CNat where
+  drop (Fin n) = drop n
+  drop ∞ = ()
+public export
+CNatDrop : Drop CNat
+CNatDrop = %search
 public export
 Copy QNat where
     copy Zero f = f Zero Zero 
     copy (Succ k) f = copy k (\x, y => f (Succ x) (Succ y))
+
+public export
+Copy CNat where
+    copy (Fin n) f = copy n (\x, y => f (Fin x) (Fin y))
+    copy ∞ f = f ∞ ∞
 %default total
 ||| The less than or equal relation on QNat
 public export
@@ -115,3 +133,8 @@ Eq QNat where
     Zero == Zero = True
     (Succ m) == (Succ n) = m == n
     _ == _ = False
+  
+  
+public export
+data IsFinite : CNat -> Type where
+  MkIsFinite : (0 n : QNat) -> IsFinite (Fin n)
